@@ -98,7 +98,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-28.1';
+const VERSION='2026-10-28.2';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
@@ -124,7 +124,7 @@ async function groq(sys,user,json){
   if(!r.ok)throw new Error(r.status===401?'La llave de Groq no es válida.':'Groq respondió con error '+r.status+'.');
   return (await r.json()).choices[0].message.content;
 }
-const SYS='Eres un maestro de la Biblia claro y sereno. Explicas en español sencillo a un lector común, sin tecnicismos ni sermones. Si no estás seguro de un dato (autor, fecha, lugar), dilo y da lo que la mayoría de los estudiosos acepta. Los textos son de la Reina-Valera 1909.';
+const SYS='Eres un maestro de la Biblia claro y sereno. Explicas en español sencillo a un lector común, sin tecnicismos ni sermones. Si no estás seguro de un dato (autor, fecha, lugar), dilo y da lo que la mayoría de los estudiosos acepta. Los textos son de la Reina-Valera.';
 const parse=t=>JSON.parse(t.slice(t.indexOf('{'),t.lastIndexOf('}')+1));
 const errHtml=e=>e.message==='SIN_LLAVE'?'':`<p class="note">${esc(e.message||'No se pudo completar. Revisa tu internet e intenta de nuevo.')}</p>`;
 const NAMES=B.map(b=>b[0]).join(', ');
@@ -146,10 +146,9 @@ async function preview(b,c,v,e,prev){
   openSheet(ref,'<p class="note">Cargando el pasaje…</p>');
   const bar=`<div class="row"><button id="pvb">‹ Volver</button><button class="p" id="pvg">Ir al capítulo</button></div>`;
   try{
-    const r=await fetch(`${API}?bible=rv_1909&data_format=minimal&reference=${encodeURIComponent(q)}`);
-    const j=await r.json();const a=j.results&&j.results.rv_1909;
-    if(!a||!a.length)throw new Error('No se pudo cargar el pasaje.');
-    a.sort((x,y)=>x.verse-y.verse);
+    const all=await chapterVerses(b,c),from=v||1,to=v?(e||v):all.length;
+    const a=all.slice(from-1,to).map((t,i)=>({verse:from+i,text:t}));
+    if(!a.length)throw new Error('No se pudo cargar el pasaje.');
     $('sb').innerHTML='<div class="pv">'+a.map(x=>`<p class="v"><span class="n">${x.verse}</span>${esc(x.text)}</p>`).join('')+'</div>'+bar;
   }catch(er){$('sb').innerHTML=`<p class="note">${esc(er.message==='Failed to fetch'?'No se pudo conectar. Revisa tu internet.':er.message)}</p>`+bar}
   $('pvb').onclick=()=>openSheet(prev.t,prev.h);
@@ -165,6 +164,54 @@ $('back').onclick=async()=>{
   S={b:x.b,c:x.c,v:null};closeSheet();await load();window.scrollTo(0,x.y);upBack();
   if(x.sheet)openSheet(x.sheet.t,x.sheet.h);
 };
+
+/* Texto: en línea (RVR1909) o Biblia importada (guardada solo en este dispositivo) */
+const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('bib',1);r.onupgradeneeded=()=>r.result.createObjectStore('ch');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function idbSet(map){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('ch','readwrite'),o=t.objectStore('ch');o.clear();for(const k in map)o.put(map[k],k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
+async function idbGet(k){const db=await idb();return new Promise((res,rej)=>{const r=db.transaction('ch').objectStore('ch').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbClear(){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('ch','readwrite');t.objectStore('ch').clear();t.oncomplete=res;t.onerror=()=>rej(t.error)})}
+async function chapterVerses(b,c){
+  if(ls.get('bib_src')==='import'){
+    const v=await idbGet(b+':'+c).catch(()=>null);
+    if(v&&v.length)return v;
+    throw new Error('Ese capítulo no está en tu Biblia importada.');
+  }
+  const r=await fetch(`${API}?bible=rv_1909&data_format=minimal&reference=${encodeURIComponent(EN[b]+' '+c)}`);
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok||(j.errors&&j.errors.length))throw new Error((j.errors&&j.errors[0])||'El servidor respondió '+r.status);
+  const a=j.results&&j.results.rv_1909;
+  if(!a||!a.length)throw new Error('La respuesta llegó vacía');
+  return a.sort((x,y)=>x.verse-y.verse).map(x=>x.text);
+}
+function matchBook(n){
+  n=norm(String(n)).replace(/\./g,'').replace(/\s+/g,' ');
+  const al={'cantar de los cantares':'cantares','el cantar de los cantares':'cantares','cantares de salomon':'cantares','canticos':'cantares','hechos de los apostoles':'hechos','salmo':'salmos','apocalipsis de san juan':'apocalipsis','san juan':'juan','san mateo':'mateo','san marcos':'marcos','san lucas':'lucas'};
+  if(al[n])n=al[n];
+  let i=B.findIndex(b=>norm(b[0])===n);if(i<0)i=B.findIndex(b=>norm(b[1])===n);
+  return i;
+}
+function parseBible(txt){
+  txt=txt.replace(/^\uFEFF/,'');
+  const M={};
+  const put=(b,c,v,t)=>{if(!(b>=0&&b<66)||!(c>0)||!(v>0)||!t)return;(M[b]=M[b]||[]);(M[b][c-1]=M[b][c-1]||[])[v-1]=String(t).trim()};
+  let data=null;try{data=JSON.parse(txt)}catch(e){}
+  if(data){
+    const flat=a=>a.forEach(x=>{const bk=x.book_id??x.book_number??x.book??x.book_name??x.bookName??x.libro;put((typeof bk==='number'||/^\d+$/.test(String(bk)))?+bk-1:matchBook(bk),+(x.chapter??x.capitulo),+(x.verse??x.versiculo),x.text??x.texto)});
+    if(Array.isArray(data)){
+      if(data[0]&&data[0].chapters)data.forEach((bk,i)=>{const b=data.length===66?i:matchBook(bk.name||bk.abbrev);(bk.chapters||[]).forEach((ch,ci)=>(Array.isArray(ch)?ch:Object.values(ch)).forEach((t,vi)=>put(b,ci+1,vi+1,typeof t==='string'?t:t&&t.text)))});
+      else flat(data);
+    }else if(Array.isArray(data.verses))flat(data.verses);
+    else Object.keys(data).forEach(k=>{const b=matchBook(k),ch=data[k];(Array.isArray(ch)?ch.map((x,i)=>[i+1,x]):Object.entries(ch||{}).map(([c,x])=>[+c,x])).forEach(([c,x])=>(Array.isArray(x)?x.map((t,i)=>[i+1,t]):Object.entries(x||{}).map(([v,t])=>[+v,t])).forEach(([v,t])=>put(b,c,v,t)))});
+  }else{
+    txt.split(/\r?\n/).forEach(l=>{
+      const m=l.match(/^\s*"?([^",\t]+?)"?[,\t]\s*(\d+)[,\t]\s*(\d+)[,\t]\s*"?(.*?)"?\s*$/)||l.match(/^\s*((?:[1-3]\s?)?[^\d\s][^\d:]*?)\s+(\d{1,3})\s*[:.]\s*(\d{1,3})\s*[-–—.)]*\s*(.+)$/);
+      if(m)put(matchBook(m[1]),+m[2],+m[3],m[4]);
+    });
+  }
+  const map={};let books=0,verses=0;
+  Object.keys(M).forEach(b=>{books++;M[b].forEach((ch,ci)=>{if(ch){const arr=Array.from(ch,t=>t||'');map[b+':'+(ci+1)]=arr;verses+=arr.length}})});
+  return {map,books,verses};
+}
 
 /* Texto con marcas, títulos y flechas de referencias */
 function buildText(){
@@ -182,7 +229,7 @@ async function loadXr(){
   const key='xr:'+S.b+':'+S.c;if(ls.get(key))return;
   const sig=S.b+':'+S.c,ref=B[S.b][0]+' '+S.c;
   try{
-    const d=parse(await groq(SYS,`Para ${ref} (Reina-Valera 1909) responde SOLO un JSON con: "secciones": lista de {"v","titulo"} con títulos cortos (máximo 8 palabras) como los de una Biblia de estudio, donde "v" es el número de versículo en que empieza cada sección; "versiculos": objeto cuyas claves son números de versículo y cuyos valores son listas de 1 a 3 objetos {"ref","nota"} con pasajes relacionados, solo para los versículos que de verdad tengan referencias importantes (máximo 15 versículos). "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));
+    const d=parse(await groq(SYS,`Para ${ref} (Reina-Valera) responde SOLO un JSON con: "secciones": lista de {"v","titulo"} con títulos cortos (máximo 8 palabras) como los de una Biblia de estudio, donde "v" es el número de versículo en que empieza cada sección; "versiculos": objeto cuyas claves son números de versículo y cuyos valores son listas de 1 a 3 objetos {"ref","nota"} con pasajes relacionados, solo para los versículos que de verdad tengan referencias importantes (máximo 15 versículos). "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));
     ls.set(key,JSON.stringify({secciones:d.secciones||[],versiculos:d.versiculos||{}}));
     if(sig===S.b+':'+S.c){const y=window.scrollY;buildText();window.scrollTo(0,y)}
   }catch(e){}
@@ -216,7 +263,7 @@ function verseMenu(num){
   });
   $('abm').onclick=()=>{const o=J('bib_bm');if(o[k])delete o[k];else o[k]={t:Date.now(),x:txt.slice(0,90)};ls.set('bib_bm',JSON.stringify(o));buildText();closeSheet()};
   $('axr').onclick=()=>showRefs(num);
-  $('acp').onclick=async()=>{try{await navigator.clipboard.writeText(`${txt} — ${ref} (RVR1909)`);$('acp').textContent='Copiado ✓'}catch(e){$('acp').textContent='No se pudo copiar'}};
+  $('acp').onclick=async()=>{try{await navigator.clipboard.writeText(`${txt} — ${ref} (${ls.get('bib_src')==='import'?'RVR':'RVR1909'})`);$('acp').textContent='Copiado ✓'}catch(e){$('acp').textContent='No se pudo copiar'}};
 }
 function openSaved(){
   const bm=J('bib_bm'),hl=J('bib_hl');
@@ -258,12 +305,7 @@ async function load(){
   $('text').innerHTML='<p class="msg">Cargando…</p>';
   ls.set('bib_pos',JSON.stringify({b:S.b,c:S.c}));
   try{
-    const r=await fetch(`${API}?bible=rv_1909&data_format=minimal&reference=${encodeURIComponent(EN[S.b]+' '+S.c)}`);
-    const j=await r.json().catch(()=>({}));
-    if(!r.ok||(j.errors&&j.errors.length))throw new Error((j.errors&&j.errors[0])||'El servidor respondió '+r.status);
-    const a=j.results&&j.results.rv_1909;
-    if(!a||!a.length)throw new Error('La respuesta llegó vacía');
-    verses=a.sort((x,y)=>x.verse-y.verse).map(x=>x.text);
+    verses=await chapterVerses(S.b,S.c);
     buildText();
     if(S.v){const el=document.querySelector(`.v[data-v="${S.v}"]`);if(el)el.scrollIntoView({block:'center'})}
     else window.scrollTo(0,0);
@@ -296,14 +338,31 @@ function applyFont(){
 }
 applyFont();
 function settings(msg){
-  const f=ls.get('bib_font')||'Literata';
+  const f=ls.get('bib_font')||'Literata',imp=ls.get('bib_src')==='import';
   openSheet('Ajustes',`<h3>Letra</h3><select id="ff" aria-label="Tipo de letra">${Object.keys(FONTS).map(k=>`<option${k===f?' selected':''}>${k}</option>`).join('')}</select>
   <div class="row" style="margin-top:10px"><button id="fm" aria-label="Letra más chica">A−</button><button id="fp" aria-label="Letra más grande">A+</button></div>
   <p class="pv" style="margin:14px 0 0">EN el principio crió Dios los cielos y la tierra.</p>
+  <h3>Versión</h3><p class="note">Estás leyendo: ${imp?'tu Biblia importada':'Reina-Valera 1909 (en línea)'}.</p>
+  <button class="act" id="imp">Importar mi Biblia (archivo)</button>${imp?'<button class="act" id="imq">Volver a la RVR1909 en línea</button>':''}
+  <input type="file" id="fil" accept=".json,.txt,.csv,text/plain,application/json" hidden>
+  <p class="note" id="impmsg">Acepta .json (libros con capítulos, o versículos sueltos) o .txt/.csv con líneas como “Juan 3:16 Porque de tal manera…”. El texto se guarda solo en este dispositivo.</p>
   <h3>En el texto</h3><label class="note" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xrt" style="width:auto"${ls.get('bib_xr')==='0'?'':' checked'}>Mostrar títulos y flechas ↗ de referencias (usa la IA)</label>
   <h3>Llave de Groq</h3><p class="note">${esc(msg||'La llave se guarda solo en este navegador.')}</p>
   <input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar llave</button>
-  <p class="note" style="margin-top:14px">Texto: Reina-Valera 1909 (dominio público).</p>`);
+  `);
+  $('imp').onclick=()=>$('fil').click();
+  $('fil').onchange=async()=>{
+    const f=$('fil').files[0];if(!f)return;
+    $('impmsg').textContent='Leyendo el archivo…';
+    try{
+      const r=parseBible(await f.text());
+      if(r.verses<100)throw new Error('no encontré versículos en un formato que entienda.');
+      await idbSet(r.map);ls.set('bib_src','import');
+      $('impmsg').textContent=`Listo: ${r.books} de 66 libros y ${r.verses} versículos.${r.books<66?' Los libros que faltan no cargarán.':''}`;
+      load();
+    }catch(e){$('impmsg').textContent='No pude importar ese archivo: '+e.message}
+  };
+  if($('imq'))$('imq').onclick=async()=>{await idbClear().catch(()=>{});ls.set('bib_src','online');closeSheet();load()};
   $('xrt').onchange=()=>{ls.set('bib_xr',$('xrt').checked?'1':'0');buildText();loadXr()};
   $('ff').onchange=()=>{ls.set('bib_font',$('ff').value);applyFont()};
   const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
@@ -344,7 +403,7 @@ $('text').addEventListener('click',async e=>{
     openSheet(word,'<p class="note">Buscando el significado…</p>');
     try{
       let t=ls.get(key);
-      if(!t){t=await groq(SYS,`Explica la palabra «${word}» tal como se usa en ${B[S.b][0]} ${S.c}:${num} (Reina-Valera 1909): «${verses[num-1]}». En 2 a 4 líneas: qué significa hoy en palabras sencillas y, solo si ayuda, la palabra original en griego o hebreo con su sentido. Sin títulos ni listas.`,false);ls.set(key,t)}
+      if(!t){t=await groq(SYS,`Explica la palabra «${word}» tal como se usa en ${B[S.b][0]} ${S.c}:${num} (Reina-Valera): «${verses[num-1]}». En 2 a 4 líneas: qué significa hoy en palabras sencillas y, solo si ayuda, la palabra original en griego o hebreo con su sentido. Sin títulos ni listas.`,false);ls.set(key,t)}
       $('sb').innerHTML=`<p>${esc(t.trim()).replace(/\n+/g,'</p><p>')}</p>`;
     }catch(er){if(er.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(er)}
   }else if(n){verseMenu(+n.closest('.v').dataset.v)}
