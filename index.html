@@ -3,12 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Biblia con contexto</title>
+<title>Biblia</title>
+<meta name="theme-color" content="#2b4db8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Biblia">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f5f3;--fg:#1d2230;--mut:#69708a;--ac:#2b4db8;--acbg:#e3e9fb;--line:#d8dbe3;--sh:#fff;--hl:#fff3b8;
+:root{--bg:#f4f5f3;--fg:#1d2230;--mut:#69708a;--ac:#2b4db8;--acbg:#e3e9fb;--line:#d8dbe3;--sh:#fff;--hl:#fff3b8;--h1:#fff0a8;--h2:#cdeccb;--h3:#cfe3fb;--h4:#f9d3de;
 --serif:'Literata',Georgia,serif;--sans:system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box}
-@media(prefers-color-scheme:dark){:root{--bg:#12151f;--fg:#e6e6e0;--mut:#9aa1b8;--ac:#93abff;--acbg:#1f2744;--line:#2a3045;--sh:#1b2030;--hl:#4a4320}}
+@media(prefers-color-scheme:dark){:root{--bg:#12151f;--fg:#e6e6e0;--mut:#9aa1b8;--ac:#93abff;--acbg:#1f2744;--line:#2a3045;--sh:#1b2030;--hl:#4a4320;--h1:#4a4320;--h2:#24432a;--h3:#20395c;--h4:#5a2a3c}}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--fg)}
 body{font-family:var(--sans);padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
@@ -25,7 +31,31 @@ main{max-width:640px;margin:0 auto;padding:18px 18px 8px}
 #back{display:none;background:var(--acbg);color:var(--ac);border:0;border-radius:10px;padding:7px 11px;font-weight:600}
 #back.on{display:block}
 .v{margin:0 0 .55em}
-.v.hl{background:var(--hl);border-radius:6px;padding:2px 4px;margin-left:-4px}
+.v.m{border-radius:6px;padding:2px 6px;margin-left:-6px;margin-right:-6px}
+.v.h1{background:var(--h1)}.v.h2{background:var(--h2)}.v.h3{background:var(--h3)}.v.h4{background:var(--h4)}
+.v.h5{text-decoration:underline;text-decoration-color:var(--ac);text-decoration-thickness:2px;text-underline-offset:5px}
+.v.jump{outline:2px solid var(--ac);outline-offset:3px;border-radius:6px}
+.v.bm .n::before{content:'🔖 '}
+button.x{background:var(--acbg);color:var(--ac);border:0;border-radius:6px;font:600 14px/1 var(--sans);padding:4px 7px;margin-left:6px;vertical-align:middle;cursor:pointer}
+.sec{font:600 15px var(--sans);color:var(--ac);margin:24px 0 8px}
+.rt{display:flex;gap:2px}
+#gd{background:none;border:0;font-size:19px;padding:6px 8px}
+.colors{display:flex;gap:10px;margin:8px 0 4px;flex-wrap:wrap}
+.colors button{width:42px;height:42px;border-radius:50%;border:2px solid var(--line);background:var(--bg);color:var(--fg)}
+.colors .c1{background:var(--h1)}.colors .c2{background:var(--h2)}.colors .c3{background:var(--h3)}.colors .c4{background:var(--h4)}
+.colors .c5{text-decoration:underline;text-decoration-color:var(--ac);text-decoration-thickness:2px;font-weight:600}
+.colors button.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
+.act{display:block;width:100%;text-align:left;padding:13px 14px;margin-top:8px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
+.it{display:flex;gap:8px;align-items:flex-start;margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+.it .go{flex:1;background:none;border:0;text-align:left;padding:0}
+.it b{color:var(--ac)}.it small{display:block;color:var(--mut);margin-top:2px;font-size:14px}
+.rm{background:none;border:0;color:var(--mut);padding:4px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:6px;background:var(--h1);border:1px solid var(--line)}
+.dot.h2{background:var(--h2)}.dot.h3{background:var(--h3)}.dot.h4{background:var(--h4)}.dot.h5{background:var(--ac)}
+#upd{position:fixed;left:10px;right:10px;top:calc(8px + env(safe-area-inset-top,0px));z-index:12;background:var(--ac);color:#fff;border-radius:14px;padding:10px 12px;display:none;align-items:center;gap:10px;box-shadow:0 4px 18px #0004}
+#upd.on{display:flex}#upd span{flex:1;font-weight:600}
+#upd button{border:0;border-radius:10px;padding:8px 12px;font-weight:600;background:#fff;color:#1d2230}
+#upd #updx{background:none;color:inherit;padding:8px}
 .n{font:600 12px var(--sans);color:var(--ac);background:none;border:0;padding:0 4px 0 0;vertical-align:super;cursor:pointer}
 .w{cursor:pointer;border-radius:3px}
 .w:active,.w.on{background:var(--acbg)}
@@ -33,7 +63,7 @@ main{max-width:640px;margin:0 auto;padding:18px 18px 8px}
 nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
 nav.bar button{flex:1;padding:13px 8px;border-radius:12px;border:1px solid var(--line);background:var(--sh)}
 nav.bar #ctx{flex:1.6;background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
-@media(prefers-color-scheme:dark){nav.bar #ctx,.row .p,.save,.grid button.cur{color:#0d1224}}
+@media(prefers-color-scheme:dark){nav.bar #ctx,.row .p,.save,.grid button.cur,#upd{color:#0d1224}#upd{background:var(--ac)}}
 #ov{position:fixed;inset:0;background:#0007;z-index:8;display:none}
 #sh{position:fixed;left:0;right:0;bottom:0;z-index:9;max-height:80vh;background:var(--sh);border-radius:20px 20px 0 0;border-top:1px solid var(--line);transform:translateY(105%);transition:transform .25s;display:flex;flex-direction:column}
 #sh.open{transform:none}
@@ -60,13 +90,15 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 </style>
 </head>
 <body>
-<header class="top"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="back" aria-label="Volver al texto anterior"></button><button id="cfg" aria-label="Ajustes">⚙</button></header>
+<header class="top"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="back" aria-label="Volver al texto anterior"></button><span class="rt"><button id="gd" aria-label="Guardados">🔖</button><button id="cfg" aria-label="Ajustes">⚙</button></span></header>
 <main><div id="text"><p class="msg">Cargando…</p></div></main>
 <nav class="bar"><button id="prev">‹ Anterior</button><button id="ctx">Contexto</button><button id="next">Siguiente ›</button></nav>
+<div id="upd" role="status"><span>Hay una versión nueva de la app.</span><button id="updb">Actualizar</button><button id="updx" aria-label="Cerrar aviso">✕</button></div>
 <div id="ov"></div>
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
+const VERSION='2026-10-28.1';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
@@ -74,6 +106,8 @@ const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 let S={b:42,c:1,v:null},verses=[];
+const J=k=>{try{return JSON.parse(ls.get(k))||{}}catch(e){return {}}};
+const vk=(b,c,v)=>b+':'+c+':'+v;
 try{const p=JSON.parse(ls.get('bib_pos'));if(p&&B[p.b])S={b:p.b,c:p.c,v:null}}catch(e){}
 
 /* Panel inferior */
@@ -132,6 +166,91 @@ $('back').onclick=async()=>{
   if(x.sheet)openSheet(x.sheet.t,x.sheet.h);
 };
 
+/* Texto con marcas, títulos y flechas de referencias */
+function buildText(){
+  const hl=J('bib_hl'),bm=J('bib_bm'),xr=J('xr:'+S.b+':'+S.c),sec={};
+  (xr.secciones||[]).forEach(x=>{if(x&&x.v&&x.titulo)sec[x.v]=x.titulo});
+  $('text').innerHTML=verses.map((t,i)=>{
+    const n=i+1,k=vk(S.b,S.c,n),h=hl[k],cls=['v'];
+    if(h)cls.push('m','h'+h.c);if(bm[k])cls.push('bm');if(S.v===n)cls.push('jump');
+    const has=xr.versiculos&&xr.versiculos[n]&&xr.versiculos[n].length;
+    return (sec[n]?`<h2 class="sec">${esc(sec[n])}</h2>`:'')+`<p class="${cls.join(' ')}" data-v="${n}"><button class="n" aria-label="Opciones del versículo ${n}">${n}</button>${t.replace(/([\p{L}]+)/gu,'<span class="w">$1</span>')}${has?`<button class="x" aria-label="Referencias del versículo ${n}">↗</button>`:''}</p>`;
+  }).join('');
+}
+async function loadXr(){
+  if(ls.get('bib_xr')==='0'||!ls.get('bib_key'))return;
+  const key='xr:'+S.b+':'+S.c;if(ls.get(key))return;
+  const sig=S.b+':'+S.c,ref=B[S.b][0]+' '+S.c;
+  try{
+    const d=parse(await groq(SYS,`Para ${ref} (Reina-Valera 1909) responde SOLO un JSON con: "secciones": lista de {"v","titulo"} con títulos cortos (máximo 8 palabras) como los de una Biblia de estudio, donde "v" es el número de versículo en que empieza cada sección; "versiculos": objeto cuyas claves son números de versículo y cuyos valores son listas de 1 a 3 objetos {"ref","nota"} con pasajes relacionados, solo para los versículos que de verdad tengan referencias importantes (máximo 15 versículos). "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));
+    ls.set(key,JSON.stringify({secciones:d.secciones||[],versiculos:d.versiculos||{}}));
+    if(sig===S.b+':'+S.c){const y=window.scrollY;buildText();window.scrollTo(0,y)}
+  }catch(e){}
+}
+async function showRefs(num){
+  const ref=B[S.b][0]+' '+S.c+':'+num;
+  openSheet('Referencias de '+ref,'<p class="note">Buscando pasajes relacionados…</p>');
+  try{
+    const xr=J('xr:'+S.b+':'+S.c);let l=xr.versiculos&&xr.versiculos[num];
+    if(!l){
+      const key='vr:'+S.b+':'+S.c+':'+num,c=ls.get(key);
+      if(c)l=JSON.parse(c).referencias;
+      else{const d=parse(await groq(SYS,`Da de 4 a 6 pasajes bíblicos relacionados con ${ref}: «${verses[num-1]}». Responde SOLO un JSON {"referencias":[{"ref","nota"}]}; "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));ls.set(key,JSON.stringify(d));l=d.referencias}
+    }
+    $('sb').innerHTML=refList(l)||'<p class="note">No encontré referencias.</p>';
+  }catch(er){if(er.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(er)}
+}
+
+/* Subrayar y guardar */
+function verseMenu(num){
+  const k=vk(S.b,S.c,num),ref=B[S.b][0]+' '+S.c+':'+num,txt=verses[num-1],h=J('bib_hl')[k],bm=!!J('bib_bm')[k];
+  const dots=[1,2,3,4].map(i=>`<button class="c${i}${h&&h.c===i?' on':''}" data-c="${i}" aria-label="Resaltar con color ${i}"></button>`).join('');
+  openSheet(ref,`<p class="pv" style="font-size:16px;margin:0 0 6px">${esc(txt)}</p><h3>Marcar</h3>
+  <div class="colors">${dots}<button class="c5${h&&h.c===5?' on':''}" data-c="5" aria-label="Subrayar">U</button>${h?'<button data-c="0" aria-label="Quitar marca">✕</button>':''}</div>
+  <button class="act" id="abm">${bm?'Quitar de “leer después”':'Guardar para leer después'}</button>
+  <button class="act" id="axr">Ver referencias</button>
+  <button class="act" id="acp">Copiar versículo</button>`);
+  document.querySelectorAll('.colors button').forEach(b=>b.onclick=()=>{
+    const o=J('bib_hl'),c=+b.dataset.c;if(c)o[k]={c,x:txt.slice(0,90)};else delete o[k];
+    ls.set('bib_hl',JSON.stringify(o));buildText();closeSheet();
+  });
+  $('abm').onclick=()=>{const o=J('bib_bm');if(o[k])delete o[k];else o[k]={t:Date.now(),x:txt.slice(0,90)};ls.set('bib_bm',JSON.stringify(o));buildText();closeSheet()};
+  $('axr').onclick=()=>showRefs(num);
+  $('acp').onclick=async()=>{try{await navigator.clipboard.writeText(`${txt} — ${ref} (RVR1909)`);$('acp').textContent='Copiado ✓'}catch(e){$('acp').textContent='No se pudo copiar'}};
+}
+function openSaved(){
+  const bm=J('bib_bm'),hl=J('bib_hl');
+  const row=(t,k,x,dot)=>{const [b,c,v]=k.split(':').map(Number);return `<div class="it"><button class="go" data-k="${k}"><b>${B[b][0]} ${c}:${v}</b>${dot||''}<small>${esc(x)}…</small></button><button class="rm" data-k="${k}" data-t="${t}" aria-label="Quitar">✕</button></div>`};
+  const a=Object.keys(bm).sort((x,y)=>bm[y].t-bm[x].t).map(k=>row('bm',k,bm[k].x)).join('');
+  const key=k=>k.split(':').map(Number),ord=(x,y)=>{const p=key(x),q=key(y);return p[0]-q[0]||p[1]-q[1]||p[2]-q[2]};
+  const b=Object.keys(hl).sort(ord).map(k=>row('hl',k,hl[k].x,`<span class="dot h${hl[k].c}"></span>`)).join('');
+  openSheet('Guardados',`<h3>Para leer después</h3>${a||'<p class="note">Toca el número de un versículo y elige “Guardar para leer después”.</p>'}<h3>Subrayados y marcados</h3>${b||'<p class="note">Toca el número de un versículo para subrayarlo o resaltarlo.</p>'}`);
+}
+$('gd').onclick=openSaved;
+$('sb').addEventListener('click',e=>{
+  const g=e.target.closest('.go'),r=e.target.closest('.rm');
+  if(g){const [b,c,v]=g.dataset.k.split(':').map(Number);hist.push({b:S.b,c:S.c,y:window.scrollY,sheet:{t:'Guardados',h:$('sb').innerHTML}});go(b,c,v)}
+  else if(r){const n=r.dataset.t==='bm'?'bib_bm':'bib_hl',o=J(n);delete o[r.dataset.k];ls.set(n,JSON.stringify(o));openSaved();buildText()}
+});
+
+/* Aviso de actualización */
+async function checkUpdate(){
+  try{
+    const r=await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'});
+    if(!r.ok)return;
+    const m=(await r.text()).match(/const VERSION='(\d[^']*)'/);
+    if(m&&m[1]!==VERSION)$('upd').classList.add('on');
+  }catch(e){}
+}
+$('updb').onclick=async()=>{
+  try{if(window.caches){for(const k of await caches.keys())await caches.delete(k)}}catch(e){}
+  location.replace(location.pathname+'?u='+Date.now());
+};
+$('updx').onclick=()=>$('upd').classList.remove('on');
+let lastChk=0;
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastChk>60000){lastChk=Date.now();checkUpdate()}});
+lastChk=Date.now();setTimeout(checkUpdate,1500);
+
 /* Cargar capítulo */
 async function load(){
   const [es,en]=B[S.b];
@@ -145,9 +264,10 @@ async function load(){
     const a=j.results&&j.results.rv_1909;
     if(!a||!a.length)throw new Error('La respuesta llegó vacía');
     verses=a.sort((x,y)=>x.verse-y.verse).map(x=>x.text);
-    $('text').innerHTML=verses.map((t,i)=>`<p class="v" data-v="${i+1}"><button class="n" aria-label="Referencias del versículo ${i+1}">${i+1}</button>${t.replace(/([\p{L}]+)/gu,'<span class="w">$1</span>')}</p>`).join('');
-    if(S.v){const el=document.querySelector(`.v[data-v="${S.v}"]`);if(el){el.classList.add('hl');el.scrollIntoView({block:'center'})}}
+    buildText();
+    if(S.v){const el=document.querySelector(`.v[data-v="${S.v}"]`);if(el)el.scrollIntoView({block:'center'})}
     else window.scrollTo(0,0);
+    loadXr();
   }catch(e){
     $('text').innerHTML='<p class="msg">No se pudo cargar el capítulo.<br>Detalle: '+esc(e.message==='Failed to fetch'?'el navegador bloqueó o no alcanzó la conexión':e.message)+'<br><br><button class="save" style="width:auto;padding:10px 22px" onclick="load()">Reintentar</button></p>';
   }
@@ -180,9 +300,11 @@ function settings(msg){
   openSheet('Ajustes',`<h3>Letra</h3><select id="ff" aria-label="Tipo de letra">${Object.keys(FONTS).map(k=>`<option${k===f?' selected':''}>${k}</option>`).join('')}</select>
   <div class="row" style="margin-top:10px"><button id="fm" aria-label="Letra más chica">A−</button><button id="fp" aria-label="Letra más grande">A+</button></div>
   <p class="pv" style="margin:14px 0 0">EN el principio crió Dios los cielos y la tierra.</p>
+  <h3>En el texto</h3><label class="note" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xrt" style="width:auto"${ls.get('bib_xr')==='0'?'':' checked'}>Mostrar títulos y flechas ↗ de referencias (usa la IA)</label>
   <h3>Llave de Groq</h3><p class="note">${esc(msg||'La llave se guarda solo en este navegador.')}</p>
   <input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar llave</button>
   <p class="note" style="margin-top:14px">Texto: Reina-Valera 1909 (dominio público).</p>`);
+  $('xrt').onchange=()=>{ls.set('bib_xr',$('xrt').checked?'1':'0');buildText();loadXr()};
   $('ff').onchange=()=>{ls.set('bib_font',$('ff').value);applyFont()};
   const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
   $('fm').onclick=()=>sz(-2);$('fp').onclick=()=>sz(2);
@@ -215,7 +337,7 @@ $('ctx').onclick=async()=>{
 
 /* Palabra y versículo tocables */
 $('text').addEventListener('click',async e=>{
-  const w=e.target.closest('.w'),n=e.target.closest('.n');
+  const w=e.target.closest('.w'),n=e.target.closest('.n'),x=e.target.closest('.x');
   if(w){
     const v=w.closest('.v'),num=+v.dataset.v,word=w.textContent,key=`w:${norm(word)}:${S.b}:${S.c}:${num}`;
     document.querySelectorAll('.w.on').forEach(x=>x.classList.remove('on'));w.classList.add('on');
@@ -225,16 +347,8 @@ $('text').addEventListener('click',async e=>{
       if(!t){t=await groq(SYS,`Explica la palabra «${word}» tal como se usa en ${B[S.b][0]} ${S.c}:${num} (Reina-Valera 1909): «${verses[num-1]}». En 2 a 4 líneas: qué significa hoy en palabras sencillas y, solo si ayuda, la palabra original en griego o hebreo con su sentido. Sin títulos ni listas.`,false);ls.set(key,t)}
       $('sb').innerHTML=`<p>${esc(t.trim()).replace(/\n+/g,'</p><p>')}</p>`;
     }catch(er){if(er.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(er)}
-  }else if(n){
-    const num=+n.closest('.v').dataset.v,ref=`${B[S.b][0]} ${S.c}:${num}`,key='vr:'+S.b+':'+S.c+':'+num;
-    openSheet('Referencias de '+ref,'<p class="note">Buscando pasajes relacionados…</p>');
-    try{
-      let d;const c=ls.get(key);
-      if(c)d=JSON.parse(c);
-      else{d=parse(await groq(SYS,`Da de 4 a 6 pasajes bíblicos relacionados con ${ref}: «${verses[num-1]}». Responde SOLO un JSON {"referencias":[{"ref","nota"}]}; "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));ls.set(key,JSON.stringify(d))}
-      $('sb').innerHTML=refList(d.referencias)||'<p class="note">No encontré referencias.</p>';
-    }catch(er){if(er.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(er)}
-  }
+  }else if(n){verseMenu(+n.closest('.v').dataset.v)}
+  else if(x){showRefs(+x.closest('.v').dataset.v)}
 });
 </script>
 </body>
