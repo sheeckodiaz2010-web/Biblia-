@@ -20,7 +20,9 @@ html,body{margin:0;background:var(--bg);color:var(--fg)}
 body{font-family:var(--sans);padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px}
 button{font:inherit;color:inherit;cursor:pointer}
-#pick{background:none;border:0;font:600 19px var(--serif);padding:6px 4px}
+#pick{background:none;border:0;font:600 19px var(--serif);padding:6px 4px;max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lf{display:flex;align-items:center;gap:6px;min-width:0}
+#ver{font:600 12px var(--sans);background:var(--acbg);color:var(--ac);border:0;border-radius:999px;padding:5px 9px;white-space:nowrap}
 #cfg{background:none;border:0;font-size:20px;color:var(--mut);padding:6px 8px}
 main{max-width:640px;margin:0 auto;padding:18px 18px 8px}
 #text,.pv{font-family:var(--rf,var(--serif));font-size:var(--rs,19px);line-height:1.75;font-weight:400}
@@ -90,7 +92,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 </style>
 </head>
 <body>
-<header class="top"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="back" aria-label="Volver al texto anterior"></button><span class="rt"><button id="gd" aria-label="Guardados">🔖</button><button id="cfg" aria-label="Ajustes">⚙</button></span></header>
+<header class="top"><span class="lf"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="ver" aria-label="Cambiar de Biblia"></button></span><button id="back" aria-label="Volver al texto anterior"></button><span class="rt"><button id="gd" aria-label="Guardados">🔖</button><button id="cfg" aria-label="Ajustes">⚙</button></span></header>
 <main><div id="text"><p class="msg">Cargando…</p></div></main>
 <nav class="bar"><button id="prev">‹ Anterior</button><button id="ctx">Contexto</button><button id="next">Siguiente ›</button></nav>
 <div id="upd" role="status"><span>Hay una versión nueva de la app.</span><button id="updb">Actualizar</button><button id="updx" aria-label="Cerrar aviso">✕</button></div>
@@ -98,7 +100,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-28.3';
+const VERSION='2026-10-28.4';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
@@ -138,7 +140,10 @@ function refBtn(ref){
   if(!m)return esc(ref);
   return `<button class="ref" data-b="${best}" data-c="${m[1]}" data-v="${m[2]||''}" data-e="${m[3]||''}">${esc(ref)}</button>`;
 }
-const refList=a=>(a||[]).map(r=>`<div class="refrow">${refBtn(r.ref)} <span>${esc(r.nota)}</span></div>`).join('');
+const RE=new RegExp('('+B.map(b=>b[0]).sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\s+\\d+(?::\\d+(?:[-–]\\d+)?)?','gi');
+const L=t=>esc(t).replace(RE,(m,_n,off,str)=>/[\p{L}\d]/u.test(str[off-1]||'')?m:refBtn(m));
+const clean=(l,b,c,v)=>(Array.isArray(l)?l:[]).filter(r=>r&&r.ref&&norm(String(r.ref))!==norm(B[b][0]+' '+c+':'+v));
+const refList=a=>(a||[]).map(r=>`<div class="refrow">${refBtn(r.ref)} <span>${L(r.nota)}</span></div>`).join('');
 let hist=[];
 function upBack(){const x=hist[hist.length-1];$('back').classList.toggle('on',!!x);if(x)$('back').textContent='↩ '+B[x.b][0]+' '+x.c}
 async function preview(b,c,v,e,prev){
@@ -170,6 +175,16 @@ const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('bib',1);r.onupgrad
 async function idbSet(map){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('ch','readwrite'),o=t.objectStore('ch');o.clear();for(const k in map)o.put(map[k],k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
 async function idbGet(k){const db=await idb();return new Promise((res,rej)=>{const r=db.transaction('ch').objectStore('ch').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function idbClear(){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('ch','readwrite');t.objectStore('ch').clear();t.oncomplete=res;t.onerror=()=>rej(t.error)})}
+const hasImp=()=>ls.get('bib_imp')==='1'||ls.get('bib_src')==='import';
+const verLabel=()=>ls.get('bib_src')==='import'?(ls.get('bib_imp_name')||'Importada'):'RVR1909';
+function setVer(){$('ver').textContent=verLabel()}
+$('ver').onclick=()=>{
+  const imp=ls.get('bib_src')==='import';
+  openSheet('Biblia',`<button class="act" id="v1">${imp?'':'✓ '}Reina-Valera 1909 (en línea)</button>${hasImp()?`<button class="act" id="v2">${imp?'✓ ':''}${esc(ls.get('bib_imp_name')||'Mi Biblia importada')}</button>`:''}<button class="act" id="v3">Importar otra Biblia…</button>`);
+  $('v1').onclick=()=>{ls.set('bib_src','online');setVer();closeSheet();load()};
+  if($('v2'))$('v2').onclick=()=>{ls.set('bib_src','import');setVer();closeSheet();load()};
+  $('v3').onclick=()=>settings();
+};
 async function chapterVerses(b,c){
   if(ls.get('bib_src')==='import'){
     const v=await idbGet(b+':'+c).catch(()=>null);
@@ -216,7 +231,7 @@ function parseBible(txt){
 
 /* Texto con marcas, títulos y flechas de referencias */
 function buildText(){
-  const hl=J('bib_hl'),bm=J('bib_bm'),xr=J('xr:'+S.b+':'+S.c),sec={};
+  const hl=J('bib_hl'),bm=J('bib_bm'),xr=J('xr2:'+S.b+':'+S.c),sec={};
   (xr.secciones||[]).forEach(x=>{if(x&&x.v&&x.titulo)sec[x.v]=x.titulo});
   $('text').innerHTML=verses.map((t,i)=>{
     const n=i+1,k=vk(S.b,S.c,n),h=hl[k],cls=['v'];
@@ -227,11 +242,13 @@ function buildText(){
 }
 async function loadXr(){
   if(ls.get('bib_xr')==='0'||!ls.get('bib_key'))return;
-  const key='xr:'+S.b+':'+S.c;if(ls.get(key))return;
+  const key='xr2:'+S.b+':'+S.c;if(ls.get(key))return;
   const sig=S.b+':'+S.c,ref=B[S.b][0]+' '+S.c;
   try{
-    const d=parse(await groq(SYS,`Para ${ref} (Reina-Valera) responde SOLO un JSON con: "secciones": lista de {"v","titulo"} con títulos cortos (máximo 8 palabras) como los de una Biblia de estudio, donde "v" es el número de versículo en que empieza cada sección; "versiculos": objeto cuyas claves son números de versículo y cuyos valores son listas de 1 a 3 objetos {"ref","nota"} con pasajes relacionados, solo para los versículos que de verdad tengan referencias importantes (máximo 15 versículos). "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));
-    ls.set(key,JSON.stringify({secciones:d.secciones||[],versiculos:d.versiculos||{}}));
+    const nums=verses.map((t,i)=>(i+1)+' '+t.slice(0,110)).join('\n');
+    const d=parse(await groq(SYS,`Texto de ${ref}:\n${nums}\n\nPara este capítulo responde SOLO un JSON con: "secciones": lista de {"v","titulo"} con títulos cortos (máximo 8 palabras) como los de una Biblia de estudio, donde "v" es el número del versículo en que empieza cada sección; "versiculos": objeto cuyas claves son números de versículo de la lista de arriba y cuyos valores son listas de 1 a 3 objetos {"ref","nota"} con OTROS pasajes de la Biblia que de verdad se relacionen con ese versículo (nunca el mismo versículo), solo para los versículos que tengan referencias importantes (máximo 15 versículos). "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique cómo se relaciona con ese versículo, sin repetir su texto.`,true));
+    const vs={};Object.keys(d.versiculos||{}).forEach(n=>{const l=clean(d.versiculos[n],S.b,S.c,+n);if(l.length)vs[n]=l});
+    ls.set(key,JSON.stringify({secciones:d.secciones||[],versiculos:vs}));
     if(sig===S.b+':'+S.c){const y=window.scrollY;buildText();window.scrollTo(0,y)}
   }catch(e){}
 }
@@ -239,11 +256,11 @@ async function showRefs(num){
   const ref=B[S.b][0]+' '+S.c+':'+num;
   openSheet('Referencias de '+ref,'<p class="note">Buscando pasajes relacionados…</p>');
   try{
-    const xr=J('xr:'+S.b+':'+S.c);let l=xr.versiculos&&xr.versiculos[num];
+    const xr=J('xr2:'+S.b+':'+S.c);let l=xr.versiculos&&xr.versiculos[num];
     if(!l){
-      const key='vr:'+S.b+':'+S.c+':'+num,c=ls.get(key);
+      const key='vr2:'+S.b+':'+S.c+':'+num,c=ls.get(key);
       if(c)l=JSON.parse(c).referencias;
-      else{const d=parse(await groq(SYS,`Da de 4 a 6 pasajes bíblicos relacionados con ${ref}: «${verses[num-1]}». Responde SOLO un JSON {"referencias":[{"ref","nota"}]}; "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));ls.set(key,JSON.stringify(d));l=d.referencias}
+      else{const d=parse(await groq(SYS,`Da de 4 a 6 pasajes bíblicos relacionados con ${ref}: «${verses[num-1]}». Responde SOLO un JSON {"referencias":[{"ref","nota"}]}; nunca incluyas ese mismo versículo; "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));l=clean(d.referencias,S.b,S.c,num);ls.set(key,JSON.stringify({referencias:l}))}
     }
     $('sb').innerHTML=refList(l)||'<p class="note">No encontré referencias.</p>';
   }catch(er){if(er.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(er)}
@@ -264,7 +281,7 @@ function verseMenu(num){
   });
   $('abm').onclick=()=>{const o=J('bib_bm');if(o[k])delete o[k];else o[k]={t:Date.now(),x:txt.slice(0,90)};ls.set('bib_bm',JSON.stringify(o));buildText();closeSheet()};
   $('axr').onclick=()=>showRefs(num);
-  $('acp').onclick=async()=>{try{await navigator.clipboard.writeText(`${txt} — ${ref} (${ls.get('bib_src')==='import'?'RVR':'RVR1909'})`);$('acp').textContent='Copiado ✓'}catch(e){$('acp').textContent='No se pudo copiar'}};
+  $('acp').onclick=async()=>{try{await navigator.clipboard.writeText(`${txt} — ${ref} (${verLabel()})`);$('acp').textContent='Copiado ✓'}catch(e){$('acp').textContent='No se pudo copiar'}};
 }
 function openSaved(){
   const bm=J('bib_bm'),hl=J('bib_hl');
@@ -302,7 +319,7 @@ lastChk=Date.now();setTimeout(checkUpdate,1500);
 /* Cargar capítulo */
 async function load(){
   const [es,en]=B[S.b];
-  $('pick').textContent=es+' '+S.c+' ▾';
+  $('pick').textContent=es+' '+S.c+' ▾';setVer();
   $('text').innerHTML='<p class="msg">Cargando…</p>';
   ls.set('bib_pos',JSON.stringify({b:S.b,c:S.c}));
   try{
@@ -343,8 +360,8 @@ function settings(msg){
   openSheet('Ajustes',`<h3>Letra</h3><select id="ff" aria-label="Tipo de letra">${Object.keys(FONTS).map(k=>`<option${k===f?' selected':''}>${k}</option>`).join('')}</select>
   <div class="row" style="margin-top:10px"><button id="fm" aria-label="Letra más chica">A−</button><button id="fp" aria-label="Letra más grande">A+</button></div>
   <p class="pv" style="margin:14px 0 0">EN el principio crió Dios los cielos y la tierra.</p>
-  <h3>Versión</h3><p class="note">Estás leyendo: ${imp?'tu Biblia importada':'Reina-Valera 1909 (en línea)'}.</p>
-  <button class="act" id="imp">Importar mi Biblia (archivo)</button>${imp?'<button class="act" id="imq">Volver a la RVR1909 en línea</button>':''}
+  <h3>Versión</h3><p class="note">Estás leyendo: ${imp?esc(ls.get('bib_imp_name')||'tu Biblia importada'):'Reina-Valera 1909 (en línea)'}.</p>
+  <button class="act" id="imp">Importar mi Biblia (archivo)</button>${hasImp()?'<button class="act" id="imq">Borrar la Biblia importada</button>':''}
   <input type="file" id="fil" accept=".json,.txt,.csv,text/plain,application/json" hidden>
   <p class="note" id="impmsg">Acepta .json (libros con capítulos, o versículos sueltos) o .txt/.csv con líneas como “Juan 3:16 Porque de tal manera…”. El texto se guarda solo en este dispositivo.</p>
   <h3>En el texto</h3><label class="note" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xrt" style="width:auto"${ls.get('bib_xr')==='0'?'':' checked'}>Mostrar títulos y flechas ↗ de referencias (usa la IA)</label>
@@ -358,12 +375,12 @@ function settings(msg){
     try{
       const r=parseBible(await f.text());
       if(r.verses<100)throw new Error('no encontré versículos en un formato que entienda.');
-      await idbSet(r.map);ls.set('bib_src','import');
+      await idbSet(r.map);ls.set('bib_src','import');ls.set('bib_imp','1');ls.set('bib_imp_name',/1960|rvr60/i.test(f.name)?'RVR1960':'Mi Biblia');setVer();
       $('impmsg').textContent=`Listo: ${r.books} de 66 libros y ${r.verses} versículos.${r.books<66?' Los libros que faltan no cargarán.':''}`;
       load();
     }catch(e){$('impmsg').textContent='No pude importar ese archivo: '+e.message}
   };
-  if($('imq'))$('imq').onclick=async()=>{await idbClear().catch(()=>{});ls.set('bib_src','online');closeSheet();load()};
+  if($('imq'))$('imq').onclick=async()=>{await idbClear().catch(()=>{});ls.set('bib_src','online');ls.set('bib_imp','0');ls.set('bib_imp_name','');setVer();closeSheet();load()};
   $('xrt').onchange=()=>{ls.set('bib_xr',$('xrt').checked?'1':'0');buildText();loadXr()};
   $('ff').onchange=()=>{ls.set('bib_font',$('ff').value);applyFont()};
   const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
@@ -383,13 +400,13 @@ $('ctx').onclick=async()=>{
       const raw=await groq(SYS,`Dame el contexto de ${ref} para entenderlo mejor. Responde SOLO un JSON con estas claves: "autor" (quién escribió el libro, quién era y en qué situación vivía; si hay debate, dilo), "epoca" (cuándo y desde dónde se escribió), "destinatarios" (a quién iba dirigido y por qué lo escribió), "tema_libro" (idea central del libro y cómo encaja en la Biblia), "contexto_capitulo" (qué pasa antes y después, y qué quiere enseñar este capítulo, en 3 a 5 oraciones), "ideas" (lista de 3 a 5 ideas clave del capítulo), "costumbres" (lista de 0 a 4 costumbres, lugares o palabras de esa época que ayudan a entender el pasaje), "referencias" (lista de 4 a 6 objetos {"ref","nota"} con pasajes relacionados; "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación).`,true);
       d=parse(raw);ls.set(key,JSON.stringify(d));
     }
-    const li=a=>(a&&a.length)?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+    const li=a=>(a&&a.length)?`<ul>${a.map(x=>`<li>${L(x)}</li>`).join('')}</ul>`:'';
     openSheet('Contexto de '+ref,
-      `<h3>Quién lo escribió</h3><p>${esc(d.autor)}</p>
-       <h3>Cuándo y dónde</h3><p>${esc(d.epoca)}</p>
-       <h3>A quién se lo escribió</h3><p>${esc(d.destinatarios)}</p>
-       <h3>Tema del libro</h3><p>${esc(d.tema_libro)}</p>
-       <h3>Este capítulo</h3><p>${esc(d.contexto_capitulo)}</p>${li(d.ideas)}
+      `<h3>Quién lo escribió</h3><p>${L(d.autor)}</p>
+       <h3>Cuándo y dónde</h3><p>${L(d.epoca)}</p>
+       <h3>A quién se lo escribió</h3><p>${L(d.destinatarios)}</p>
+       <h3>Tema del libro</h3><p>${L(d.tema_libro)}</p>
+       <h3>Este capítulo</h3><p>${L(d.contexto_capitulo)}</p>${li(d.ideas)}
        ${d.costumbres&&d.costumbres.length?'<h3>Para entender la época</h3>'+li(d.costumbres):''}
        <h3>Referencias relacionadas</h3>${refList(d.referencias)}`);
   }catch(e){if(e.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(e)}
