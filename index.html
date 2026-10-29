@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Biblia con contexto</title>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5f3;--fg:#1d2230;--mut:#69708a;--ac:#2b4db8;--acbg:#e3e9fb;--line:#d8dbe3;--sh:#fff;--hl:#fff3b8;
+--serif:'Literata',Georgia,serif;--sans:system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box}
+@media(prefers-color-scheme:dark){:root{--bg:#12151f;--fg:#e6e6e0;--mut:#9aa1b8;--ac:#93abff;--acbg:#1f2744;--line:#2a3045;--sh:#1b2030;--hl:#4a4320}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font-family:var(--sans);padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px}
+button{font:inherit;color:inherit;cursor:pointer}
+#pick{background:none;border:0;font:600 19px var(--serif);padding:6px 4px}
+#cfg{background:none;border:0;font-size:20px;color:var(--mut);padding:6px 8px}
+main{max-width:640px;margin:0 auto;padding:18px 18px 8px}
+#text{font:400 19px/1.75 var(--serif)}
+.v{margin:0 0 .55em}
+.v.hl{background:var(--hl);border-radius:6px;padding:2px 4px;margin-left:-4px}
+.n{font:600 12px var(--sans);color:var(--ac);background:none;border:0;padding:0 4px 0 0;vertical-align:super;cursor:pointer}
+.w{cursor:pointer;border-radius:3px}
+.w:active,.w.on{background:var(--acbg)}
+.msg{color:var(--mut);padding:30px 0;text-align:center;font-family:var(--sans)}
+nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+nav.bar button{flex:1;padding:13px 8px;border-radius:12px;border:1px solid var(--line);background:var(--sh)}
+nav.bar #ctx{flex:1.6;background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+@media(prefers-color-scheme:dark){nav.bar #ctx{color:#0d1224}}
+#ov{position:fixed;inset:0;background:#0007;z-index:8;display:none}
+#sh{position:fixed;left:0;right:0;bottom:0;z-index:9;max-height:80vh;background:var(--sh);border-radius:20px 20px 0 0;border-top:1px solid var(--line);transform:translateY(105%);transition:transform .25s;display:flex;flex-direction:column}
+#sh.open{transform:none}
+#ov.open{display:block}
+#sh header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px 6px}
+#st{margin:0;font:600 18px var(--serif)}
+#sx{background:none;border:0;font-size:18px;color:var(--mut);padding:6px}
+#sb{overflow:auto;padding:4px 18px calc(24px + env(safe-area-inset-bottom,0px));line-height:1.55;font-size:16px}
+#sb h3{font:600 15px var(--sans);margin:18px 0 4px;color:var(--ac)}
+#sb p{margin:0 0 6px}
+#sb ul{margin:0;padding-left:20px}
+#sb li{margin:3px 0}
+.ref{background:var(--acbg);color:var(--ac);border:0;border-radius:8px;padding:3px 9px;margin:2px 0;font-weight:600}
+.refrow{margin:6px 0}
+.refrow span{color:var(--mut);font-size:15px}
+select,input{width:100%;font:inherit;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px;margin-top:14px}
+.grid button{padding:11px 0;border-radius:10px;border:1px solid var(--line);background:var(--bg)}
+.grid button.cur{background:var(--ac);color:#fff;border-color:var(--ac)}
+.save{margin-top:12px;width:100%;padding:13px;border-radius:12px;border:0;background:var(--ac);color:#fff;font-weight:600}
+.note{color:var(--mut);font-size:14px}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#sh{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="cfg" aria-label="Ajustes">⚙</button></header>
+<main><div id="text"><p class="msg">Cargando…</p></div></main>
+<nav class="bar"><button id="prev">‹ Anterior</button><button id="ctx">Contexto</button><button id="next">Siguiente ›</button></nav>
+<div id="ov"></div>
+<section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
+
+<script>
+const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
+const API='https://thebibleapi.netlify.app/.netlify/functions/';
+const $=id=>document.getElementById(id);
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+let S={b:42,c:1,v:null},verses=[];
+try{const p=JSON.parse(ls.get('bib_pos'));if(p&&B[p.b])S={b:p.b,c:p.c,v:null}}catch(e){}
+
+/* Panel inferior */
+function openSheet(t,h){$('st').textContent=t;$('sb').innerHTML=h;$('sh').classList.add('open');$('ov').classList.add('open');$('sb').scrollTop=0}
+function closeSheet(){$('sh').classList.remove('open');$('ov').classList.remove('open');document.querySelectorAll('.w.on').forEach(e=>e.classList.remove('on'))}
+$('sx').onclick=closeSheet;$('ov').onclick=closeSheet;
+
+/* Groq */
+async function groq(sys,user,json){
+  const k=ls.get('bib_key');
+  if(!k){settings('Pega tu llave de Groq para usar la IA.');throw new Error('SIN_LLAVE')}
+  const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+k},
+    body:JSON.stringify({model:'openai/gpt-oss-120b',reasoning_effort:'low',temperature:.3,messages:[{role:'system',content:sys},{role:'user',content:user}],...(json?{response_format:{type:'json_object'}}:{})})});
+  if(!r.ok)throw new Error(r.status===401?'La llave de Groq no es válida.':'Groq respondió con error '+r.status+'.');
+  return (await r.json()).choices[0].message.content;
+}
+const SYS='Eres un maestro de la Biblia claro y sereno. Explicas en español sencillo a un lector común, sin tecnicismos ni sermones. Si no estás seguro de un dato (autor, fecha, lugar), dilo y da lo que la mayoría de los estudiosos acepta. Los textos son de la Reina-Valera 1909.';
+const parse=t=>JSON.parse(t.slice(t.indexOf('{'),t.lastIndexOf('}')+1));
+const errHtml=e=>e.message==='SIN_LLAVE'?'':`<p class="note">${esc(e.message||'No se pudo completar. Revisa tu internet e intenta de nuevo.')}</p>`;
+const NAMES=B.map(b=>b[0]).join(', ');
+
+/* Referencias tocables */
+function refBtn(ref){
+  const n=norm(ref);let best=-1,len=0;
+  B.forEach((b,i)=>{const x=norm(b[0])+' ';if(n.startsWith(x)&&x.length>len){best=i;len=x.length}});
+  if(best<0)return esc(ref);
+  const m=n.slice(len).match(/^(\d+)(?::(\d+))?/);
+  if(!m)return esc(ref);
+  return `<button class="ref" data-b="${best}" data-c="${m[1]}" data-v="${m[2]||''}">${esc(ref)}</button>`;
+}
+const refList=a=>(a||[]).map(r=>`<div class="refrow">${refBtn(r.ref)} <span>${esc(r.nota)}</span></div>`).join('');
+$('sb').addEventListener('click',e=>{
+  const t=e.target.closest('.ref');if(!t)return;
+  const c=Math.min(+t.dataset.c,B[t.dataset.b][2]);
+  go(+t.dataset.b,c,t.dataset.v?+t.dataset.v:null);
+});
+
+/* Cargar capítulo */
+async function load(){
+  const [es,en]=B[S.b];
+  $('pick').textContent=es+' '+S.c+' ▾';
+  $('text').innerHTML='<p class="msg">Cargando…</p>';
+  ls.set('bib_pos',JSON.stringify({b:S.b,c:S.c}));
+  try{
+    const r=await fetch(`${API}getChapter?book=${encodeURIComponent(EN[S.b])}&chapter=${S.c}&translation=rv1909`);
+    if(!r.ok)throw new Error();
+    verses=(await r.json()).verses;
+    $('text').innerHTML=verses.map((t,i)=>`<p class="v" data-v="${i+1}"><button class="n" aria-label="Referencias del versículo ${i+1}">${i+1}</button>${t.replace(/([\p{L}]+)/gu,'<span class="w">$1</span>')}</p>`).join('');
+    if(S.v){const el=document.querySelector(`.v[data-v="${S.v}"]`);if(el){el.classList.add('hl');el.scrollIntoView({block:'center'})}}
+    else window.scrollTo(0,0);
+  }catch(e){
+    $('text').innerHTML='<p class="msg">No se pudo cargar el capítulo. Revisa tu internet.<br><br><button class="save" style="width:auto;padding:10px 22px" onclick="load()">Reintentar</button></p>';
+  }
+}
+function go(b,c,v){S={b,c,v:v||null};closeSheet();load()}
+let EN=B.map(b=>b[1]);
+fetch(API+'getBooks?translation=rv1909').then(r=>r.json()).then(d=>{if(d.books&&d.books.length===66)EN=d.books.map(x=>x.name)}).catch(()=>{}).finally(load);
+
+/* Navegación */
+$('prev').onclick=()=>{if(S.c>1)go(S.b,S.c-1);else if(S.b>0)go(S.b-1,B[S.b-1][2])};
+$('next').onclick=()=>{if(S.c<B[S.b][2])go(S.b,S.c+1);else if(S.b<65)go(S.b+1,1)};
+$('pick').onclick=()=>{
+  const opts=B.map((b,i)=>`<option value="${i}"${i===S.b?' selected':''}>${b[0]}</option>`).join('');
+  openSheet('Elegir pasaje',`<select id="selb" aria-label="Libro">${opts}</select><div class="grid" id="grid"></div>`);
+  const draw=()=>{const b=+$('selb').value;$('grid').innerHTML=Array.from({length:B[b][2]},(_,i)=>`<button data-c="${i+1}" class="${b===S.b&&i+1===S.c?'cur':''}">${i+1}</button>`).join('')};
+  draw();$('selb').onchange=draw;
+  $('grid').onclick=e=>{const c=e.target.dataset.c;if(c)go(+$('selb').value,+c)};
+};
+
+/* Ajustes */
+function settings(msg){
+  openSheet('Ajustes',`<p class="note">${esc(msg||'La llave se guarda solo en este navegador.')}</p><input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar</button><p class="note" style="margin-top:14px">Texto: Reina-Valera 1909 (dominio público).</p>`);
+  $('sk').onclick=()=>{ls.set('bib_key',$('key').value.trim());closeSheet()};
+}
+$('cfg').onclick=()=>settings();
+
+/* Contexto del capítulo */
+$('ctx').onclick=async()=>{
+  const [es]=B[S.b],ref=es+' '+S.c,key='ctx:'+S.b+':'+S.c;
+  openSheet('Contexto de '+ref,'<p class="note">Preparando el contexto…</p>');
+  try{
+    let d;const cached=ls.get(key);
+    if(cached)d=JSON.parse(cached);
+    else{
+      const raw=await groq(SYS,`Dame el contexto de ${ref} para entenderlo mejor. Responde SOLO un JSON con estas claves: "autor" (quién escribió el libro, quién era y en qué situación vivía; si hay debate, dilo), "epoca" (cuándo y desde dónde se escribió), "destinatarios" (a quién iba dirigido y por qué lo escribió), "tema_libro" (idea central del libro y cómo encaja en la Biblia), "contexto_capitulo" (qué pasa antes y después, y qué quiere enseñar este capítulo, en 3 a 5 oraciones), "ideas" (lista de 3 a 5 ideas clave del capítulo), "costumbres" (lista de 0 a 4 costumbres, lugares o palabras de esa época que ayudan a entender el pasaje), "referencias" (lista de 4 a 6 objetos {"ref","nota"} con pasajes relacionados; "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación).`,true);
+      d=parse(raw);ls.set(key,JSON.stringify(d));
+    }
+    const li=a=>(a&&a.length)?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+    openSheet('Contexto de '+ref,
+      `<h3>Quién lo escribió</h3><p>${esc(d.autor)}</p>
+       <h3>Cuándo y dónde</h3><p>${esc(d.epoca)}</p>
+       <h3>A quién se lo escribió</h3><p>${esc(d.destinatarios)}</p>
+       <h3>Tema del libro</h3><p>${esc(d.tema_libro)}</p>
+       <h3>Este capítulo</h3><p>${esc(d.contexto_capitulo)}</p>${li(d.ideas)}
+       ${d.costumbres&&d.costumbres.length?'<h3>Para entender la época</h3>'+li(d.costumbres):''}
+       <h3>Referencias relacionadas</h3>${refList(d.referencias)}`);
+  }catch(e){if(e.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(e)}
+};
+
+/* Palabra y versículo tocables */
+$('text').addEventListener('click',async e=>{
+  const w=e.target.closest('.w'),n=e.target.closest('.n');
+  if(w){
+    const v=w.closest('.v'),num=+v.dataset.v,word=w.textContent,key=`w:${norm(word)}:${S.b}:${S.c}:${num}`;
+    document.querySelectorAll('.w.on').forEach(x=>x.classList.remove('on'));w.classList.add('on');
+    openSheet(word,'<p class="note">Buscando el significado…</p>');
+    try{
+      let t=ls.get(key);
+      if(!t){t=await groq(SYS,`Explica la palabra «${word}» tal como se usa en ${B[S.b][0]} ${S.c}:${num} (Reina-Valera 1909): «${verses[num-1]}». En 2 a 4 líneas: qué significa hoy en palabras sencillas y, solo si ayuda, la palabra original en griego o hebreo con su sentido. Sin títulos ni listas.`,false);ls.set(key,t)}
+      $('sb').innerHTML=`<p>${esc(t.trim()).replace(/\n+/g,'</p><p>')}</p>`;
+    }catch(er){if(er.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(er)}
+  }else if(n){
+    const num=+n.closest('.v').dataset.v,ref=`${B[S.b][0]} ${S.c}:${num}`,key='vr:'+S.b+':'+S.c+':'+num;
+    openSheet('Referencias de '+ref,'<p class="note">Buscando pasajes relacionados…</p>');
+    try{
+      let d;const c=ls.get(key);
+      if(c)d=JSON.parse(c);
+      else{d=parse(await groq(SYS,`Da de 4 a 6 pasajes bíblicos relacionados con ${ref}: «${verses[num-1]}». Responde SOLO un JSON {"referencias":[{"ref","nota"}]}; "ref" con el formato "Libro cap:ver" usando exactamente estos nombres de libro: ${NAMES}; "nota" de una línea que explique la relación.`,true));ls.set(key,JSON.stringify(d))}
+      $('sb').innerHTML=refList(d.referencias)||'<p class="note">No encontré referencias.</p>';
+    }catch(er){if(er.message!=='SIN_LLAVE')$('sb').innerHTML=errHtml(er)}
+  }
+});
+</script>
+</body>
+</html>
