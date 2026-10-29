@@ -17,7 +17,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 #pick{background:none;border:0;font:600 19px var(--serif);padding:6px 4px}
 #cfg{background:none;border:0;font-size:20px;color:var(--mut);padding:6px 8px}
 main{max-width:640px;margin:0 auto;padding:18px 18px 8px}
-#text{font:400 19px/1.75 var(--serif)}
+#text,.pv{font-family:var(--rf,var(--serif));font-size:var(--rs,19px);line-height:1.75;font-weight:400}
+.pv .v{margin:0 0 .5em}
+.row{display:flex;gap:8px;margin-top:16px}
+.row button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
+.row .p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+#back{display:none;background:var(--acbg);color:var(--ac);border:0;border-radius:10px;padding:7px 11px;font-weight:600}
+#back.on{display:block}
 .v{margin:0 0 .55em}
 .v.hl{background:var(--hl);border-radius:6px;padding:2px 4px;margin-left:-4px}
 .n{font:600 12px var(--sans);color:var(--ac);background:none;border:0;padding:0 4px 0 0;vertical-align:super;cursor:pointer}
@@ -27,7 +33,7 @@ main{max-width:640px;margin:0 auto;padding:18px 18px 8px}
 nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
 nav.bar button{flex:1;padding:13px 8px;border-radius:12px;border:1px solid var(--line);background:var(--sh)}
 nav.bar #ctx{flex:1.6;background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
-@media(prefers-color-scheme:dark){nav.bar #ctx{color:#0d1224}}
+@media(prefers-color-scheme:dark){nav.bar #ctx,.row .p,.save,.grid button.cur{color:#0d1224}}
 #ov{position:fixed;inset:0;background:#0007;z-index:8;display:none}
 #sh{position:fixed;left:0;right:0;bottom:0;z-index:9;max-height:80vh;background:var(--sh);border-radius:20px 20px 0 0;border-top:1px solid var(--line);transform:translateY(105%);transition:transform .25s;display:flex;flex-direction:column}
 #sh.open{transform:none}
@@ -54,7 +60,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 </style>
 </head>
 <body>
-<header class="top"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="cfg" aria-label="Ajustes">⚙</button></header>
+<header class="top"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="back" aria-label="Volver al texto anterior"></button><button id="cfg" aria-label="Ajustes">⚙</button></header>
 <main><div id="text"><p class="msg">Cargando…</p></div></main>
 <nav class="bar"><button id="prev">‹ Anterior</button><button id="ctx">Contexto</button><button id="next">Siguiente ›</button></nav>
 <div id="ov"></div>
@@ -94,16 +100,37 @@ function refBtn(ref){
   const n=norm(ref);let best=-1,len=0;
   B.forEach((b,i)=>{const x=norm(b[0])+' ';if(n.startsWith(x)&&x.length>len){best=i;len=x.length}});
   if(best<0)return esc(ref);
-  const m=n.slice(len).match(/^(\d+)(?::(\d+))?/);
+  const m=n.slice(len).match(/^(\d+)(?::(\d+)(?:[-–](\d+))?)?/);
   if(!m)return esc(ref);
-  return `<button class="ref" data-b="${best}" data-c="${m[1]}" data-v="${m[2]||''}">${esc(ref)}</button>`;
+  return `<button class="ref" data-b="${best}" data-c="${m[1]}" data-v="${m[2]||''}" data-e="${m[3]||''}">${esc(ref)}</button>`;
 }
 const refList=a=>(a||[]).map(r=>`<div class="refrow">${refBtn(r.ref)} <span>${esc(r.nota)}</span></div>`).join('');
+let hist=[];
+function upBack(){const x=hist[hist.length-1];$('back').classList.toggle('on',!!x);if(x)$('back').textContent='↩ '+B[x.b][0]+' '+x.c}
+async function preview(b,c,v,e,prev){
+  const q=EN[b]+' '+c+(v?':'+v+(e?'-'+e:''):''),ref=B[b][0]+' '+c+(v?':'+v+(e?'-'+e:''):'');
+  openSheet(ref,'<p class="note">Cargando el pasaje…</p>');
+  const bar=`<div class="row"><button id="pvb">‹ Volver</button><button class="p" id="pvg">Ir al capítulo</button></div>`;
+  try{
+    const r=await fetch(`${API}?bible=rv_1909&data_format=minimal&reference=${encodeURIComponent(q)}`);
+    const j=await r.json();const a=j.results&&j.results.rv_1909;
+    if(!a||!a.length)throw new Error('No se pudo cargar el pasaje.');
+    a.sort((x,y)=>x.verse-y.verse);
+    $('sb').innerHTML='<div class="pv">'+a.map(x=>`<p class="v"><span class="n">${x.verse}</span>${esc(x.text)}</p>`).join('')+'</div>'+bar;
+  }catch(er){$('sb').innerHTML=`<p class="note">${esc(er.message==='Failed to fetch'?'No se pudo conectar. Revisa tu internet.':er.message)}</p>`+bar}
+  $('pvb').onclick=()=>openSheet(prev.t,prev.h);
+  $('pvg').onclick=()=>{hist.push({b:S.b,c:S.c,y:window.scrollY,sheet:prev});go(b,c,v)};
+}
 $('sb').addEventListener('click',e=>{
   const t=e.target.closest('.ref');if(!t)return;
-  const c=Math.min(+t.dataset.c,B[t.dataset.b][2]);
-  go(+t.dataset.b,c,t.dataset.v?+t.dataset.v:null);
+  const b=+t.dataset.b,c=Math.min(+t.dataset.c,B[b][2]);
+  preview(b,c,t.dataset.v?+t.dataset.v:null,t.dataset.e?+t.dataset.e:null,{t:$('st').textContent,h:$('sb').innerHTML});
 });
+$('back').onclick=async()=>{
+  const x=hist.pop();if(!x)return;
+  S={b:x.b,c:x.c,v:null};closeSheet();await load();window.scrollTo(0,x.y);upBack();
+  if(x.sheet)openSheet(x.sheet.t,x.sheet.h);
+};
 
 /* Cargar capítulo */
 async function load(){
@@ -125,7 +152,7 @@ async function load(){
     $('text').innerHTML='<p class="msg">No se pudo cargar el capítulo.<br>Detalle: '+esc(e.message==='Failed to fetch'?'el navegador bloqueó o no alcanzó la conexión':e.message)+'<br><br><button class="save" style="width:auto;padding:10px 22px" onclick="load()">Reintentar</button></p>';
   }
 }
-function go(b,c,v){S={b,c,v:v||null};closeSheet();load()}
+function go(b,c,v){S={b,c,v:v||null};closeSheet();upBack();return load()}
 let EN=B.map(b=>b[1]);
 load();
 
@@ -141,8 +168,24 @@ $('pick').onclick=()=>{
 };
 
 /* Ajustes */
+const FONTS={'Literata':"'Literata',Georgia,serif",'Georgia':"Georgia,serif",'Sin serifa':"system-ui,-apple-system,'Segoe UI',sans-serif",'Verdana':"Verdana,Geneva,sans-serif"};
+function applyFont(){
+  const r=document.documentElement.style;
+  r.setProperty('--rf',FONTS[ls.get('bib_font')]||FONTS.Literata);
+  r.setProperty('--rs',(ls.get('bib_size')||'19')+'px');
+}
+applyFont();
 function settings(msg){
-  openSheet('Ajustes',`<p class="note">${esc(msg||'La llave se guarda solo en este navegador.')}</p><input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar</button><p class="note" style="margin-top:14px">Texto: Reina-Valera 1909 (dominio público).</p>`);
+  const f=ls.get('bib_font')||'Literata';
+  openSheet('Ajustes',`<h3>Letra</h3><select id="ff" aria-label="Tipo de letra">${Object.keys(FONTS).map(k=>`<option${k===f?' selected':''}>${k}</option>`).join('')}</select>
+  <div class="row" style="margin-top:10px"><button id="fm" aria-label="Letra más chica">A−</button><button id="fp" aria-label="Letra más grande">A+</button></div>
+  <p class="pv" style="margin:14px 0 0">EN el principio crió Dios los cielos y la tierra.</p>
+  <h3>Llave de Groq</h3><p class="note">${esc(msg||'La llave se guarda solo en este navegador.')}</p>
+  <input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar llave</button>
+  <p class="note" style="margin-top:14px">Texto: Reina-Valera 1909 (dominio público).</p>`);
+  $('ff').onchange=()=>{ls.set('bib_font',$('ff').value);applyFont()};
+  const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
+  $('fm').onclick=()=>sz(-2);$('fp').onclick=()=>sz(2);
   $('sk').onclick=()=>{ls.set('bib_key',$('key').value.trim());closeSheet()};
 }
 $('cfg').onclick=()=>settings();
