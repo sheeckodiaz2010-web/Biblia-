@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
 <title>Biblia RVR1960</title>
 <meta name="description" content="Lee y estudia la Biblia Reina-Valera 1960. Guarda notas, versículos y planes de lectura. Funciona sin conexión después de instalarse.">
 <meta name="application-name" content="Biblia RVR1960">
@@ -10,12 +10,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Biblia">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">\n<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
-<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f5f3;--fg:#1d2230;--mut:#69708a;--ac:#2b4db8;--acbg:#e3e9fb;--line:#d8dbe3;--sh:#fff;--hl:#fff3b8;--h1:#fff0a8;--h2:#cdeccb;--h3:#cfe3fb;--h4:#f9d3de;
 --serif:'Literata',Georgia,serif;--sans:system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box}
@@ -155,23 +155,85 @@ select,input{border-radius:12px}
 .toolsrow button{flex:1;min-width:120px}
 .backupfile{display:none}
 @media(max-width:390px){#pick{max-width:38vw;font-size:17px}.netstat{display:none}nav.bar button{font-size:13px}}
-\n</style>
+
+
+/* Biblia RVR1960 · interfaz renovada */
+:root{--brand:#294bb2;--brand2:#1d367f;--gold:#c5a45b;--card:#fff;--soft:#eef1fa;--radius:22px}
+:root[data-theme="light"]{--bg:#f6f5f1;--fg:#202638;--mut:#73798b;--ac:#294bb2;--acbg:#e7ebf8;--line:#e1e2e6;--sh:#fff;--card:#fff;--soft:#eef1fa;--h1:#fff0ad;--h2:#d9efd9;--h3:#dceaff;--h4:#f8dce4}
+:root[data-theme="dark"]{--bg:#101522;--fg:#edf0f8;--mut:#a5aec3;--ac:#a9bcff;--acbg:#202b49;--line:#30394d;--sh:#171e2d;--card:#171e2d;--soft:#202b49;--h1:#51451f;--h2:#25452d;--h3:#243b60;--h4:#512d40}
+.brand{display:flex;align-items:center;gap:7px;background:none;border:0;padding:5px 8px 5px 0;color:var(--ac);font:700 19px var(--sans);letter-spacing:-.04em}
+.brand:first-letter{color:var(--gold)}
+#pick[hidden],#ver[hidden],#readerView[hidden],#homeView[hidden],#readerBar[hidden]{display:none!important}
+#homeView{max-width:680px;margin:0 auto;padding:14px 18px 34px}
+.home-welcome{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 2px 20px}
+.home-welcome small,.eyebrow{font:700 10px var(--sans);letter-spacing:.16em;color:var(--ac);text-transform:uppercase}
+.home-welcome h1{font:600 clamp(28px,7vw,38px)/1.12 var(--serif);letter-spacing:-.035em;margin:8px 0 7px;max-width:440px}
+.home-welcome p{margin:0;color:var(--mut);font-size:14px;line-height:1.5}
+.home-emblem{flex:none;width:66px;height:66px;border-radius:22px;background:linear-gradient(145deg,var(--ac),var(--brand2));display:grid;place-items:center;color:#fff;font:400 42px Georgia,serif;box-shadow:0 10px 26px #294bb22b}
+.daily-card{position:relative;overflow:hidden;padding:21px 20px 18px;border-radius:25px;background:linear-gradient(135deg,#243f96,#355bc2 68%,#647cc9);color:#fff;box-shadow:0 12px 28px #294bb226}
+.daily-card:after{content:'✝';position:absolute;right:14px;top:-25px;font:150px Georgia,serif;color:#ffffff12;pointer-events:none}
+.daily-card .eyebrow{color:#e7d39c;position:relative;z-index:1}
+.daily-card blockquote{position:relative;z-index:1;margin:13px 0 12px;font:italic 400 clamp(21px,5vw,27px)/1.42 var(--serif);max-width:540px}
+.daily-card .daily-ref{font-size:13px;color:#e7eafa;font-weight:650;position:relative;z-index:1}
+.daily-actions{display:flex;gap:9px;margin-top:18px;position:relative;z-index:1}
+.daily-actions button{border:1px solid #ffffff50;border-radius:12px;padding:10px 13px;color:#fff;background:#ffffff16;font-size:13px;font-weight:650}
+.daily-actions .primary{background:#fff;color:#263f91;border-color:#fff}
+.home-section{margin-top:25px}
+.section-title{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:0 2px 11px}
+.section-title h2{font:600 20px var(--serif);margin:0;letter-spacing:-.02em}
+.section-title span{font-size:12px;color:var(--mut)}
+.continue-card{background:var(--card);border:1px solid var(--line);border-radius:21px;padding:17px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px #18234b08}
+.continue-icon{width:48px;height:58px;flex:none;border-radius:9px;background:var(--soft);display:grid;place-items:center;color:var(--ac);font-size:24px}
+.continue-copy{flex:1;min-width:0}
+.continue-copy small{font-size:10px;letter-spacing:.12em;font-weight:700;color:var(--mut)}
+.continue-copy h3{margin:4px 0 3px;font:600 19px var(--serif)}
+.continue-copy p{margin:0;color:var(--mut);font-size:12px}
+.continue-card>button{border:0;background:var(--ac);color:#fff;border-radius:13px;padding:11px 13px;font-weight:700;font-size:13px;white-space:nowrap}
+.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.home-tool{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 13px;min-height:72px;border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--fg)}
+.home-tool .tool-icon{width:40px;height:40px;flex:none;border-radius:13px;background:var(--soft);display:grid;place-items:center;font-size:19px;color:var(--ac)}
+.home-tool b{display:block;font-size:13px}.home-tool small{display:block;color:var(--mut);font-size:11px;margin-top:3px}
+.home-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.home-stat{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:14px 15px}
+.home-stat strong{display:block;font:600 27px var(--serif);color:var(--ac)}
+.home-stat span{font-size:11px;color:var(--mut)}
+.plan-card{padding:17px;border-radius:20px;border:1px solid var(--line);background:var(--card)}
+.plan-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.plan-top b{font:600 17px var(--serif)}.plan-top span{font-size:12px;color:var(--mut)}
+.plan-track{height:7px;border-radius:20px;background:var(--soft);overflow:hidden;margin:13px 0 8px}
+.plan-track i{display:block;height:100%;background:var(--ac);border-radius:20px}
+.plan-card p{font-size:12px;color:var(--mut);margin:0}
+.plan-card button{margin-top:12px;border:0;background:var(--soft);color:var(--ac);font-weight:700;border-radius:11px;padding:10px 13px;font-size:12px}
+.home-foot{text-align:center;color:var(--mut);font-size:11px;padding:22px 0 6px}
+#readerView{max-width:680px;margin:0 auto;padding:0 18px 22px}
+#readerBar{display:flex}
+#readerBar button{font-size:12px;padding:12px 4px}
+#readerBar #audio{background:var(--soft);color:var(--ac);flex:1.25}
+#readerBar #audio.playing{background:var(--acbg);color:var(--ac)}
+#readerBar #ctx{flex:1.35}
+#sb textarea{width:100%;min-height:140px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical}
+#sb button:focus-visible,.home-tool:focus-visible,.continue-card button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+@media(max-width:390px){#homeView{padding-left:14px;padding-right:14px}.home-welcome{padding-top:12px}.home-emblem{width:54px;height:54px;font-size:34px;border-radius:18px}.continue-card{gap:9px;padding:13px}.continue-card>button{padding:10px;font-size:12px}.home-tool{padding:11px 9px;gap:9px}.home-tool .tool-icon{width:35px;height:35px}.home-tool b{font-size:12px}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+
+</style>
 </head>
 <body>
-<header class="top"><span class="lf"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="ver" aria-label="Cambiar de Biblia"></button></span><button id="back" aria-label="Volver al texto anterior"></button><span class="rt"><span id="netstat" class="netstat" title="Estado de conexión" aria-live="polite">●</span><button id="find" aria-label="Buscar en la Biblia">⌕</button><button id="pl" aria-label="Planes de estudio">📅</button><button id="gd" aria-label="Guardados">🔖</button><button id="cfg" aria-label="Ajustes">⚙</button></span></header>
-<main><div id="vod" hidden></div><div id="text"><p class="msg">Cargando…</p></div></main>
-<nav class="bar"><button id="prev">‹ Anterior</button><button id="ctx">Contexto</button><button id="next">Siguiente ›</button></nav>
+<header class="top" id="appTop"><span class="lf"><button id="brand" class="brand" aria-label="Ir al inicio">✝ <span>Biblia</span></button><button id="pick" aria-label="Elegir libro y capítulo" hidden>Juan 1 ▾</button><button id="ver" aria-label="Versión bíblica" hidden></button></span><button id="back" aria-label="Volver al texto anterior"></button><span class="rt"><span id="netstat" class="netstat" title="Estado de conexión" aria-live="polite">●</span><button id="find" aria-label="Buscar en la Biblia" title="Buscar">⌕</button><button id="pl" aria-label="Planes de estudio" title="Planes">▦</button><button id="gd" aria-label="Mi biblioteca" title="Biblioteca">▤</button><button id="cfg" aria-label="Ajustes" title="Ajustes">⚙</button></span></header>
+<main><section id="homeView" aria-label="Inicio"></section><section id="readerView" hidden><div id="vod" hidden></div><div id="text"><p class="msg">Cargando…</p></div></section></main>
+<nav class="bar" id="readerBar" hidden><button id="prev" aria-label="Capítulo anterior">‹</button><button id="audio" aria-label="Escuchar capítulo">▶ Escuchar</button><button id="ctx">Contexto</button><button id="next" aria-label="Capítulo siguiente">›</button></nav>
 <div id="upd" role="status"><span>Hay una versión nueva de la app.</span><button id="updb">Actualizar</button><button id="updx" aria-label="Cerrar aviso">✕</button></div>
 <div id="ov"></div>
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.1';
+const VERSION='2026-10-30.3';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const wordMarkup=t=>String(t??'').split(/([\p{L}]+)/u).map(part=>/^\p{L}+$/u.test(part)?'<span class="w">'+esc(part)+'</span>':esc(part)).join('');
 const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 let S={b:42,c:1,v:null},verses=[];
 const J=k=>{try{return JSON.parse(ls.get(k))||{}}catch(e){return {}}};
@@ -252,7 +314,7 @@ async function chapterVerses(b,c){
       if(!r.ok)throw new Error('No se pudo cargar biblia.json (HTTP '+r.status+').');
       const data=await r.json();
       if(!Array.isArray(data)||data.length!==66)throw new Error('El archivo bíblico no tiene la estructura esperada de 66 libros.');
-      if(data.some(book=>!Array.isArray(book)))throw new Error('El archivo bíblico tiene un formato inválido.');
+      if(data.some((book,i)=>!Array.isArray(book)||book.length!==B[i][2]||book.some(ch=>!Array.isArray(ch))))throw new Error('El archivo bíblico no coincide con los libros y capítulos esperados.');
       BIBLE=data;
       return data;
     })().catch(err=>{BIBLE_LOADING=null;throw err});
@@ -301,7 +363,7 @@ function buildText(){
     const n=i+1,k=vk(S.b,S.c,n),h=hl[k],cls=['v'];
     if(h)cls.push('m','h'+h.c);if(bm[k])cls.push('bm');if(S.v===n)cls.push('jump');
     const has=xr.versiculos&&xr.versiculos[n]&&xr.versiculos[n].length;
-    return (sec[n]?`<h2 class="sec">${esc(sec[n])}</h2>`:'')+`<p class="${cls.join(' ')}" data-v="${n}"><button class="n" aria-label="Opciones del versículo ${n}">${n}</button>${t.replace(/([\p{L}]+)/gu,'<span class="w">$1</span>')}${has?`<button class="x" aria-label="Referencias del versículo ${n}">↗</button>`:''}</p>`;
+    return (sec[n]?`<h2 class="sec">${esc(sec[n])}</h2>`:'')+`<p class="${cls.join(' ')}" data-v="${n}"><button class="n" aria-label="Opciones del versículo ${n}">${n}</button>${wordMarkup(t)}${has?`<button class="x" aria-label="Referencias del versículo ${n}">↗</button>`:''}</p>`;
   }).join('');
 }
 async function loadXr(){
@@ -461,8 +523,8 @@ const PLANS=[
 const dayCh=(p,i)=>p.ch.slice(Math.floor(i*p.ch.length/p.d),Math.floor((i+1)*p.ch.length/p.d));
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 function markRead(b,c){
-  const k=b+':'+c,p=J('bib_plan'),dd=J('bib_days');
-  dd[today()]=1;ls.set('bib_days',JSON.stringify(dd));
+  const k=b+':'+c,p=J('bib_plan'),dd=J('bib_days'),chapters=J('bib_chapters');
+  dd[today()]=1;chapters[k]=1;ls.set('bib_days',JSON.stringify(dd));ls.set('bib_chapters',JSON.stringify(chapters));
   const active=PLANS.find(x=>x.id===p.id);
   if(active&&p.done&&!p.done[k]&&active.ch.some(x=>x[0]===b&&x[1]===c)){p.done[k]=1;ls.set('bib_plan',JSON.stringify(p))}
 }
@@ -502,6 +564,68 @@ if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
 
 /* Versículo del día */
 const VOD=[[42,3,16],[18,23,1],[24,3,22],[19,3,5],[23,29,11],[22,41,10],[39,11,28],[44,8,28],[49,4,6],[5,1,9],[57,11,1],[42,14,6],[22,40,31],[18,46,1],[18,119,105],[44,12,2],[49,4,13],[39,6,33],[61,4,19],[47,5,22],[48,2,8],[54,1,7],[32,6,8],[58,1,5],[59,5,7],[19,16,3],[18,27,1],[18,34,8],[22,26,3],[44,15,13],[18,121,2],[46,12,9]];
+
+let currentView='home',homeRenderId=0;
+function showHome(){
+  stopAudio();
+  currentView='home';
+  $('homeView').hidden=false;$('readerView').hidden=true;$('readerBar').hidden=true;
+  $('brand').innerHTML='✝ <span>Biblia</span>';$('brand').setAttribute('aria-label','Inicio');
+  $('pick').hidden=true;$('ver').hidden=true;$('back').classList.remove('on');
+  document.body.classList.add('home-mode');
+  renderHome();
+}
+async function showReader(b,c,v){
+  currentView='reader';
+  $('homeView').hidden=true;$('readerView').hidden=false;$('readerBar').hidden=false;
+  $('brand').innerHTML='⌂ <span>Inicio</span>';$('brand').setAttribute('aria-label','Volver al inicio');
+  $('pick').hidden=false;$('ver').hidden=false;
+  document.body.classList.remove('home-mode');
+  if(typeof b==='number')return go(b, c||1, v||null);
+  return load();
+}
+$('brand').onclick=()=>{if(currentView==='home')showHome();else showHome()};
+function dailyVerseRef(){
+  const d=new Date(),day=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+  return VOD[day%VOD.length];
+}
+async function renderHome(){
+  const id=++homeRenderId;
+  const pos=J('bib_pos'),b=pos&&Number.isInteger(pos.b)&&B[pos.b]?pos.b:S.b,c=pos&&Number.isInteger(pos.c)&&pos.c>0&&pos.c<=B[b][2]?pos.c:S.c;
+  const days=Object.keys(J('bib_days')).length,chapters=Object.keys(J('bib_chapters')).length;
+  const planState=J('bib_plan'),plan=PLANS.find(p=>p.id===planState.id);
+  let planPct=0,planLine='Elige un recorrido para avanzar paso a paso.';
+  if(plan){const done=planState.done||{},complete=plan.ch.filter(x=>done[x[0]+':'+x[1]]).length;planPct=Math.round(complete/plan.ch.length*100);planLine=complete+' de '+plan.ch.length+' capítulos completados';}
+  const d=new Date(),dateLabel=d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'});
+  $('homeView').innerHTML=`
+    <div class="home-welcome"><div><small>UN MOMENTO CON DIOS</small><h1>Alimenta tu fe.<br>Un capítulo a la vez.</h1><p>${esc(dateLabel.charAt(0).toUpperCase()+dateLabel.slice(1))} · Tu espacio de lectura y estudio</p></div><div class="home-emblem" aria-hidden="true">✝</div></div>
+    <section class="daily-card" aria-label="Versículo del día"><span class="eyebrow">PALABRA PARA HOY</span><blockquote id="homeDailyText">Preparando tu lectura…</blockquote><div class="daily-ref" id="homeDailyRef">Biblia Reina-Valera 1960</div><div class="daily-actions"><button class="primary" id="homeDailyRead">Leer pasaje</button><button id="homeDailyShare">Compartir</button></div></section>
+    <section class="home-section"><div class="section-title"><h2>Continúa donde quedaste</h2><span>Tu última lectura</span></div><div class="continue-card"><div class="continue-icon">▤</div><div class="continue-copy"><small>REANUDAR LECTURA</small><h3>${esc(B[b][0])} ${c}</h3><p>Reina-Valera 1960 · Capítulo ${c}</p></div><button id="continueBtn">Continuar →</button></div></section>
+    <section class="home-section"><div class="section-title"><h2>Explora la Palabra</h2><span>Herramientas</span></div><div class="home-grid">
+      <button class="home-tool" id="homeSearch"><span class="tool-icon">⌕</span><span><b>Buscar versículos</b><small>Palabras y frases</small></span></button>
+      <button class="home-tool" id="homeStudy"><span class="tool-icon">✧</span><span><b>Estudiar capítulo</b><small>Contexto con IA</small></span></button>
+      <button class="home-tool" id="homeLibrary"><span class="tool-icon">▤</span><span><b>Mi biblioteca</b><small>Notas y favoritos</small></span></button>
+      <button class="home-tool" id="homePlans"><span class="tool-icon">▦</span><span><b>Planes de lectura</b><small>Avanza cada día</small></span></button>
+    </div></section>
+    <section class="home-section"><div class="section-title"><h2>Tu recorrido</h2><span>Este dispositivo</span></div><div class="home-stats"><div class="home-stat"><strong>${days}</strong><span>Días con lectura</span></div><div class="home-stat"><strong>${chapters}</strong><span>Capítulos abiertos</span></div></div></section>
+    <section class="home-section"><div class="section-title"><h2>Tu plan actual</h2><span>Progreso</span></div><div class="plan-card"><div class="plan-top"><b>${plan?esc(plan.n):'Empieza un plan de lectura'}</b><span>${plan?planPct+'%':'A tu ritmo'}</span></div><div class="plan-track"><i style="width:${planPct}%"></i></div><p>${esc(planLine)}</p><button id="homePlanAction">${plan?'Ver mi plan':'Elegir un plan'}</button></div></section>
+    <div class="home-foot">La Palabra de Dios, contigo donde estés · RVR1960</div>`;
+  const [db,dc,dv]=dailyVerseRef();
+  try{
+    const t=(await chapterVerses(db,dc))[dv-1];
+    if(id!==homeRenderId||currentView!=='home')return;
+    $('homeDailyText').textContent='«'+t+'»';$('homeDailyRef').textContent=B[db][0]+' '+dc+':'+dv+' · Reina-Valera 1960';
+    $('homeDailyRead').onclick=()=>showReader(db,dc,dv);
+    $('homeDailyShare').onclick=async()=>{const message=t+' — '+B[db][0]+' '+dc+':'+dv+' (RVR1960)';try{if(navigator.share)await navigator.share({text:message});else{await navigator.clipboard.writeText(message);$('homeDailyShare').textContent='Copiado ✓'}}catch(e){}};
+  }catch(e){if(id===homeRenderId)$('homeDailyText').textContent='Conéctate una vez para descargar la Biblia y tenerla disponible sin conexión.'}
+  $('continueBtn').onclick=()=>showReader(b,c);
+  $('homeSearch').onclick=openSearch;
+  $('homeStudy').onclick=async()=>{await showReader(b,c);$('ctx').click()};
+  $('homeLibrary').onclick=openSaved;
+  $('homePlans').onclick=openPlans;
+  $('homePlanAction').onclick=openPlans;
+}
+
 async function showVod(){
   const el=$('vod');
   if(ls.get('bib_vod')===today()){el.hidden=true;return}
@@ -516,7 +640,7 @@ async function showVod(){
     $('vsh').onclick=async()=>{const x=`${t} — ${ref} (${verLabel()})`;try{if(navigator.share)await navigator.share({text:x});else{await navigator.clipboard.writeText(x);$('vsh').textContent='Copiado ✓'}}catch(e){}};
   }catch(e){el.hidden=true}
 }
-setTimeout(showVod,300);
+
 
 /* Aviso de actualización */
 async function checkUpdate(){
@@ -536,8 +660,54 @@ let lastChk=0;
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastChk>60000){lastChk=Date.now();checkUpdate()}});
 lastChk=Date.now();setTimeout(checkUpdate,1500);
 
+
+/* Lectura en voz alta: divide capítulos largos para evitar límites del navegador. */
+let speech=null,audioMode='idle',audioChunks=[],audioIndex=0,audioSession=0;
+function stopAudio(){
+  audioSession++;
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  speech=null;audioChunks=[];audioIndex=0;audioMode='idle';updateAudioButton();
+}
+function updateAudioButton(){
+  const b=$('audio');if(!b)return;
+  b.classList.toggle('playing',audioMode!=='idle');
+  b.textContent=audioMode==='speaking'?'Ⅱ Pausar':audioMode==='paused'?'▶ Continuar':'▶ Escuchar';
+  b.setAttribute('aria-label',audioMode==='speaking'?'Pausar lectura':audioMode==='paused'?'Continuar lectura':'Escuchar capítulo');
+}
+function speakAudioChunk(session){
+  if(session!==audioSession)return;
+  if(audioIndex>=audioChunks.length){audioMode='idle';speech=null;updateAudioButton();return}
+  const utterance=new SpeechSynthesisUtterance(audioChunks[audioIndex]);speech=utterance;
+  utterance.lang='es-MX';utterance.rate=.92;
+  const voices=speechSynthesis.getVoices(),spanish=voices.find(v=>/^es(-|$)/i.test(v.lang));
+  if(spanish)utterance.voice=spanish;
+  utterance.onstart=()=>{if(session===audioSession){audioMode='speaking';updateAudioButton()}};
+  utterance.onend=()=>{if(session===audioSession){audioIndex++;speakAudioChunk(session)}};
+  utterance.onerror=()=>{if(session===audioSession){audioMode='idle';speech=null;audioChunks=[];updateAudioButton()}};
+  speechSynthesis.speak(utterance);
+}
+function toggleAudio(){
+  if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){alert('Este navegador no ofrece lectura en voz alta.');return}
+  if(audioMode==='speaking'){speechSynthesis.pause();audioMode='paused';updateAudioButton();return}
+  if(audioMode==='paused'){speechSynthesis.resume();audioMode='speaking';updateAudioButton();return}
+  if(!verses.length){alert('Primero espera a que cargue el capítulo.');return}
+  audioSession++;const session=audioSession;
+  speechSynthesis.cancel();audioChunks=[];audioIndex=0;
+  let chunk='';
+  verses.forEach((v,i)=>{
+    const part='Versículo '+(i+1)+'. '+v+' ';
+    if(chunk.length+part.length>1300&&chunk){audioChunks.push(chunk);chunk=''}
+    chunk+=part;
+  });
+  if(chunk)audioChunks.push(chunk);
+  if(!audioChunks.length)return;
+  audioMode='speaking';updateAudioButton();speakAudioChunk(session);
+}
+$('audio').onclick=toggleAudio;
+
 /* Cargar capítulo */
 async function load(){
+  stopAudio();
   const [es,en]=B[S.b];
   $('pick').textContent=es+' '+S.c+' ▾';setVer();
   $('text').innerHTML='<p class="msg">Cargando…</p>';
@@ -552,7 +722,7 @@ async function load(){
     $('text').innerHTML='<p class="msg">No se pudo cargar el capítulo.<br>Detalle: '+esc(e.message==='Failed to fetch'?'el navegador bloqueó o no alcanzó la conexión':e.message)+'<br><br><button class="save" style="width:auto;padding:10px 22px" onclick="load()">Reintentar</button></p>';
   }
 }
-function go(b,c,v){S={b,c,v:v||null};closeSheet();upBack();return load()}
+function go(b,c,v){if(currentView==='home')return showReader(b,c,v);S={b,c,v:v||null};closeSheet();upBack();return load()}
 let EN=B.map(b=>b[1]);
 function updateNetworkStatus(){
   const el=$('netstat');if(!el)return;
@@ -564,7 +734,6 @@ function updateNetworkStatus(){
 window.addEventListener('online',updateNetworkStatus);
 window.addEventListener('offline',updateNetworkStatus);
 updateNetworkStatus();
-load();
 
 /* Navegación */
 $('prev').onclick=()=>{if(S.c>1)go(S.b,S.c-1);else if(S.b>0)go(S.b-1,B[S.b-1][2])};
@@ -577,8 +746,41 @@ $('pick').onclick=()=>{
   $('grid').onclick=e=>{const c=e.target.dataset.c;if(c)go(+$('selb').value,+c)};
 };
 
+/* Preparar una copia local verificable para lectura sin internet */
+async function prepareOffline(){
+  const btn=$('offlineBtn'),info=$('offlineInfo');
+  btn.disabled=true;btn.textContent='Preparando Biblia…';
+  info.textContent='Descargando y verificando el texto bíblico completo. No cierres la aplicación.';
+  try{
+    const url=new URL('biblia.json',document.baseURI);
+    const response=await fetch(url,{cache:'reload'});
+    if(!response.ok)throw new Error('No se pudo descargar biblia.json (HTTP '+response.status+').');
+    const data=await response.clone().json();
+    if(!Array.isArray(data)||data.length!==66||data.some((book,i)=>!Array.isArray(book)||book.length!==B[i][2]||book.some(ch=>!Array.isArray(ch)||!ch.length||ch.some(v=>typeof v!=='string'))))throw new Error('El archivo descargado no superó la verificación de los 66 libros.');
+    if(!('caches' in window))throw new Error('Este navegador no permite guardar la Biblia para uso sin conexión.');
+    const cache=await caches.open('biblia-rvr1960-2026-10-30-3');
+    await cache.put(url,response.clone());
+    BIBLE=data;BIBLE_LOADING=Promise.resolve(data);
+    let persistent='';
+    try{if(navigator.storage&&navigator.storage.persist){const ok=await navigator.storage.persist();persistent=ok?' El navegador concedió almacenamiento persistente.':' El navegador podría liberar datos locales si necesita espacio.'}}catch(e){}
+    let size='';
+    try{const est=await navigator.storage.estimate();if(est&&est.usage)size=' Almacenamiento utilizado: '+(est.usage/1048576).toFixed(1)+' MB.'}catch(e){}
+    info.textContent='Biblia descargada, verificada y guardada en este dispositivo. Ya puedes probar el modo avión.'+persistent+size;
+    btn.textContent='Biblia lista sin conexión ✓';
+  }catch(e){
+    info.textContent=e.message||'No se pudo preparar la lectura sin conexión.';
+    btn.textContent='Intentar nuevamente';
+  }finally{btn.disabled=false}
+}
+
 /* Ajustes */
 const FONTS={'Literata':"'Literata',Georgia,serif",'Georgia':"Georgia,serif",'Sin serifa':"system-ui,-apple-system,'Segoe UI',sans-serif",'Verdana':"Verdana,Geneva,sans-serif"};
+function applyTheme(){
+  const t=ls.get('bib_theme')||'system';
+  if(t==='system')document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme',t);
+}
+applyTheme();
 function applyFont(){
   const r=document.documentElement.style;
   r.setProperty('--rf',FONTS[ls.get('bib_font')]||FONTS.Literata);
@@ -587,22 +789,26 @@ function applyFont(){
 applyFont();
 function settings(msg){
   const f=ls.get('bib_font')||'Literata',imp=ls.get('bib_src')==='import';
-  openSheet('Ajustes',`<h3>Letra</h3><select id="ff" aria-label="Tipo de letra">${Object.keys(FONTS).map(k=>`<option${k===f?' selected':''}>${k}</option>`).join('')}</select>
+  openSheet('Ajustes',`<h3>Apariencia</h3><select id="themeChoice" aria-label="Tema"><option value="system"${(ls.get('bib_theme')||'system')==='system'?' selected':''}>Automático (según el dispositivo)</option><option value="light"${ls.get('bib_theme')==='light'?' selected':''}>Claro</option><option value="dark"${ls.get('bib_theme')==='dark'?' selected':''}>Oscuro</option></select><h3>Letra</h3><select id="ff" aria-label="Tipo de letra">${Object.keys(FONTS).map(k=>`<option${k===f?' selected':''}>${k}</option>`).join('')}</select>
   <div class="row" style="margin-top:10px"><button id="fm" aria-label="Letra más chica">A−</button><button id="fp" aria-label="Letra más grande">A+</button></div>
   <p class="pv" style="margin:14px 0 0">En el principio creó Dios los cielos y la tierra.</p>
   <h3>Versión</h3><p class="note">Reina-Valera 1960. El texto se puede leer sin conexión una vez que biblia.json esté descargado y almacenado en este dispositivo.</p>
   <h3>Conexión</h3><p class="note" id="conninfo">${navigator.onLine?'Con conexión a internet.':'Sin conexión: la lectura disponible depende de la caché local.'}</p>
+  <h3>Uso sin conexión</h3><p class="note" id="offlineInfo">Puedes preparar una copia local de la Biblia para leer sin internet.</p>
+  <button class="save" id="offlineBtn">Preparar Biblia para usar sin conexión</button>
   <button class="act" id="backupopen">Respaldar o restaurar mis datos</button>
   <h3>En el texto</h3><label class="note" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xrt" style="width:auto"${ls.get('bib_xr')==='0'?'':' checked'}>Mostrar títulos y flechas ↗ de referencias (usa la IA)</label>
-  <h3>Llave de Groq</h3><p class="note">${esc(msg||'La llave se guarda solo en este navegador.')}</p>
+  <h3>Llave de Groq</h3><p class="note">${esc(msg||'La llave se guarda en este navegador y no se incluye en los respaldos. No compartas el dispositivo ni la llave: la IA se conecta directamente desde la app.')}</p>
   <input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar llave</button>
   `);
+  $('themeChoice').onchange=()=>{ls.set('bib_theme',$('themeChoice').value);applyTheme()};
   $('xrt').onchange=()=>{ls.set('bib_xr',$('xrt').checked?'1':'0');buildText();loadXr()};
   $('ff').onchange=()=>{ls.set('bib_font',$('ff').value);applyFont()};
   const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
   $('fm').onclick=()=>sz(-2);$('fp').onclick=()=>sz(2);
   $('sk').onclick=()=>{ls.set('bib_key',$('key').value.trim());closeSheet()};
   $('backupopen').onclick=openBackup;
+  $('offlineBtn').onclick=prepareOffline;
 }
 $('cfg').onclick=()=>settings();
 
@@ -644,6 +850,9 @@ $('text').addEventListener('click',async e=>{
   }else if(n){verseMenu(+n.closest('.v').dataset.v)}
   else if(x){showRefs(+x.closest('.v').dataset.v)}
 });
+
+// Arranque: panel de inicio; la lectura continúa desde el último capítulo guardado.
+showHome();
 </script>
 </body>
 </html>
