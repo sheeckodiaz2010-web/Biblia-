@@ -1,15 +1,15 @@
 {
   "id": "./",
-  "name": "Biblia RVR1960 · Estudio",
-  "short_name": "Biblia Estudio",
-  "description": "Lee, estudia y explora la Biblia Reina-Valera 1960. Incluye planes, notas y herramientas de estudio.",
+  "name": "Biblia RVR1960",
+  "short_name": "Biblia",
+  "description": "La Biblia Reina-Valera 1960 para leer, estudiar y consultar, incluso sin conexión.",
   "lang": "es",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f6efe2",
-  "theme_color": "#f0e5cb",
+  "theme_color": "#7b2d2a",
   "categories": [
     "books",
     "education",
@@ -34,5 +34,9 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
   ]
 }

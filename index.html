@@ -173,7 +173,7 @@ select,input{border-radius:12px}
 .home-welcome p{margin:0;color:var(--mut);font-size:14px;line-height:1.5}
 .home-emblem{flex:none;width:66px;height:66px;border-radius:22px;background:linear-gradient(145deg,var(--ac),var(--brand2));display:grid;place-items:center;color:#fff;font:400 42px Georgia,serif;box-shadow:0 10px 26px #294bb22b}
 .daily-card{position:relative;overflow:hidden;padding:21px 20px 18px;border-radius:25px;background:linear-gradient(135deg,#243f96,#355bc2 68%,#647cc9);color:#fff;box-shadow:0 12px 28px #294bb226}
-.daily-card:after{content:'✝';position:absolute;right:14px;top:-25px;font:150px Georgia,serif;color:#ffffff12;pointer-events:none}
+.daily-card:after{content:none!important;display:none!important}
 .daily-card .eyebrow{color:#e7d39c;position:relative;z-index:1}
 .daily-card blockquote{position:relative;z-index:1;margin:13px 0 12px;font:italic 400 clamp(21px,5vw,27px)/1.42 var(--serif);max-width:540px}
 .daily-card .daily-ref{font-size:13px;color:#e7eafa;font-weight:650;position:relative;z-index:1}
@@ -326,11 +326,13 @@ nav.bar{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.7';
+const VERSION='2026-10-30.8';
+const CACHE_NAME='biblia-rvr1960-2026-10-30-8';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+try{localStorage.removeItem('bib_key')}catch(e){}
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const wordMarkup=t=>String(t??'').split(/([\p{L}]+)/u).map(part=>/^\p{L}+$/u.test(part)?'<span class="w">'+esc(part)+'</span>':esc(part)).join('');
 const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
@@ -346,22 +348,29 @@ $('sx').onclick=closeSheet;$('ov').onclick=closeSheet;
 
 /* Groq */
 async function groq(sys,user,json){
-  const k=ls.get('bib_key');
-  if(!k){settings('Pega tu llave de Groq para usar la IA.');throw new Error('SIN_LLAVE')}
-  if(!navigator.onLine)throw new Error('Sin conexión. La IA necesita internet; la lectura sigue disponible.');
+  if(!navigator.onLine)throw new Error('Sin conexión. La IA necesita internet; la lectura bíblica sigue disponible.');
   const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),30000);
   let r;
-  try{r=await fetch('https://api.groq.com/openai/v1/chat/completions',{signal:ac.signal,method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+k},
-    body:JSON.stringify({model:'openai/gpt-oss-120b',reasoning_effort:'low',temperature:.3,messages:[{role:'system',content:sys},{role:'user',content:user}],...(json?{response_format:{type:'json_object'}}:{})})});
-  }catch(e){throw new Error(e.name==='AbortError'?'La IA tardó demasiado. Intenta de nuevo.':'No se pudo conectar con la IA. Revisa tu internet.')}
-  finally{clearTimeout(tm)}
-  if(!r.ok)throw new Error(r.status===401?'La llave de Groq no es válida.':r.status===429?'Límite de uso de la IA alcanzado. Espera un momento.':'Groq respondió con error '+r.status+'.');
+  try{
+    r=await fetch(new URL('api/chat',document.baseURI),{
+      signal:ac.signal,method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:sys,user,json:!!json})
+    });
+  }catch(e){
+    throw new Error(e.name==='AbortError'?'La IA tardó demasiado. Intenta de nuevo.':'No se pudo conectar con el servicio de IA. Revisa tu conexión.');
+  }finally{clearTimeout(tm)}
+  if(!r.ok){
+    let detail='El servicio de IA respondió con error '+r.status+'.';
+    try{const d=await r.json();if(d.error)detail=d.error}catch(e){}
+    throw new Error(detail);
+  }
   const d=await r.json();
-  return d.choices?.[0]?.message?.content||'';
+  return d.content||'';
 }
 const SYS='Eres un maestro de la Biblia claro y sereno. Explicas en español sencillo a un lector común, sin tecnicismos ni sermones. Si no estás seguro de un dato (autor, fecha, lugar), dilo y da lo que la mayoría de los estudiosos acepta. Los textos son de la Reina-Valera.';
 const parse=t=>JSON.parse(t.slice(t.indexOf('{'),t.lastIndexOf('}')+1));
-const errHtml=e=>e.message==='SIN_LLAVE'?'':`<p class="note">${esc(e.message||'No se pudo completar. Revisa tu internet e intenta de nuevo.')}</p>`;
+const errHtml=e=>`<p class="note">${esc(e.message||'No se pudo completar. Revisa tu internet e intenta de nuevo.')}</p>`;
 const NAMES=B.map(b=>b[0]).join(', ');
 
 /* Referencias tocables */
@@ -472,7 +481,7 @@ function buildText(){
   }).join('');
 }
 async function loadXr(){
-  if(ls.get('bib_xr')==='0'||!ls.get('bib_key'))return;
+  if(ls.get('bib_xr')==='0')return;
   const key='xr2:'+S.b+':'+S.c;if(ls.get(key))return;
   const sig=S.b+':'+S.c,ref=B[S.b][0]+' '+S.c;
   try{
@@ -872,7 +881,7 @@ async function prepareOffline(){
     const data=await response.clone().json();
     if(!Array.isArray(data)||data.length!==66||data.some((book,i)=>!Array.isArray(book)||book.length!==B[i][2]||book.some(ch=>!Array.isArray(ch)||!ch.length||ch.some(v=>typeof v!=='string'))))throw new Error('El archivo descargado no superó la verificación de los 66 libros.');
     if(!('caches' in window))throw new Error('Este navegador no permite guardar la Biblia para uso sin conexión.');
-    const cache=await caches.open('biblia-rvr1960-2026-10-30-4');
+    const cache=await caches.open(CACHE_NAME);
     await cache.put(url,response.clone());
     BIBLE=data;BIBLE_LOADING=Promise.resolve(data);
     let persistent='';
@@ -885,6 +894,23 @@ async function prepareOffline(){
     info.textContent=e.message||'No se pudo preparar la lectura sin conexión.';
     btn.textContent='Intentar nuevamente';
   }finally{btn.disabled=false}
+}
+
+/* Descarga automática inicial: deja los 66 libros disponibles sin conexión. */
+async function warmOfflineBible(){
+  if(!('caches' in window) || !navigator.onLine) return;
+  try{
+    const url=new URL('biblia.json',document.baseURI);
+    const cache=await caches.open(CACHE_NAME);
+    if(await cache.match(url)) return;
+    const response=await fetch(url,{cache:'reload'});
+    if(!response.ok) return;
+    const data=await response.clone().json();
+    if(!Array.isArray(data)||data.length!==66||data.some((book,i)=>!Array.isArray(book)||book.length!==B[i][2]||book.some(ch=>!Array.isArray(ch)||!ch.length||ch.some(v=>typeof v!=='string')))) return;
+    await cache.put(url,response.clone());
+    BIBLE=data;BIBLE_LOADING=Promise.resolve(data);
+    try{if(navigator.storage?.persist)await navigator.storage.persist()}catch(e){}
+  }catch(e){/* Si falla la descarga automática, se puede reintentar desde Ajustes. */}
 }
 
 /* Ajustes */
@@ -912,15 +938,13 @@ function settings(msg){
   <button class="save" id="offlineBtn">Preparar Biblia para usar sin conexión</button>
   <button class="act" id="backupopen">Respaldar o restaurar mis datos</button>
   <h3>En el texto</h3><label class="note" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xrt" style="width:auto"${ls.get('bib_xr')==='0'?'':' checked'}>Mostrar títulos y flechas ↗ de referencias (usa la IA)</label>
-  <h3>Llave de Groq</h3><p class="note">${esc(msg||'La llave se guarda en este navegador y no se incluye en los respaldos. No compartas el dispositivo ni la llave: la IA se conecta directamente desde la app.')}</p>
-  <input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar llave</button>
+  <h3>Maestro bíblico con IA</h3><p class="note">El asistente se conecta mediante un servicio seguro. No necesitas introducir claves ni configurar nada en tu teléfono. Para consultar a la IA se requiere internet; la lectura bíblica funciona sin conexión.</p>
   `);
   $('themeChoice').onchange=()=>{ls.set('bib_theme',$('themeChoice').value);applyTheme()};
   $('xrt').onchange=()=>{ls.set('bib_xr',$('xrt').checked?'1':'0');buildText();loadXr()};
   $('ff').onchange=()=>{ls.set('bib_font',$('ff').value);applyFont()};
   const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
   $('fm').onclick=()=>sz(-2);$('fp').onclick=()=>sz(2);
-  $('sk').onclick=()=>{ls.set('bib_key',$('key').value.trim());closeSheet()};
   $('backupopen').onclick=openBackup;
   $('offlineBtn').onclick=prepareOffline;
 }
@@ -1056,7 +1080,7 @@ function showStudyDetail(type,index){
 }
 function openBibleTeacher(){
  const ref=B[S.b][0]+' '+S.c;
- openSheet('Maestro bíblico',`<div class="study-intro"><strong>Pregunta y estudia</strong><p>Haz preguntas sobre un pasaje, un tema o un personaje. El asistente debe distinguir entre el texto bíblico, el contexto histórico y las interpretaciones.</p></div><p class="note">La consulta requiere internet y una llave de Groq configurada en Ajustes. Puedes preguntar sobre ${ref} o cualquier tema bíblico.</p><textarea id="teacherQuestion" placeholder="Ej. ¿Qué significa la fe según Hebreos 11?"></textarea><button class="save" id="teacherAsk">Consultar al maestro bíblico</button><div id="teacherAnswer" class="study-answer"></div>`);
+ openSheet('Maestro bíblico',`<div class="study-intro"><strong>Pregunta y estudia</strong><p>Haz preguntas sobre un pasaje, un tema o un personaje. El asistente debe distinguir entre el texto bíblico, el contexto histórico y las interpretaciones.</p></div><p class="note">La consulta requiere internet. No necesitas configurar ninguna llave. Puedes preguntar sobre ${ref} o cualquier tema bíblico.</p><textarea id="teacherQuestion" placeholder="Ej. ¿Qué significa la fe según Hebreos 11?"></textarea><button class="save" id="teacherAsk">Consultar al maestro bíblico</button><div id="teacherAnswer" class="study-answer"></div>`);
  $('teacherAsk').onclick=async()=>{
    const q=$('teacherQuestion').value.trim(),out=$('teacherAnswer'),btn=$('teacherAsk');
    if(q.length<4){out.innerHTML='<p class="note">Escribe una pregunta un poco más completa.</p>';return}
@@ -1064,7 +1088,7 @@ function openBibleTeacher(){
    try{
      const answer=await groq(SYS+' Responde con claridad y respeto. Prioriza el texto de la Biblia RVR1960, cita referencias precisas cuando puedas y explica el contexto. Distingue hechos narrados, datos históricos discutidos e interpretaciones doctrinales. No inventes citas ni afirmes que una interpretación es la única si existen diferencias entre tradiciones cristianas. Termina con 2 a 4 pasajes para seguir estudiando.',`Pregunta del usuario: ${q}\nPasaje que la app tiene abierto: ${ref}.`,false);
      out.innerHTML=`<h3>Respuesta</h3><p>${L(answer).replace(/\n/g,'<br>')}</p>`;
-   }catch(e){out.innerHTML=errHtml(e);if(e.message==='SIN_LLAVE')settings('Configura tu llave de Groq para usar el Maestro bíblico.')}
+   }catch(e){out.innerHTML=errHtml(e)}
    finally{btn.disabled=false;btn.textContent='Consultar al maestro bíblico'}
  };
 }
@@ -1097,8 +1121,9 @@ $('sb').addEventListener('input',e=>{
 });
 
 
-// Arranque: panel de inicio; la lectura continúa desde el último capítulo guardado.
+// Arranque: inicio, y descarga de la Biblia en segundo plano para lectura offline.
 showHome();
+window.addEventListener('load',()=>warmOfflineBible(),{once:true});
 </script>
 </body>
 </html>
