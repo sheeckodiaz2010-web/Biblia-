@@ -313,6 +313,27 @@ header.top{background:color-mix(in srgb,var(--bg) 78%,transparent)}
 nav.bar{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 .home-mode #readerBar{display:none}
 .continue-card,.plan-card{display:none}
+
+/* Lectura cómoda: el texto ocupa el ancho útil y no queda comprimido */
+.reading-mode main{max-width:940px;width:100%;padding-left:0;padding-right:0}
+.reading-mode #readerView{width:100%;max-width:940px;margin:0 auto;padding:0 clamp(14px,4vw,30px) 30px}
+.reading-mode #text{width:100%;max-width:790px;margin:0 auto;font-size:clamp(19px,2.2vw,22px);line-height:1.92;overflow-wrap:anywhere}
+.reading-mode #text .v{margin-bottom:.82em}
+.reading-mode #text .ch{padding-top:12px}
+.reading-mode #readerBar{max-width:680px;margin:0 auto;left:12px;right:12px;width:auto}
+body.reading-mode{padding-bottom:calc(176px + env(safe-area-inset-bottom,0px))}
+html{scroll-padding-top:88px;scroll-behavior:smooth}
+#sh{max-height:92vh;max-height:92dvh}
+#sb{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#grid{max-height:52vh;overflow-y:auto;overscroll-behavior:contain;padding:2px 2px 14px}
+@media(max-width:600px){
+  .reading-mode main{padding-top:0}
+  .reading-mode #readerView{padding-left:15px;padding-right:15px}
+  .reading-mode #text{font-size:19px;line-height:1.88}
+  .reading-mode #text>.v:first-of-type::first-letter{font-size:2.5em}
+  .reading-mode #readerBar{left:10px;right:10px}
+}
+
 </style>
 </head>
 <body>
@@ -326,8 +347,8 @@ nav.bar{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.8';
-const CACHE_NAME='biblia-rvr1960-2026-10-30-8';
+const VERSION='2026-10-30.9';
+const CACHE_NAME='biblia-rvr1960-2026-10-30-9';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
@@ -687,7 +708,7 @@ function showHome(){
   $('homeView').hidden=false;$('readerView').hidden=true;$('readerBar').hidden=true;
   $('brand').innerHTML='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20c0-9 5-15 15-16-1 10-6 15-14 15"/><path d="M5 20c3-5 6-8 10-10"/></svg><span>Biblia</span>';$('brand').setAttribute('aria-label','Inicio');
   $('pick').hidden=true;$('ver').hidden=true;$('back').classList.remove('on');
-  document.body.classList.add('home-mode');tabOn('home');
+  document.body.classList.add('home-mode');document.body.classList.remove('reading-mode');tabOn('home');
   renderHome();
 }
 async function showReader(b,c,v){
@@ -695,7 +716,7 @@ async function showReader(b,c,v){
   $('homeView').hidden=true;$('readerView').hidden=false;$('readerBar').hidden=false;
   $('brand').innerHTML='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg><span>Inicio</span>';$('brand').setAttribute('aria-label','Volver al inicio');
   $('pick').hidden=false;$('ver').hidden=false;
-  document.body.classList.remove('home-mode');tabOn('read');
+  document.body.classList.remove('home-mode');document.body.classList.add('reading-mode');tabOn('read');
   if(typeof b==='number')return go(b, c||1, v||null);
   return load();
 }
