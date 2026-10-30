@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-<title>Biblia</title>
+<title>Biblia RVR1960</title>
+<meta name="description" content="Lee y estudia la Biblia Reina-Valera 1960. Guarda notas, versículos y planes de lectura. Funciona sin conexión después de instalarse.">
+<meta name="application-name" content="Biblia RVR1960">
 <meta name="theme-color" content="#2b4db8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Biblia">
-<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">\n<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -136,10 +138,27 @@ select,input{border-radius:12px}
 .vc #vx{position:absolute;top:8px;right:8px;background:none;border:0;color:var(--mut);padding:6px 8px;font-size:15px}
 @media(prefers-color-scheme:dark){.vc .vb .p{color:#0d1224}nav.bar #ctx{color:#0d1224}}
 #ver{pointer-events:none}
-</style>
+
+/* Renovación 2026.10.30 */
+.netstat{font-size:10px;color:#2c9b62;padding:0 2px;white-space:nowrap}
+.netstat.off{color:#d58a28}
+#find{background:none;border:0;font-size:23px;color:var(--mut);padding:5px 7px}
+.searchbox{display:flex;gap:8px;align-items:center;margin:10px 0}
+.searchbox input{min-width:0;flex:1}
+.searchbox button{border:0;border-radius:12px;background:var(--ac);color:#fff;padding:11px 14px;font-weight:650}
+.searchmeta{font-size:13px;color:var(--mut);margin:8px 0}
+.sresult{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:12px;margin:8px 0}
+.sresult b{display:block;color:var(--ac);margin-bottom:4px}
+.sresult small{display:block;color:var(--mut);line-height:1.45}
+.notearea{min-height:130px;resize:vertical;line-height:1.5}
+.toolsrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.toolsrow button{flex:1;min-width:120px}
+.backupfile{display:none}
+@media(max-width:390px){#pick{max-width:38vw;font-size:17px}.netstat{display:none}nav.bar button{font-size:13px}}
+\n</style>
 </head>
 <body>
-<header class="top"><span class="lf"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="ver" aria-label="Cambiar de Biblia"></button></span><button id="back" aria-label="Volver al texto anterior"></button><span class="rt"><button id="pl" aria-label="Planes de estudio">📅</button><button id="gd" aria-label="Guardados">🔖</button><button id="cfg" aria-label="Ajustes">⚙</button></span></header>
+<header class="top"><span class="lf"><button id="pick" aria-label="Elegir libro y capítulo">Juan 1 ▾</button><button id="ver" aria-label="Cambiar de Biblia"></button></span><button id="back" aria-label="Volver al texto anterior"></button><span class="rt"><span id="netstat" class="netstat" title="Estado de conexión" aria-live="polite">●</span><button id="find" aria-label="Buscar en la Biblia">⌕</button><button id="pl" aria-label="Planes de estudio">📅</button><button id="gd" aria-label="Guardados">🔖</button><button id="cfg" aria-label="Ajustes">⚙</button></span></header>
 <main><div id="vod" hidden></div><div id="text"><p class="msg">Cargando…</p></div></main>
 <nav class="bar"><button id="prev">‹ Anterior</button><button id="ctx">Contexto</button><button id="next">Siguiente ›</button></nav>
 <div id="upd" role="status"><span>Hay una versión nueva de la app.</span><button id="updb">Actualizar</button><button id="updx" aria-label="Cerrar aviso">✕</button></div>
@@ -147,7 +166,7 @@ select,input{border-radius:12px}
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-29.3';
+const VERSION='2026-10-30.1';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
@@ -217,7 +236,7 @@ $('back').onclick=async()=>{
   if(x.sheet)openSheet(x.sheet.t,x.sheet.h);
 };
 
-/* Texto: en línea (RVR1909) o Biblia importada (guardada solo en este dispositivo) */
+/* Texto bíblico local: Reina-Valera 1960 */
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('bib',1);r.onupgradeneeded=()=>r.result.createObjectStore('ch');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 async function idbSet(map){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('ch','readwrite'),o=t.objectStore('ch');o.clear();for(const k in map)o.put(map[k],k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
 async function idbGet(k){const db=await idb();return new Promise((res,rej)=>{const r=db.transaction('ch').objectStore('ch').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
@@ -225,11 +244,22 @@ async function idbClear(){const db=await idb();return new Promise((res,rej)=>{co
 const hasImp=()=>ls.get('bib_imp')==='1'||ls.get('bib_src')==='import';
 const verLabel=()=>'RVR1960';
 function setVer(){$('ver').textContent=verLabel()}
-let BIBLE=null;
+let BIBLE=null,BIBLE_LOADING=null;
 async function chapterVerses(b,c){
-  if(!BIBLE){const r=await fetch('biblia.json');if(!r.ok)throw new Error('No se pudo cargar la Biblia.');BIBLE=await r.json()}
+  if(!BIBLE){
+    if(!BIBLE_LOADING)BIBLE_LOADING=(async()=>{
+      const r=await fetch(new URL('biblia.json',document.baseURI),{cache:'default'});
+      if(!r.ok)throw new Error('No se pudo cargar biblia.json (HTTP '+r.status+').');
+      const data=await r.json();
+      if(!Array.isArray(data)||data.length!==66)throw new Error('El archivo bíblico no tiene la estructura esperada de 66 libros.');
+      if(data.some(book=>!Array.isArray(book)))throw new Error('El archivo bíblico tiene un formato inválido.');
+      BIBLE=data;
+      return data;
+    })().catch(err=>{BIBLE_LOADING=null;throw err});
+    await BIBLE_LOADING;
+  }
   const v=BIBLE[b]&&BIBLE[b][c-1];
-  if(!v||!v.length)throw new Error('Ese capítulo no está disponible.');
+  if(!Array.isArray(v)||!v.length)throw new Error('Ese capítulo no está disponible en biblia.json.');
   return v;
 }
 function matchBook(n){
@@ -307,6 +337,7 @@ function verseMenu(num){
   openSheet(ref,`<p class="pv" style="font-size:16px;margin:0 0 6px">${esc(txt)}</p><h3>Marcar</h3>
   <div class="colors">${dots}<button class="c5${h&&h.c===5?' on':''}" data-c="5" aria-label="Subrayar">U</button>${h?'<button data-c="0" aria-label="Quitar marca">✕</button>':''}</div>
   <button class="act" id="abm">${bm?'Quitar de “leer después”':'Guardar para leer después'}</button>
+  <button class="act" id="anote">${J('bib_notes')[k]?'Ver / editar nota personal':'Añadir nota personal'}</button>
   <button class="act" id="axr">Ver referencias</button>
   <button class="act" id="acp">Copiar versículo</button>`);
   document.querySelectorAll('.colors button').forEach(b=>b.onclick=()=>{
@@ -314,24 +345,109 @@ function verseMenu(num){
     ls.set('bib_hl',JSON.stringify(o));buildText();closeSheet();
   });
   $('abm').onclick=()=>{const o=J('bib_bm');if(o[k])delete o[k];else o[k]={t:Date.now(),x:txt.slice(0,90)};ls.set('bib_bm',JSON.stringify(o));buildText();closeSheet()};
+  $('anote').onclick=()=>editNote(num);
   $('axr').onclick=()=>showRefs(num);
   $('acp').onclick=async()=>{try{await navigator.clipboard.writeText(`${txt} — ${ref} (${verLabel()})`);$('acp').textContent='Copiado ✓'}catch(e){$('acp').textContent='No se pudo copiar'}};
 }
 function openSaved(){
-  const bm=J('bib_bm'),hl=J('bib_hl');
-  const row=(t,k,x,dot)=>{const [b,c,v]=k.split(':').map(Number);return `<div class="it"><button class="go" data-k="${k}"><b>${B[b][0]} ${c}:${v}</b>${dot||''}<small>${esc(x)}…</small></button><button class="rm" data-k="${k}" data-t="${t}" aria-label="Quitar">✕</button></div>`};
-  const a=Object.keys(bm).sort((x,y)=>bm[y].t-bm[x].t).map(k=>row('bm',k,bm[k].x)).join('');
+  const bm=J('bib_bm'),hl=J('bib_hl'),notes=J('bib_notes');
+  const row=(t,k,x,dot)=>{const [b,c,v]=k.split(':').map(Number);if(!B[b])return '';return `<div class="it"><button class="go" data-k="${k}" data-t="${t}"><b>${B[b][0]} ${c}:${v}</b>${dot||''}<small>${esc(String(x||'').slice(0,110))}…</small></button><button class="rm" data-k="${k}" data-t="${t}" aria-label="Quitar">✕</button></div>`};
+  const a=Object.keys(bm).sort((x,y)=>(bm[y].t||0)-(bm[x].t||0)).map(k=>row('bm',k,bm[k].x)).join('');
   const key=k=>k.split(':').map(Number),ord=(x,y)=>{const p=key(x),q=key(y);return p[0]-q[0]||p[1]-q[1]||p[2]-q[2]};
   const b=Object.keys(hl).sort(ord).map(k=>row('hl',k,hl[k].x,`<span class="dot h${hl[k].c}"></span>`)).join('');
-  openSheet('Guardados',`<h3>Para leer después</h3>${a||'<p class="note">Toca el número de un versículo y elige “Guardar para leer después”.</p>'}<h3>Subrayados y marcados</h3>${b||'<p class="note">Toca el número de un versículo para subrayarlo o resaltarlo.</p>'}`);
+  const n=Object.keys(notes).sort((x,y)=>(notes[y].t||0)-(notes[x].t||0)).map(k=>row('note',k,notes[k].text||'Nota personal')).join('');
+  openSheet('Mi biblioteca',`<h3>Para leer después</h3>${a||'<p class="note">Todavía no guardas versículos.</p>'}<h3>Subrayados y marcados</h3>${b||'<p class="note">Todavía no tienes versículos marcados.</p>'}<h3>Mis notas</h3>${n||'<p class="note">Tus notas personales aparecerán aquí.</p>'}`);
 }
 $('gd').onclick=openSaved;
 $('sb').addEventListener('click',e=>{
   const g=e.target.closest('.go'),r=e.target.closest('.rm');
-  if(g){const [b,c,v]=g.dataset.k.split(':').map(Number);hist.push({b:S.b,c:S.c,y:window.scrollY,sheet:{t:'Guardados',h:$('sb').innerHTML}});go(b,c,v)}
-  else if(r){const n=r.dataset.t==='bm'?'bib_bm':'bib_hl',o=J(n);delete o[r.dataset.k];ls.set(n,JSON.stringify(o));openSaved();buildText()}
+  if(g){const [b,c,v]=g.dataset.k.split(':').map(Number),kind=g.dataset.t;hist.push({b:S.b,c:S.c,y:window.scrollY,sheet:{t:'Mi biblioteca',h:$('sb').innerHTML}});const task=go(b,c,v);if(kind==='note')task.then(()=>editNote(v))}
+  else if(r){const n=r.dataset.t==='bm'?'bib_bm':r.dataset.t==='note'?'bib_notes':'bib_hl',o=J(n);delete o[r.dataset.k];ls.set(n,JSON.stringify(o));openSaved();buildText()}
 });
 
+
+
+/* Notas personales por versículo */
+function editNote(num){
+  const k=vk(S.b,S.c,num),ref=B[S.b][0]+' '+S.c+':'+num,old=J('bib_notes')[k]||{};
+  openSheet('Nota · '+ref,`<p class="note">Esta nota se guarda en este dispositivo.</p><textarea id="notetxt" class="notearea" placeholder="Escribe tu reflexión, enseñanza u oración…">${esc(old.text||'')}</textarea><div class="toolsrow"><button class="save" id="savenote">Guardar nota</button><button class="act" id="delnote">Eliminar</button></div>`);
+  $('savenote').onclick=()=>{
+    const value=$('notetxt').value.trim(),all=J('bib_notes');
+    if(value)all[k]={text:value,t:Date.now(),ref};else delete all[k];
+    ls.set('bib_notes',JSON.stringify(all));closeSheet();
+  };
+  $('delnote').onclick=()=>{const all=J('bib_notes');delete all[k];ls.set('bib_notes',JSON.stringify(all));closeSheet()};
+}
+
+/* Búsqueda local en los 66 libros */
+function openSearch(){
+  openSheet('Buscar en la Biblia',`<p class="note">Busca palabras o frases en los 66 libros de la RVR1960. La búsqueda se realiza en el dispositivo.</p><div class="searchbox"><input id="bq" type="search" placeholder="Ej. amor, fe, perdón…" autocomplete="off"><button id="bsearch">Buscar</button></div><div id="bresults" aria-live="polite"></div>`);
+  $('bsearch').onclick=runBibleSearch;
+  $('bq').onkeydown=e=>{if(e.key==='Enter')runBibleSearch()};
+  $('bq').focus();
+}
+async function runBibleSearch(){
+  const q=$('bq').value.trim(),out=$('bresults');
+  if(q.length<2){out.innerHTML='<p class="searchmeta">Escribe al menos dos caracteres.</p>';return}
+  out.innerHTML='<p class="searchmeta">Buscando en toda la Biblia…</p>';
+  try{
+    await chapterVerses(0,1);
+    const needle=norm(q),found=[];
+    outer: for(let b=0;b<BIBLE.length;b++){
+      for(let c=0;c<BIBLE[b].length;c++){
+        const ch=BIBLE[b][c]||[];
+        for(let v=0;v<ch.length;v++){
+          const text=String(ch[v]||'');
+          if(norm(text).includes(needle)){
+            found.push({b,c:c+1,v:v+1,text});
+            if(found.length>=100)break outer;
+          }
+        }
+      }
+    }
+    if(!found.length){out.innerHTML='<p class="searchmeta">No se encontraron coincidencias. Prueba con otra palabra.</p>';return}
+    out.innerHTML=`<p class="searchmeta">${found.length===100?'Se muestran las primeras 100 coincidencias.':found.length+' coincidencias encontradas.'}</p>`+
+      found.map(x=>`<button class="sresult" data-sb="${x.b}" data-sc="${x.c}" data-sv="${x.v}"><b>${B[x.b][0]} ${x.c}:${x.v}</b><small>${esc(x.text)}</small></button>`).join('');
+  }catch(e){out.innerHTML=`<p class="searchmeta">${esc(e.message||'No se pudo realizar la búsqueda.')}</p>`}
+}
+$('find').onclick=openSearch;
+$('sb').addEventListener('click',e=>{
+  const r=e.target.closest('.sresult');if(!r)return;
+  go(+r.dataset.sb,+r.dataset.sc,+r.dataset.sv);
+});
+
+/* Respaldo y restauración de los datos personales */
+function exportBackup(){
+  const storage={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    // Solo datos propios de la app; nunca exportar la llave privada de Groq.
+    if(k && k!=='bib_key' && (/^bib_/.test(k)||/^(ctx:|xr2:|vr2:|w:)/.test(k)))storage[k]=localStorage.getItem(k);
+  }
+  const payload={app:'Biblia RVR1960',format:1,createdAt:new Date().toISOString(),storage};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='respaldo-biblia-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function openBackup(){
+  openSheet('Respaldo de mi Biblia',`<p>Guarda una copia de tus favoritos, resaltados, notas, planes, preferencias y progreso.</p><p class="note">El archivo de respaldo no incluye el texto bíblico porque ya está en biblia.json.</p><button class="save" id="exportbib">Descargar respaldo</button><h3>Restaurar respaldo</h3><p class="note">Al restaurar, los datos con la misma clave se reemplazarán por los del respaldo.</p><input class="backupfile" id="backupfile" type="file" accept="application/json,.json"><button class="act" id="importbib">Elegir archivo de respaldo</button>`);
+  $('exportbib').onclick=exportBackup;
+  $('importbib').onclick=()=>$('backupfile').click();
+  $('backupfile').onchange=async e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    try{
+      const data=JSON.parse(await file.text());
+      if(data.app!=='Biblia RVR1960'||data.format!==1||!data.storage||typeof data.storage!=='object')throw new Error('El archivo no es un respaldo válido de esta aplicación.');
+      if(!confirm('¿Restaurar este respaldo? Los datos existentes con las mismas claves serán reemplazados.'))return;
+      Object.entries(data.storage).forEach(([k,v])=>{
+        const allowed=k!=='bib_key'&&(/^bib_/.test(k)||/^(ctx:|xr2:|vr2:|w:)/.test(k));
+        if(allowed&&typeof v==='string'&&k.length<200)localStorage.setItem(k,v);
+      });
+      alert('Respaldo restaurado. La aplicación se actualizará.');
+      location.reload();
+    }catch(err){alert(err.message||'No se pudo restaurar el respaldo.')}
+  };
+}
 
 /* Planes de estudio */
 const seq=(a,z)=>{const o=[];for(let b=a;b<=z;b++)for(let c=1;c<=B[b][2];c++)o.push([b,c]);return o};
@@ -347,7 +463,8 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+
 function markRead(b,c){
   const k=b+':'+c,p=J('bib_plan'),dd=J('bib_days');
   dd[today()]=1;ls.set('bib_days',JSON.stringify(dd));
-  if(p.id&&p.done&&!p.done[k]&&PLANS.find(x=>x.id===p.id).ch.some(x=>x[0]===b&&x[1]===c)){p.done[k]=1;ls.set('bib_plan',JSON.stringify(p))}
+  const active=PLANS.find(x=>x.id===p.id);
+  if(active&&p.done&&!p.done[k]&&active.ch.some(x=>x[0]===b&&x[1]===c)){p.done[k]=1;ls.set('bib_plan',JSON.stringify(p))}
 }
 function streak(){
   const dd=J('bib_days');let n=0,d=new Date();
@@ -378,7 +495,9 @@ $('sb').addEventListener('click',e=>{
   if(a){ls.set('bib_plan',JSON.stringify({id:a.dataset.pp,start:today(),done:{}}));openPlans()}
   else if(c){const [b,ch]=c.dataset.pc.split(':').map(Number);hist.push({b:S.b,c:S.c,y:window.scrollY,sheet:{t:$('st').textContent,h:$('sb').innerHTML}});go(b,ch)}
 });
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+}
 
 
 /* Versículo del día */
@@ -409,7 +528,7 @@ async function checkUpdate(){
   }catch(e){}
 }
 $('updb').onclick=async()=>{
-  try{if(window.caches){for(const k of await caches.keys())await caches.delete(k)}}catch(e){}
+  try{const reg=await navigator.serviceWorker?.getRegistration();if(reg)await reg.update()}catch(e){}
   location.replace(location.pathname+'?u='+Date.now());
 };
 $('updx').onclick=()=>$('upd').classList.remove('on');
@@ -435,6 +554,16 @@ async function load(){
 }
 function go(b,c,v){S={b,c,v:v||null};closeSheet();upBack();return load()}
 let EN=B.map(b=>b[1]);
+function updateNetworkStatus(){
+  const el=$('netstat');if(!el)return;
+  const online=navigator.onLine;
+  el.classList.toggle('off',!online);
+  el.textContent=online?'●':'○';
+  el.title=online?'Con conexión':'Sin conexión · lectura local disponible si ya se descargó la Biblia';
+}
+window.addEventListener('online',updateNetworkStatus);
+window.addEventListener('offline',updateNetworkStatus);
+updateNetworkStatus();
 load();
 
 /* Navegación */
@@ -460,8 +589,10 @@ function settings(msg){
   const f=ls.get('bib_font')||'Literata',imp=ls.get('bib_src')==='import';
   openSheet('Ajustes',`<h3>Letra</h3><select id="ff" aria-label="Tipo de letra">${Object.keys(FONTS).map(k=>`<option${k===f?' selected':''}>${k}</option>`).join('')}</select>
   <div class="row" style="margin-top:10px"><button id="fm" aria-label="Letra más chica">A−</button><button id="fp" aria-label="Letra más grande">A+</button></div>
-  <p class="pv" style="margin:14px 0 0">EN el principio crió Dios los cielos y la tierra.</p>
-  <h3>Versión</h3><p class="note">Reina-Valera 1960, incluida en la app. Funciona sin conexión.</p>
+  <p class="pv" style="margin:14px 0 0">En el principio creó Dios los cielos y la tierra.</p>
+  <h3>Versión</h3><p class="note">Reina-Valera 1960. El texto se puede leer sin conexión una vez que biblia.json esté descargado y almacenado en este dispositivo.</p>
+  <h3>Conexión</h3><p class="note" id="conninfo">${navigator.onLine?'Con conexión a internet.':'Sin conexión: la lectura disponible depende de la caché local.'}</p>
+  <button class="act" id="backupopen">Respaldar o restaurar mis datos</button>
   <h3>En el texto</h3><label class="note" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xrt" style="width:auto"${ls.get('bib_xr')==='0'?'':' checked'}>Mostrar títulos y flechas ↗ de referencias (usa la IA)</label>
   <h3>Llave de Groq</h3><p class="note">${esc(msg||'La llave se guarda solo en este navegador.')}</p>
   <input id="key" type="password" placeholder="Llave de Groq (gsk_…)" autocomplete="off" value="${esc(ls.get('bib_key')||'')}"><button class="save" id="sk">Guardar llave</button>
@@ -471,6 +602,7 @@ function settings(msg){
   const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
   $('fm').onclick=()=>sz(-2);$('fp').onclick=()=>sz(2);
   $('sk').onclick=()=>{ls.set('bib_key',$('key').value.trim());closeSheet()};
+  $('backupopen').onclick=openBackup;
 }
 $('cfg').onclick=()=>settings();
 
