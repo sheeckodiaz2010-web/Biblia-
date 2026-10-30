@@ -216,6 +216,30 @@ select,input{border-radius:12px}
 @media(max-width:390px){#homeView{padding-left:14px;padding-right:14px}.home-welcome{padding-top:12px}.home-emblem{width:54px;height:54px;font-size:34px;border-radius:18px}.continue-card{gap:9px;padding:13px}.continue-card>button{padding:10px;font-size:12px}.home-tool{padding:11px 9px;gap:9px}.home-tool .tool-icon{width:35px;height:35px}.home-tool b{font-size:12px}}
 @media(prefers-reduced-motion:reduce){button{transition:none}}
 
+
+/* Centro de estudio bíblico · v4 */
+.study-intro{padding:18px;border-radius:20px;background:linear-gradient(135deg,var(--acbg),var(--card));border:1px solid var(--line);margin-bottom:14px}
+.study-intro strong{display:block;font:600 21px var(--serif);margin:0 0 5px}
+.study-intro p{margin:0;color:var(--mut);font-size:13px;line-height:1.5}
+.study-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0}
+.study-tabs button{border:1px solid var(--line);border-radius:11px;background:var(--card);padding:10px 3px;font-size:11px;font-weight:700;color:var(--mut)}
+.study-tabs button.active{background:var(--ac);border-color:var(--ac);color:#fff}
+.study-item{display:block;width:100%;text-align:left;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--card);margin:8px 0;color:var(--fg)}
+.study-item b{display:block;font:600 16px var(--serif);margin-bottom:4px}
+.study-item small{display:block;color:var(--mut);font-size:12px;line-height:1.45}
+.study-kicker{font-size:10px;letter-spacing:.13em;color:var(--ac);font-weight:800;text-transform:uppercase}
+.study-search{margin:10px 0 12px}
+.study-detail{line-height:1.65}
+.study-detail h3{margin-top:18px}
+.study-ref{display:inline-flex;margin:4px 5px 4px 0}
+.study-ai{border:1px solid var(--line);border-radius:17px;padding:14px;background:var(--card);margin-top:14px}
+.study-ai textarea{min-height:90px}
+.study-answer{white-space:normal;line-height:1.7}
+.timeline{border-left:2px solid var(--line);margin:14px 0 10px 8px;padding-left:17px}
+.timeline-item{position:relative;padding:0 0 18px}
+.timeline-item:before{content:'';position:absolute;left:-24px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--ac);border:3px solid var(--sh)}
+.study-note{font-size:12px;color:var(--mut);line-height:1.5}
+
 </style>
 </head>
 <body>
@@ -227,7 +251,7 @@ select,input{border-radius:12px}
 <section id="sh" aria-live="polite"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.3';
+const VERSION='2026-10-30.4';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const API='https://bss-api.thechurchofgod.info/api';
 const $=id=>document.getElementById(id);
@@ -606,6 +630,8 @@ async function renderHome(){
       <button class="home-tool" id="homeStudy"><span class="tool-icon">✧</span><span><b>Estudiar capítulo</b><small>Contexto con IA</small></span></button>
       <button class="home-tool" id="homeLibrary"><span class="tool-icon">▤</span><span><b>Mi biblioteca</b><small>Notas y favoritos</small></span></button>
       <button class="home-tool" id="homePlans"><span class="tool-icon">▦</span><span><b>Planes de lectura</b><small>Avanza cada día</small></span></button>
+      <button class="home-tool" id="homeExplore"><span class="tool-icon">⌘</span><span><b>Centro de estudio</b><small>Temas, personajes y lugares</small></span></button>
+      <button class="home-tool" id="homeTeacher"><span class="tool-icon">✧</span><span><b>Maestro bíblico</b><small>Pregunta y aprende con IA</small></span></button>
     </div></section>
     <section class="home-section"><div class="section-title"><h2>Tu recorrido</h2><span>Este dispositivo</span></div><div class="home-stats"><div class="home-stat"><strong>${days}</strong><span>Días con lectura</span></div><div class="home-stat"><strong>${chapters}</strong><span>Capítulos abiertos</span></div></div></section>
     <section class="home-section"><div class="section-title"><h2>Tu plan actual</h2><span>Progreso</span></div><div class="plan-card"><div class="plan-top"><b>${plan?esc(plan.n):'Empieza un plan de lectura'}</b><span>${plan?planPct+'%':'A tu ritmo'}</span></div><div class="plan-track"><i style="width:${planPct}%"></i></div><p>${esc(planLine)}</p><button id="homePlanAction">${plan?'Ver mi plan':'Elegir un plan'}</button></div></section>
@@ -623,6 +649,8 @@ async function renderHome(){
   $('homeStudy').onclick=async()=>{await showReader(b,c);$('ctx').click()};
   $('homeLibrary').onclick=openSaved;
   $('homePlans').onclick=openPlans;
+  $('homeExplore').onclick=openStudyHub;
+  $('homeTeacher').onclick=openBibleTeacher;
   $('homePlanAction').onclick=openPlans;
 }
 
@@ -758,7 +786,7 @@ async function prepareOffline(){
     const data=await response.clone().json();
     if(!Array.isArray(data)||data.length!==66||data.some((book,i)=>!Array.isArray(book)||book.length!==B[i][2]||book.some(ch=>!Array.isArray(ch)||!ch.length||ch.some(v=>typeof v!=='string'))))throw new Error('El archivo descargado no superó la verificación de los 66 libros.');
     if(!('caches' in window))throw new Error('Este navegador no permite guardar la Biblia para uso sin conexión.');
-    const cache=await caches.open('biblia-rvr1960-2026-10-30-3');
+    const cache=await caches.open('biblia-rvr1960-2026-10-30-4');
     await cache.put(url,response.clone());
     BIBLE=data;BIBLE_LOADING=Promise.resolve(data);
     let persistent='';
@@ -850,6 +878,138 @@ $('text').addEventListener('click',async e=>{
   }else if(n){verseMenu(+n.closest('.v').dataset.v)}
   else if(x){showRefs(+x.closest('.v').dataset.v)}
 });
+
+
+/* CENTRO DE ESTUDIO BÍBLICO — temas, personajes, cronología, lugares y maestro IA */
+const STUDY_TOPICS = [
+ {id:'fe',name:'La fe',desc:'Confiar en Dios y vivir de acuerdo con su palabra.',refs:['Hebreos 11:1','Romanos 10:17','Santiago 2:17','Marcos 9:24']},
+ {id:'oracion',name:'La oración',desc:'Hablar con Dios, perseverar y aprender a orar.',refs:['Mateo 6:5-13','Filipenses 4:6-7','1 Tesalonicenses 5:17','Lucas 11:1-4']},
+ {id:'amor',name:'El amor',desc:'El amor a Dios y al prójimo como centro de la vida cristiana.',refs:['Mateo 22:37-39','1 Corintios 13:4-7','Juan 13:34-35','1 Juan 4:7-12']},
+ {id:'perdon',name:'El perdón',desc:'La misericordia recibida y la disposición de perdonar.',refs:['Mateo 6:14-15','Mateo 18:21-22','Efesios 4:32','Colosenses 3:13']},
+ {id:'esperanza',name:'La esperanza',desc:'La confianza en las promesas de Dios en medio de la dificultad.',refs:['Romanos 5:1-5','Romanos 15:13','Salmos 42:11','1 Pedro 1:3-5']},
+ {id:'sabiduria',name:'La sabiduría',desc:'Buscar dirección y vivir con prudencia delante de Dios.',refs:['Proverbios 1:7','Proverbios 3:5-6','Santiago 1:5','Santiago 3:17']},
+ {id:'ansiedad',name:'La preocupación y la paz',desc:'Pasajes para llevar las cargas a Dios y cultivar la confianza.',refs:['Mateo 6:25-34','Filipenses 4:6-9','1 Pedro 5:7','Salmos 55:22']},
+ {id:'identidad',name:'La identidad en Dios',desc:'Dignidad, propósito y nueva vida a la luz de las Escrituras.',refs:['Génesis 1:26-27','Salmos 139:13-16','Efesios 2:10','2 Corintios 5:17']},
+ {id:'servicio',name:'El servicio',desc:'Seguir el ejemplo de Jesús sirviendo con humildad.',refs:['Marcos 10:43-45','Juan 13:12-17','Gálatas 5:13','1 Pedro 4:10']},
+ {id:'familia',name:'La familia',desc:'Enseñanzas bíblicas sobre el hogar, el cuidado y las relaciones.',refs:['Deuteronomio 6:6-7','Josué 24:15','Efesios 6:1-4','Colosenses 3:18-21']},
+ {id:'temor',name:'El temor y el valor',desc:'Fortaleza y confianza cuando aparecen el miedo y la incertidumbre.',refs:['Josué 1:9','Isaías 41:10','Salmos 27:1','2 Timoteo 1:7']},
+ {id:'gratitud',name:'La gratitud',desc:'Reconocer la bondad de Dios y cultivar un corazón agradecido.',refs:['Salmos 100:4-5','1 Tesalonicenses 5:18','Colosenses 3:15-17','Filipenses 4:11-13']}
+];
+const STUDY_PEOPLE = [
+ {name:'Abraham',role:'Patriarca; llamado a salir de su tierra y confiar en la promesa de Dios.',refs:['Génesis 12:1-9','Génesis 15:1-6','Génesis 22:1-18'],lesson:'Su historia permite estudiar la fe, la obediencia y la promesa. Lee los pasajes en su contexto y observa cómo se desarrolla la narración.'},
+ {name:'Moisés',role:'Líder de Israel durante el éxodo y mediador de la ley.',refs:['Éxodo 3:1-15','Éxodo 14:10-31','Deuteronomio 34:1-12'],lesson:'Su vida incluye el llamado, la liberación de Israel, el liderazgo en el desierto y la preparación del pueblo para entrar en la tierra prometida.'},
+ {name:'Rut',role:'Mujer moabita cuya lealtad y decisiones forman parte de la historia familiar de David.',refs:['Rut 1:1-18','Rut 2:8-12','Rut 4:13-22'],lesson:'El libro destaca la lealtad, la provisión, la bondad y la integración de Rut en la historia de Israel.'},
+ {name:'David',role:'Pastor, rey de Israel y autor asociado con numerosos salmos.',refs:['1 Samuel 16:1-13','1 Samuel 17:32-50','2 Samuel 7:8-16','Salmos 51:1-12'],lesson:'Su historia permite observar valentía, liderazgo, fallas personales, arrepentimiento y la promesa relacionada con su casa.'},
+ {name:'Ester',role:'Reina judía en Persia que intervino para proteger a su pueblo.',refs:['Ester 2:5-18','Ester 4:10-17','Ester 7:1-6'],lesson:'El relato aborda el valor, la responsabilidad y la preservación del pueblo judío en una situación de amenaza.'},
+ {name:'Daniel',role:'Judío llevado al exilio en Babilonia, conocido por su fidelidad a Dios.',refs:['Daniel 1:8-21','Daniel 3:13-28','Daniel 6:10-23'],lesson:'Sus relatos destacan la fidelidad en un entorno extranjero, la oración y la confianza en Dios ante el peligro.'},
+ {name:'María',role:'Madre de Jesús, presentada en los relatos de la infancia de Cristo.',refs:['Lucas 1:26-38','Lucas 1:46-55','Lucas 2:1-19'],lesson:'Lee sus apariciones atendiendo a su respuesta al anuncio, su cántico y los acontecimientos del nacimiento de Jesús.'},
+ {name:'Pedro',role:'Discípulo de Jesús y figura destacada en los comienzos de la iglesia.',refs:['Lucas 5:1-11','Lucas 22:54-62','Juan 21:15-19','Hechos 2:14-41'],lesson:'Su recorrido muestra llamado, impulsividad, negación, restauración y liderazgo en la comunidad cristiana.'},
+ {name:'Pablo',role:'Apóstol y misionero; sus cartas forman una parte importante del Nuevo Testamento.',refs:['Hechos 9:1-22','Hechos 13:1-3','Hechos 17:16-34','2 Timoteo 4:6-8'],lesson:'Su vida permite estudiar la conversión, la misión, la enseñanza a las iglesias y la perseverancia.'},
+ {name:'María Magdalena',role:'Discípula de Jesús y testigo de la resurrección en el Evangelio de Juan.',refs:['Lucas 8:1-3','Juan 19:25','Juan 20:1-18'],lesson:'Los evangelios la presentan entre quienes acompañaron a Jesús y como testigo de la tumba vacía y del encuentro con el Resucitado.'},
+ {name:'José',role:'Hijo de Jacob, cuya historia se relata ampliamente en Génesis.',refs:['Génesis 37:1-11','Génesis 39:1-23','Génesis 45:1-15','Génesis 50:15-21'],lesson:'Su relato aborda los conflictos familiares, la injusticia, la providencia y la reconciliación.'},
+ {name:'Juan el Bautista',role:'Predicador que preparó el camino para el ministerio de Jesús.',refs:['Mateo 3:1-17','Juan 1:19-34','Mateo 11:2-11'],lesson:'Estudia su llamado al arrepentimiento, su testimonio acerca de Jesús y su papel en los evangelios.'}
+];
+// Las fechas son aproximadas y se ofrecen como orientación, no como datación indiscutible.
+const STUDY_TIMELINE = [
+ {era:'Orígenes y patriarcas',when:'Relatos de Génesis; fechas debatidas',desc:'Creación, caída, diluvio y relatos de Abraham, Isaac, Jacob y José.',refs:['Génesis 1:1','Génesis 12:1-9','Génesis 37:1-11']},
+ {era:'Éxodo y desierto',when:'Cronología discutida',desc:'Liberación de Egipto, pacto en Sinaí y travesía por el desierto.',refs:['Éxodo 12:31-42','Éxodo 19:1-8','Números 14:20-35']},
+ {era:'Entrada y jueces',when:'Después del período del desierto',desc:'Entrada en Canaán y etapa de los jueces de Israel.',refs:['Josué 3:1-17','Josué 24:1-28','Jueces 2:6-19']},
+ {era:'Monarquía unida',when:'Saúl, David y Salomón',desc:'Establecimiento de la monarquía y reinado de David y Salomón.',refs:['1 Samuel 10:17-27','2 Samuel 5:1-5','1 Reyes 3:3-15']},
+ {era:'Reinos divididos',when:'Después de Salomón',desc:'Separación de los reinos de Israel y Judá; ministerios proféticos.',refs:['1 Reyes 12:1-24','2 Reyes 17:5-23','2 Reyes 18:1-8']},
+ {era:'Exilio y retorno',when:'Períodos de deportación y regreso',desc:'Caída de Jerusalén, exilio en Babilonia y retorno de grupos del pueblo.',refs:['2 Reyes 25:1-21','Esdras 1:1-11','Nehemías 2:1-8']},
+ {era:'Vida y ministerio de Jesús',when:'Siglo I d. C.',desc:'Nacimiento, ministerio, muerte y resurrección de Jesús.',refs:['Lucas 2:1-20','Marcos 1:14-20','Lucas 23:33-49','Lucas 24:1-12']},
+ {era:'Iglesia primitiva',when:'Siglo I d. C.',desc:'Pentecostés, expansión de la iglesia y viajes misioneros.',refs:['Hechos 2:1-41','Hechos 13:1-3','Hechos 28:16-31']}
+];
+const STUDY_PLACES = [
+ {name:'Jerusalén',region:'Judea',desc:'Ciudad central en muchos relatos de los reyes, los profetas y los evangelios; allí ocurren los acontecimientos finales de la vida terrenal de Jesús.',refs:['2 Samuel 5:6-10','1 Reyes 8:1-11','Lucas 19:28-48','Hechos 2:1-5']},
+ {name:'Belén',region:'Judea',desc:'Lugar relacionado con el nacimiento de David y con el nacimiento de Jesús en los evangelios.',refs:['1 Samuel 16:1-13','Miqueas 5:2','Lucas 2:1-7']},
+ {name:'Nazaret',region:'Galilea',desc:'Población donde Jesús creció según los evangelios.',refs:['Mateo 2:19-23','Lucas 1:26-27','Lucas 4:16-30']},
+ {name:'Capernaum',region:'Galilea, junto al mar de Galilea',desc:'Lugar destacado en el ministerio de Jesús, con enseñanzas y relatos de sanidad.',refs:['Mateo 4:12-16','Marcos 1:21-34','Marcos 2:1-12']},
+ {name:'Mar de Galilea',region:'Galilea',desc:'Escenario de llamados de discípulos, travesías y relatos de Jesús.',refs:['Mateo 4:18-22','Marcos 4:35-41','Juan 6:16-21']},
+ {name:'Río Jordán',region:'Entre regiones al este y oeste del río',desc:'Río asociado con el cruce de Israel hacia Canaán y con el bautismo de Jesús.',refs:['Josué 3:14-17','2 Reyes 5:10-14','Mateo 3:13-17']},
+ {name:'Samaría',region:'Región central',desc:'Región y población vinculadas con relatos del Antiguo y Nuevo Testamento.',refs:['1 Reyes 16:24','Juan 4:3-30','Hechos 8:4-8']},
+ {name:'Damasco',region:'Siria',desc:'Ciudad vinculada con la conversión de Saulo en el libro de Hechos.',refs:['Hechos 9:1-19','Hechos 22:6-16']},
+ {name:'Éfeso',region:'Asia Menor, actual Turquía',desc:'Ciudad importante en el ministerio de Pablo y en el desarrollo de las primeras comunidades cristianas.',refs:['Hechos 19:1-20','Hechos 20:17-38','Efesios 1:1']},
+ {name:'Atenas',region:'Grecia',desc:'Ciudad donde Pablo dialogó con sus oyentes en el Areópago.',refs:['Hechos 17:16-34']},
+ {name:'Roma',region:'Italia',desc:'Capital del Imperio romano y destino del viaje de Pablo narrado al final de Hechos.',refs:['Hechos 23:11','Hechos 28:14-31','Romanos 1:7-15']}
+];
+
+function studyRefButtons(refs){
+ return (refs||[]).map(ref=>`<button type="button" class="study-ref" data-study-ref="${esc(ref)}">${esc(ref)}</button>`).join('');
+}
+function openStudyHub(tab='temas',filter=''){
+ const tabs=[['temas','Temas'],['personajes','Personajes'],['tiempo','Cronología'],['lugares','Lugares']];
+ const active=tab;
+ let body='';
+ if(tab==='temas'){
+   const arr=STUDY_TOPICS.filter(x=>norm(x.name+' '+x.desc).includes(norm(filter)));
+   body=arr.map(x=>`<button class="study-item" data-study-topic="${x.id}"><span class="study-kicker">Estudio temático</span><b>${x.name}</b><small>${x.desc}</small><small>${x.refs.join(' · ')}</small></button>`).join('')||'<p class="note">No hay temas que coincidan con tu búsqueda.</p>';
+ }else if(tab==='personajes'){
+   const arr=STUDY_PEOPLE.filter(x=>norm(x.name+' '+x.role).includes(norm(filter)));
+   body=arr.map((x,i)=>`<button class="study-item" data-study-person="${STUDY_PEOPLE.indexOf(x)}"><span class="study-kicker">Personaje bíblico</span><b>${x.name}</b><small>${x.role}</small></button>`).join('')||'<p class="note">No hay personajes que coincidan con tu búsqueda.</p>';
+ }else if(tab==='tiempo'){
+   body='<p class="study-note">Secuencia narrativa general. Las fechas de varios períodos antiguos son objeto de debate; consulta las referencias para seguir el relato bíblico.</p><div class="timeline">'+STUDY_TIMELINE.map((x,i)=>`<div class="timeline-item"><span class="study-kicker">${x.when}</span><b>${x.era}</b><p class="note">${x.desc}</p><div>${studyRefButtons(x.refs)}</div></div>`).join('')+'</div>';
+ }else if(tab==='lugares'){
+   const arr=STUDY_PLACES.filter(x=>norm(x.name+' '+x.region+' '+x.desc).includes(norm(filter)));
+   body=arr.map((x,i)=>`<button class="study-item" data-study-place="${STUDY_PLACES.indexOf(x)}"><span class="study-kicker">${x.region}</span><b>${x.name}</b><small>${x.desc}</small></button>`).join('')||'<p class="note">No hay lugares que coincidan con tu búsqueda.</p>';
+ }
+ openSheet('Centro de estudio',`<div class="study-intro"><strong>Explora las Escrituras</strong><p>Estudia temas, personas, períodos y lugares a partir de pasajes de la RVR1960. Abre las referencias para leer el texto bíblico.</p></div><div class="study-tabs">${tabs.map(([id,label])=>`<button class="${active===id?'active':''}" data-study-tab="${id}">${label}</button>`).join('')}</div><input class="study-search" id="studyFilter" type="search" placeholder="Filtrar ${tab==='temas'?'temas':tab==='personajes'?'personajes':tab==='lugares'?'lugares':'(la cronología no requiere filtro)'}" value="${esc(filter)}" ${tab==='tiempo'?'disabled':''}>${body}<p class="study-note">Material de orientación para el estudio personal. Comprueba cada explicación leyendo el pasaje completo y su contexto.</p>`);
+}
+function showStudyDetail(type,index){
+ let x,heading='';
+ if(type==='topic'){x=STUDY_TOPICS.find(z=>z.id===index);heading='Estudio temático';}
+ if(type==='person'){x=STUDY_PEOPLE[Number(index)];heading='Personaje bíblico';}
+ if(type==='place'){x=STUDY_PLACES[Number(index)];heading='Lugar bíblico';}
+ if(!x)return;
+ let html=`<div class="study-detail"><span class="study-kicker">${heading}</span><h3>${esc(x.name)}</h3><p>${esc(x.desc||x.role)}</p>`;
+ if(x.lesson)html+=`<h3>Para observar en su historia</h3><p>${esc(x.lesson)}</p>`;
+ if(x.region)html+=`<h3>Ubicación</h3><p>${esc(x.region)}</p><p><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.name+' biblical historical site')}" target="_blank" rel="noopener">Buscar este lugar en el mapa ↗</a></p><p class="study-note">El mapa muestra resultados geográficos actuales; no representa necesariamente la ubicación arqueológica exacta de cada sitio antiguo.</p>`;
+ html+=`<h3>Pasajes para estudiar</h3><div>${studyRefButtons(x.refs)}</div></div><button class="act" id="studyBack">← Volver al Centro de estudio</button>`;
+ openSheet(x.name,html);
+ $('studyBack').onclick=()=>openStudyHub(type==='topic'?'temas':type==='person'?'personajes':'lugares');
+}
+function openBibleTeacher(){
+ const ref=B[S.b][0]+' '+S.c;
+ openSheet('Maestro bíblico',`<div class="study-intro"><strong>Pregunta y estudia</strong><p>Haz preguntas sobre un pasaje, un tema o un personaje. El asistente debe distinguir entre el texto bíblico, el contexto histórico y las interpretaciones.</p></div><p class="note">La consulta requiere internet y una llave de Groq configurada en Ajustes. Puedes preguntar sobre ${ref} o cualquier tema bíblico.</p><textarea id="teacherQuestion" placeholder="Ej. ¿Qué significa la fe según Hebreos 11?"></textarea><button class="save" id="teacherAsk">Consultar al maestro bíblico</button><div id="teacherAnswer" class="study-answer"></div>`);
+ $('teacherAsk').onclick=async()=>{
+   const q=$('teacherQuestion').value.trim(),out=$('teacherAnswer'),btn=$('teacherAsk');
+   if(q.length<4){out.innerHTML='<p class="note">Escribe una pregunta un poco más completa.</p>';return}
+   btn.disabled=true;btn.textContent='Estudiando…';out.innerHTML='<p class="note">Preparando una respuesta con referencias bíblicas…</p>';
+   try{
+     const answer=await groq(SYS+' Responde con claridad y respeto. Prioriza el texto de la Biblia RVR1960, cita referencias precisas cuando puedas y explica el contexto. Distingue hechos narrados, datos históricos discutidos e interpretaciones doctrinales. No inventes citas ni afirmes que una interpretación es la única si existen diferencias entre tradiciones cristianas. Termina con 2 a 4 pasajes para seguir estudiando.',`Pregunta del usuario: ${q}\nPasaje que la app tiene abierto: ${ref}.`,false);
+     out.innerHTML=`<h3>Respuesta</h3><p>${L(answer).replace(/\n/g,'<br>')}</p>`;
+   }catch(e){out.innerHTML=errHtml(e);if(e.message==='SIN_LLAVE')settings('Configura tu llave de Groq para usar el Maestro bíblico.')}
+   finally{btn.disabled=false;btn.textContent='Consultar al maestro bíblico'}
+ };
+}
+$('sb').addEventListener('click',e=>{
+ const tab=e.target.closest('[data-study-tab]');
+ const topic=e.target.closest('[data-study-topic]');
+ const person=e.target.closest('[data-study-person]');
+ const place=e.target.closest('[data-study-place]');
+ const ref=e.target.closest('[data-study-ref]');
+ if(tab){openStudyHub(tab.dataset.studyTab);return}
+ if(topic){showStudyDetail('topic',topic.dataset.studyTopic);return}
+ if(person){showStudyDetail('person',person.dataset.studyPerson);return}
+ if(place){showStudyDetail('place',place.dataset.studyPlace);return}
+ if(ref){
+   const prev={t:$('st').textContent,h:$('sb').innerHTML};
+   const parsed=refBtn(ref.dataset.studyRef);
+   const holder=document.createElement('div');holder.innerHTML=parsed;
+   const b=holder.querySelector('.ref');
+   if(b){const bi=+b.dataset.b,ci=Math.min(+b.dataset.c,B[bi][2]),vi=b.dataset.v?+b.dataset.v:null;preview(bi,ci,vi,b.dataset.e?+b.dataset.e:null,prev)}
+   return;
+ }
+});
+$('sb').addEventListener('input',e=>{
+ if(e.target.id==='studyFilter'){
+   const val=e.target.value,tab=document.querySelector('[data-study-tab].active')?.dataset.studyTab||'temas';
+   const pos=e.target.selectionStart;
+   openStudyHub(tab,val);
+   const input=$('studyFilter');if(input){input.focus();input.setSelectionRange(pos,pos)}
+ }
+});
+
 
 // Arranque: panel de inicio; la lectura continúa desde el último capítulo guardado.
 showHome();
