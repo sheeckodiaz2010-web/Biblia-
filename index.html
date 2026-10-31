@@ -340,6 +340,26 @@ textarea:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
 button:disabled{opacity:.6;cursor:wait}.study-note a{color:var(--ac)}
 #sh{max-height:88dvh}#sb{overscroll-behavior:contain}.ref{min-height:36px}#sx{min-width:44px;min-height:44px}
 @media(max-width:380px){header.top{padding-left:8px;padding-right:8px}#pick{font-size:16px;max-width:39vw}nav.bar{gap:4px;padding-left:8px;padding-right:8px}main{padding-left:14px;padding-right:14px}}
+
+/* El selector del libro tiene su propia fila y no compite con Inicio. */
+.reading-mode header.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}
+.reading-mode header.top .lf{grid-column:1 / -1;width:100%;gap:10px;align-items:flex-start}
+.reading-mode #brand{display:none!important}
+.reading-mode #pick{display:block;flex:1;min-width:0;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;text-align:left;line-height:1.35;font-size:20px;overflow-wrap:anywhere}
+.reading-mode #ver{flex:none;margin-top:7px}
+.reading-mode header.top .rt{grid-column:2;grid-row:2;justify-content:flex-end}
+.reading-mode #back{grid-column:1;grid-row:2;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.reading-mode #pl,.reading-mode #gd{display:none!important}
+#tabs button{min-height:48px}#tabs #tab_home{color:var(--ac)}#tabs #tab_home .ic{width:27px;height:27px}
+#text .verse-text{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default;cursor:text}
+#text .n,#text .x{-webkit-user-select:none;user-select:none}
+mark.partial{color:inherit;padding:0;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+mark.partial.h1{background:var(--h1)}mark.partial.h2{background:var(--h2)}mark.partial.h3{background:var(--h3)}mark.partial.h4{background:var(--h4)}mark.partial.h5{background:transparent;text-decoration:underline;text-decoration-color:var(--ac);text-decoration-thickness:2px;text-underline-offset:4px}
+#selectionTools[hidden]{display:none!important}
+#selectionTools{position:fixed;z-index:7;left:10px;right:10px;bottom:calc(148px + env(safe-area-inset-bottom,0px));max-width:480px;margin:auto;padding:10px 12px;background:var(--sh);color:var(--fg);border:1px solid var(--line);border-radius:18px;box-shadow:0 5px 24px #0003}
+#selectionTools>span{font-size:13px;font-weight:600}#selectionTools .colors{gap:5px;justify-content:space-between;margin-top:7px}#selectionTools button{width:38px;height:42px;min-width:0;border-radius:12px}
+.reading-mode #text>.v:first-of-type::first-letter{font-size:inherit}
+
 </style>
 </head>
 <body>
@@ -347,14 +367,15 @@ button:disabled{opacity:.6;cursor:wait}.study-note a{color:var(--ac)}
 <noscript><p style="padding:24px;font:16px system-ui">Esta aplicación necesita JavaScript activado para funcionar.</p></noscript>
 <main><section id="homeView" aria-label="Inicio"></section><section id="readerView" hidden><div id="vod" hidden></div><div id="text"><p class="msg">Cargando…</p></div></section></main>
 <nav class="bar" id="readerBar" hidden><button id="prev" aria-label="Capítulo anterior">‹</button><button id="audio" aria-label="Escuchar capítulo">▶ Escuchar</button><button id="ctx">Contexto</button><button id="next" aria-label="Capítulo siguiente">›</button></nav>
-<nav id="tabs" aria-label="Navegación principal"><button data-t="home" id="tab_home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg><span>Inicio</span></button><button data-t="read" id="tab_read"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C6 4.500 9.500 4.500 12 6.500c2.500-2 6-2 9-1V19c-3-1-6.500-1-9 1-2.500-2-6-2-9-1z"/><path d="M12 6.500V20"/></svg><span>Lectura</span></button><button data-t="plan" id="tab_plan"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M8 17h2"/></svg><span>Planes</span></button><button data-t="notes" id="tab_notes"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.500" width="14" height="17" rx="2.500"/><path d="M9 8.500h6M9 12h6M9 15.500h4"/></svg><span>Notas</span></button><button data-t="more" id="tab_more"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.500" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18.500" cy="12" r="1"/></svg><span>Más</span></button></nav>
+<nav id="tabs" aria-label="Navegación principal"><button data-t="read" id="tab_read"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C6 4.500 9.500 4.500 12 6.500c2.500-2 6-2 9-1V19c-3-1-6.500-1-9 1-2.500-2-6-2-9-1z"/><path d="M12 6.500V20"/></svg><span>Lectura</span></button><button data-t="plan" id="tab_plan"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M8 17h2"/></svg><span>Planes</span></button><button data-t="home" id="tab_home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg><span>Inicio</span></button><button data-t="notes" id="tab_notes"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.500" width="14" height="17" rx="2.500"/><path d="M9 8.500h6M9 12h6M9 15.500h4"/></svg><span>Notas</span></button><button data-t="more" id="tab_more"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.500" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18.500" cy="12" r="1"/></svg><span>Más</span></button></nav>
 <div id="upd" role="status"><span>Hay una versión nueva de la app.</span><button id="updb">Actualizar</button><button id="updx" aria-label="Cerrar aviso">✕</button></div>
 <div id="ov"></div>
+<div id="selectionTools" role="region" aria-label="Marcar texto seleccionado" hidden><span>Remarcar selección</span><div class="colors"><button class="c1" data-mark="1" aria-label="Remarcar amarillo"></button><button class="c2" data-mark="2" aria-label="Remarcar verde"></button><button class="c3" data-mark="3" aria-label="Remarcar azul"></button><button class="c4" data-mark="4" aria-label="Remarcar rosa"></button><button class="c5" data-mark="5" aria-label="Subrayar selección">U</button><button data-mark="0" aria-label="Quitar marca de la selección">⌫</button><button id="dismissSelection" aria-label="Cerrar herramientas de selección">✕</button></div></div>
 <section id="sh" role="dialog" aria-modal="true" aria-labelledby="st" tabindex="-1"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.11';
-const CACHE_NAME='biblia-rvr1960-2026-10-30-12';
+const VERSION='2026-10-30.12';
+const CACHE_NAME='biblia-rvr1960-2026-10-30-13';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const $=id=>document.getElementById(id);
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
@@ -369,7 +390,7 @@ try{const p=JSON.parse(ls.get('bib_pos'));if(p&&Number.isInteger(p.b)&&B[p.b]&&N
 
 /* Panel inferior */
 let sheetOrigin=null;
-function openSheet(t,h){if(!$('sh').classList.contains('open'))sheetOrigin=document.activeElement;document.body.style.overflow='hidden';$('st').textContent=t;$('sb').innerHTML=h;$('sh').classList.add('open');$('ov').classList.add('open');$('sb').scrollTop=0;$('sh').focus()}
+function openSheet(t,h){hideSelectionTools();if(!$('sh').classList.contains('open'))sheetOrigin=document.activeElement;document.body.style.overflow='hidden';$('st').textContent=t;$('sb').innerHTML=h;$('sh').classList.add('open');$('ov').classList.add('open');$('sb').scrollTop=0;$('sh').focus()}
 function closeSheet(){document.body.style.overflow='';sheetOrigin?.focus();$('sh').classList.remove('open');$('ov').classList.remove('open');document.querySelectorAll('.w.on').forEach(e=>e.classList.remove('on'))}
 document.addEventListener('keydown',e=>{if(!$('sh').classList.contains('open'))return;if(e.key==='Escape'){closeSheet();return}if(e.key==='Tab'){const a=[...$('sh').querySelectorAll('button,input,textarea,select,a[href]')].filter(x=>!x.disabled&&x.getClientRects().length);if(!a.length)return;const first=a[0],last=a[a.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===$('sh'))){e.preventDefault();last.focus()}else if(!e.shiftKey&&(document.activeElement===last||document.activeElement===$('sh'))){e.preventDefault();first.focus()}}});
 $('sx').onclick=closeSheet;$('ov').onclick=closeSheet;
@@ -479,9 +500,9 @@ function buildText(){
   (xr.secciones||[]).forEach(x=>{if(x&&x.v&&x.titulo)sec[x.v]=x.titulo});
   $('text').innerHTML='<div class="ch"><small>'+esc(B[S.b][0])+'</small><h1>'+S.c+'</h1></div>'+verses.map((t,i)=>{
     const n=i+1,k=vk(S.b,S.c,n),h=hl[k],cls=['v'];
-    if(h)cls.push('m','h'+h.c);if(bm[k])cls.push('bm');if(S.v===n)cls.push('jump');
+    if(bm[k])cls.push('bm');if(S.v===n)cls.push('jump');
     const has=xr.versiculos&&xr.versiculos[n]&&xr.versiculos[n].length;
-    return (sec[n]?`<h2 class="sec">${esc(sec[n])}</h2>`:'')+`<p class="${cls.join(' ')}" data-v="${n}"><button class="n" aria-label="Opciones del versículo ${n}">${n}</button>${esc(t)}${has?`<button class="x" aria-label="Referencias del versículo ${n}">↗</button>`:''}</p>`;
+    return (sec[n]?`<h2 class="sec">${esc(sec[n])}</h2>`:'')+`<p class="${cls.join(' ')}" data-v="${n}"><button class="n" aria-label="Opciones del versículo ${n}">${n}</button>${"<span class=\"verse-text\">"+markedText(t,h)+"</span>"}${has?`<button class="x" aria-label="Referencias del versículo ${n}">↗</button>`:''}</p>`;
   }).join('');
 }
 function showRefs(num){
@@ -492,17 +513,11 @@ function showRefs(num){
 /* Subrayar y guardar */
 function verseMenu(num){
   const k=vk(S.b,S.c,num),ref=B[S.b][0]+' '+S.c+':'+num,txt=verses[num-1],h=J('bib_hl')[k],bm=!!J('bib_bm')[k];
-  const dots=[1,2,3,4].map(i=>`<button class="c${i}${h&&h.c===i?' on':''}" data-c="${i}" aria-label="Resaltar con color ${i}"></button>`).join('');
-  openSheet(ref,`<p class="pv" style="font-size:16px;margin:0 0 6px">${esc(txt)}</p><h3>Marcar</h3>
-  <div class="colors">${dots}<button class="c5${h&&h.c===5?' on':''}" data-c="5" aria-label="Subrayar">U</button>${h?'<button data-c="0" aria-label="Quitar marca">✕</button>':''}</div>
+  openSheet(ref,`<p class="pv" style="font-size:16px;margin:0 0 6px">${esc(txt)}</p><p class="note">Para remarcar, mantén pulsado el texto del capítulo y selecciona las palabras que quieras.</p>
   <button class="act" id="abm">${bm?'Quitar de “leer después”':'Guardar para leer después'}</button>
   <button class="act" id="anote">${J('bib_notes')[k]?'Ver / editar nota personal':'Añadir nota personal'}</button>
   <button class="act" id="axr">Ver referencias</button>
   <button class="act" id="acp">Copiar versículo</button>`);
-  document.querySelectorAll('.colors button').forEach(b=>b.onclick=()=>{
-    const o=J('bib_hl'),c=+b.dataset.c;if(c)o[k]={c,x:txt.slice(0,90)};else delete o[k];
-    ls.set('bib_hl',JSON.stringify(o));buildText();closeSheet();
-  });
   $('abm').onclick=()=>{const o=J('bib_bm');if(o[k])delete o[k];else o[k]={t:Date.now(),x:txt.slice(0,90)};ls.set('bib_bm',JSON.stringify(o));buildText();closeSheet()};
   $('anote').onclick=()=>editNote(num);
   $('axr').onclick=()=>showRefs(num);
@@ -513,7 +528,7 @@ function openSaved(){
   const row=(t,k,x,dot)=>{const [b,c,v]=k.split(':').map(Number);if(!B[b])return '';return `<div class="it"><button class="go" data-k="${k}" data-t="${t}"><b>${B[b][0]} ${c}:${v}</b>${dot||''}<small>${esc(String(x||'').slice(0,110))}…</small></button><button class="rm" data-k="${k}" data-t="${t}" aria-label="Quitar">✕</button></div>`};
   const a=Object.keys(bm).sort((x,y)=>(bm[y].t||0)-(bm[x].t||0)).map(k=>row('bm',k,bm[k].x)).join('');
   const key=k=>k.split(':').map(Number),ord=(x,y)=>{const p=key(x),q=key(y);return p[0]-q[0]||p[1]-q[1]||p[2]-q[2]};
-  const b=Object.keys(hl).sort(ord).map(k=>row('hl',k,hl[k].x,`<span class="dot h${hl[k].c}"></span>`)).join('');
+  const b=Object.keys(hl).sort(ord).map(k=>row('hl',k,hl[k].x,`<span class="dot h${(hl[k].c||hl[k].ranges?.[0]?.c||1)}"></span>`)).join('');
   const n=Object.keys(notes).sort((x,y)=>(notes[y].t||0)-(notes[x].t||0)).map(k=>row('note',k,notes[k].text||'Nota personal')).join('');
   openSheet('Mi biblioteca',`<h3>Para leer después</h3>${a||'<p class="note">Todavía no guardas versículos.</p>'}<h3>Subrayados y marcados</h3>${b||'<p class="note">Todavía no tienes versículos marcados.</p>'}<h3>Mis notas</h3>${n||'<p class="note">Tus notas personales aparecerán aquí.</p>'}`);
 }
@@ -664,7 +679,7 @@ const VOD=[[42,3,16],[18,23,1],[24,3,22],[19,3,5],[23,29,11],[22,41,10],[39,11,2
 
 let currentView='home',homeRenderId=0;
 function tabOn(t){document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t))}
-function showHome(){
+function showHome(){hideSelectionTools();
   stopAudio();
   currentView='home';
   $('homeView').hidden=false;$('readerView').hidden=true;$('readerBar').hidden=true;
@@ -812,7 +827,7 @@ function toggleAudio(){
 $('audio').onclick=toggleAudio;
 
 /* Cargar capítulo */
-async function load(){
+async function load(){hideSelectionTools();
   const generation=++loadGeneration,b=S.b,c=S.c;
   stopAudio();
   const [es,en]=B[S.b];
@@ -1108,6 +1123,54 @@ async function showLocalContext(){
  }catch(e){if($('st').textContent==='Contexto de '+token)$('sb').innerHTML=errHtml(e)}
 }
 const CHAPTER_NOTES={"0:1": "El relato presenta la creación de forma ordenada y culmina con la humanidad hecha a imagen de Dios. El descanso del séptimo día aparece al comienzo del capítulo 2.", "0:3": "El encuentro con la serpiente, la desobediencia y sus consecuencias explican la ruptura de la relación con Dios. El relato continúa la escena del jardín del capítulo 2.", "0:12": "Después de los relatos de los orígenes, la narración se concentra en Abram. El llamado y la promesa de bendición a las familias de la tierra preceden su viaje y estancia en Egipto.", "0:22": "La prueba de Abraham gira en torno a Isaac, el hijo ligado a la promesa. La provisión del carnero impide el sacrificio de Isaac y la promesa vuelve a ser afirmada.", "1:3": "Moisés encuentra la zarza mientras pastorea. Dios escucha el clamor de Israel, lo llama a sacar al pueblo de Egipto y responde a sus objeciones.", "1:20": "Después de la liberación y la llegada al Sinaí, Dios comunica los mandamientos. La introducción recuerda la salida de Egipto: la ley aparece dentro de una relación de pacto.", "4:6": "Moisés llama a Israel a escuchar y amar al Señor. La enseñanza del pacto debe formar la vida cotidiana, familiar y comunitaria, sin olvidar la liberación.", "5:1": "Tras la muerte de Moisés, Josué recibe el encargo de conducir al pueblo. La exhortación al valor está unida a meditar y obedecer la ley, dentro de esa misión concreta.", "7:1": "El hambre lleva a una familia a Moab; después de varias muertes, Noemí decide regresar a Belén. Rut elige acompañarla en una situación de vulnerabilidad.", "9:7": "David desea construir una casa para Dios, pero la respuesta profética coloca en primer plano la promesa divina de una casa o dinastía para David.", "18:23": "La voz del salmo expresa confianza mediante las imágenes del pastor y del anfitrión. El peligro no desaparece, pero se afirma la compañía y el cuidado de Dios.", "18:51": "Es una oración penitencial. Su título la relaciona con David y la denuncia de Natán. Confesión, limpieza y renovación interior orientan el poema.", "18:119": "Este extenso poema celebra la instrucción de Dios mediante múltiples términos e imágenes. Su forma alfabética hebrea organiza una meditación sobre la fidelidad y la oración.", "19:3": "La instrucción invita a confiar en el Señor y practicar sabiduría, generosidad y trato justo. Sus afirmaciones sapienciales deben leerse como orientación para la vida, no como garantía automática de prosperidad.", "22:53": "El poema describe a un siervo que sufre, es rechazado y carga con las faltas de otros. El Nuevo Testamento aplica su lenguaje a Jesús; la identidad del siervo en el marco de Isaías se interpreta de diversas maneras.", "23:29": "La carta a los desterrados llama a construir una vida en Babilonia y buscar el bienestar de la ciudad. La promesa de futuro se dirige a esa comunidad en exilio, no garantiza resultados inmediatos a cada individuo.", "26:6": "La fidelidad de Daniel en la oración lo enfrenta al decreto real. La narración muestra su liberación del foso de los leones y el reconocimiento del Dios al que sirve.", "39:5": "El Sermón del Monte comienza con bienaventuranzas y presenta la identidad de los discípulos como sal y luz. Jesús aborda la ley y profundiza en conducta, intención y amor al enemigo.", "39:6": "Jesús enseña sobre limosna, oración, ayuno, tesoros y preocupación. Contrapone la búsqueda de reconocimiento público con la relación sincera con el Padre.", "39:13": "Las parábolas del reino y la explicación del sembrador ponen atención en la recepción del mensaje. No todos los detalles de una parábola deben convertirse en símbolos independientes.", "39:18": "La enseñanza a los discípulos relaciona humildad, cuidado del pequeño, corrección y perdón. La reconciliación no autoriza encubrir daños ni obliga a permanecer en peligro.", "39:28": "Las mujeres encuentran la tumba vacía y reciben el anuncio de la resurrección. El evangelio termina con Jesús comisionando a sus discípulos para hacer discípulos de todas las naciones.", "40:4": "El capítulo reúne parábolas sobre la semilla y el crecimiento del reino. Termina con la tempestad calmada, que provoca una nueva pregunta sobre la identidad de Jesús.", "40:10": "En el camino a Jerusalén se suceden enseñanzas sobre matrimonio, niños, riqueza y servicio. El anuncio de la pasión da marco al contraste entre ambición y entrega.", "41:10": "Jesús envía a un grupo de discípulos y enseña mediante el encuentro con el intérprete de la ley. La parábola del samaritano desplaza la pregunta hacia actuar como prójimo; el capítulo termina con Marta y María.", "41:15": "Ante las críticas por recibir a pecadores, Jesús cuenta las parábolas de la oveja, la moneda y los dos hijos. La alegría por lo recuperado y la reacción del hermano mayor articulan el conjunto.", "42:1": "El prólogo presenta a la Palabra y su encarnación. Después aparecen el testimonio de Juan y los primeros encuentros con discípulos que comienzan a reconocer a Jesús.", "42:3": "El diálogo con Nicodemo trata del nacimiento de arriba, el Espíritu y la fe. La imagen de la serpiente levantada remite a Números; después se contrasta la misión de Jesús con el testimonio de Juan.", "42:10": "Las imágenes de la puerta y el buen pastor siguen la curación del ciego y la controversia del capítulo anterior. El discurso contrasta el cuidado verdadero del rebaño con el abandono y provoca división.", "42:11": "La muerte de Lázaro da lugar a diálogos sobre duelo, fe y resurrección. La señal conduce a reacciones de fe y a una mayor decisión de las autoridades de actuar contra Jesús.", "42:13": "En la cena previa a la pasión, Jesús lava los pies de sus discípulos y explica el servicio mutuo. El anuncio de la traición y el mandamiento del amor preparan los discursos de despedida.", "42:14": "Ante la inquietud de los discípulos, Jesús habla del Padre, de su partida y de la promesa del Consolador. El amor se relaciona con guardar sus mandamientos y recibir su paz.", "42:15": "La vid y los pámpanos ilustran la dependencia de los discípulos respecto de Jesús. Permanecer, amar y dar fruto se unen a la advertencia sobre la oposición que encontrarán.", "43:2": "En Pentecostés, el Espíritu capacita el testimonio y Pedro interpreta lo ocurrido recurriendo a Joel y los Salmos. La respuesta al anuncio culmina en bautismos y vida comunitaria.", "43:15": "La comunidad discute si los gentiles deben circuncidarse para pertenecer al pueblo de Dios. Testimonios, deliberación y Escritura conducen a una comunicación dirigida a esas iglesias.", "44:3": "Pablo sostiene que judíos y gentiles comparten la condición de pecado. A continuación expone la justicia de Dios y la justificación por la fe, excluyendo la jactancia.", "44:8": "La vida en el Espíritu contrasta con la condenación y la esclavitud. El capítulo relaciona adopción, sufrimiento, esperanza y seguridad en el amor de Dios.", "44:12": "Tras exponer la misericordia divina, Pablo llama a una vida transformada. Dones, amor sincero, trato al enemigo y convivencia constituyen la respuesta práctica.", "45:13": "Entre los capítulos sobre dones y culto comunitario, Pablo afirma la prioridad del amor. La descripción corrige el uso de capacidades espirituales como motivo de prestigio.", "45:15": "Ante quienes negaban la resurrección de los muertos, Pablo recuerda el mensaje recibido sobre Cristo. Explica la relación entre su resurrección, la esperanza futura y la conducta presente.", "47:5": "La libertad en Cristo no se presenta como permiso para dañar, sino como servicio por amor. La vida en el Espíritu se reconoce por su fruto y se contrapone a las obras de la carne.", "48:2": "La salvación por gracia desemboca en una vida de buenas obras. La segunda parte desarrolla la reconciliación entre judíos y gentiles en un solo pueblo.", "49:4": "Pablo exhorta a la unidad, al gozo y a la oración, y agradece el apoyo recibido. La afirmación sobre poder afrontar las circunstancias está ligada al contentamiento en abundancia y escasez.", "57:11": "Los ejemplos de fe recorren la historia bíblica y animan a perseverar. Algunos reciben liberación y otros sufren: la fe no se presenta como garantía de evitar toda dificultad.", "58:2": "Santiago denuncia la parcialidad hacia los ricos y exige coherencia entre fe y obras. Los ejemplos de Abraham y Rahab sirven a ese argumento práctico.", "61:4": "El discernimiento de los espíritus se vincula con la confesión sobre Jesús. La segunda parte presenta el amor de Dios como fundamento del amor mutuo.", "65:21": "La visión de cielo nuevo y tierra nueva presenta la presencia de Dios con su pueblo y el fin de muerte y dolor. La nueva Jerusalén se describe con imágenes de ciudad, santuario y pueblo."};
+
+
+function rangesFor(text,mark){
+ if(!mark)return [];if(Array.isArray(mark.ranges))return mark.ranges.filter(r=>Number.isInteger(r.start)&&Number.isInteger(r.end)&&r.start>=0&&r.end<=text.length&&r.end>r.start&&r.c>=1&&r.c<=5);
+ return mark.c>=1&&mark.c<=5?[{start:0,end:text.length,c:mark.c}]:[];
+}
+function markedText(text,mark){
+ const ranges=rangesFor(text,mark).sort((a,b)=>a.start-b.start);let out='',offset=0;
+ for(const r of ranges){if(r.start<offset)continue;out+=esc(text.slice(offset,r.start))+`<mark class="partial h${r.c}">${esc(text.slice(r.start,r.end))}</mark>`;offset=r.end}
+ return out+esc(text.slice(offset));
+}
+function overlayHighlight(old,start,end,color){
+ const result=[];for(const r of old){if(r.end<=start||r.start>=end)result.push(r);else{if(r.start<start)result.push({...r,end:start});if(r.end>end)result.push({...r,start:end})}}
+ if(color)result.push({start,end,c:color});result.sort((a,b)=>a.start-b.start);
+ const merged=[];for(const r of result){const last=merged[merged.length-1];if(last&&last.end===r.start&&last.c===r.c)last.end=r.end;else merged.push({...r})}return merged;
+}
+let selectionSnapshot=null;
+function hideSelectionTools(){selectionSnapshot=null;$('selectionTools').hidden=true}
+function collectTextSelection(){
+ if(currentView!=='reader'||$('sh').classList.contains('open')){hideSelectionTools();return}
+ const selection=window.getSelection();if(!selection||selection.isCollapsed||!selection.rangeCount){hideSelectionTools();return}
+ const range=selection.getRangeAt(0),items=[];
+ if(!$('text').contains(range.startContainer)||!$('text').contains(range.endContainer)){hideSelectionTools();return}
+ for(const span of $('text').querySelectorAll('.verse-text')){
+  if(!range.intersectsNode(span))continue;
+  const prefix=document.createRange();prefix.selectNodeContents(span);
+  let start=0,end=span.textContent.length;
+  if(span.contains(range.startContainer)){prefix.setEnd(range.startContainer,range.startOffset);start=prefix.toString().length}
+  if(span.contains(range.endContainer)){prefix.selectNodeContents(span);prefix.setEnd(range.endContainer,range.endOffset);end=prefix.toString().length}
+  if(end>start)items.push({v:+span.closest('.v').dataset.v,start,end});
+ }
+ if(!items.length){hideSelectionTools();return}
+ selectionSnapshot={b:S.b,c:S.c,items};$('selectionTools').hidden=false;
+}
+function markSelection(color){
+ const snapshot=selectionSnapshot;if(!snapshot||snapshot.b!==S.b||snapshot.c!==S.c)return;
+ const all=J('bib_hl');for(const item of snapshot.items){const key=vk(snapshot.b,snapshot.c,item.v),text=verses[item.v-1];
+ const ranges=overlayHighlight(rangesFor(text,all[key]),item.start,item.end,color);
+ if(ranges.length)all[key]={ranges,x:ranges.map(r=>text.slice(r.start,r.end)).join(' … ').slice(0,110)};else delete all[key];
+ }
+ ls.set('bib_hl',JSON.stringify(all));window.getSelection()?.removeAllRanges();hideSelectionTools();buildText();
+}
+$('selectionTools').addEventListener('pointerdown',e=>{if(e.target.closest('button'))e.preventDefault()});
+$('selectionTools').addEventListener('click',e=>{const button=e.target.closest('[data-mark]');if(button)markSelection(+button.dataset.mark)});
+$('dismissSelection').onclick=()=>{window.getSelection()?.removeAllRanges();hideSelectionTools()};
+document.addEventListener('selectionchange',collectTextSelection);
+$('text').addEventListener('pointerup',()=>setTimeout(collectTextSelection,0));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('dismissSelection').click()}});
 
 // Arranque: inicio, y descarga de la Biblia en segundo plano para lectura offline.
 showHome();
