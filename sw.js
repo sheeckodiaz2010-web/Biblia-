@@ -1,5 +1,5 @@
 /* Biblia RVR1960 · caché offline y actualizaciones seguras */
-const CACHE_NAME = 'biblia-rvr1960-2026-10-30-10';
+const CACHE_NAME = 'biblia-rvr1960-2026-10-30-12';
 const CORE_FILES = [
   './',
   './index.html',
@@ -42,7 +42,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
+  if (url.origin !== self.location.origin || url.pathname.includes('/api/')) return;
   // Las comprobaciones de versión deben consultar el servidor, no la caché.
   if (url.searchParams.has('v') || url.searchParams.has('u')) return;
 
