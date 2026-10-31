@@ -1,5 +1,5 @@
 /* Biblia RVR1960 · caché offline y actualizaciones seguras */
-const CACHE_NAME = 'biblia-rvr1960-2026-10-30-19';
+const CACHE_NAME = 'biblia-rvr1960-2026-10-30-20';
 const CORE_FILES = [
   './',
   './index.html',
@@ -7,7 +7,11 @@ const CORE_FILES = [
   './biblia.json',
   './icon-192.png',
   './icon-512.png',
-  './apple-touch-icon.png'
+  './apple-touch-icon.png',
+  './fonts/lora-integrada.ttf',
+  './fonts/nunito-integrada.ttf',
+  './fonts/roboto-slab-integrada.ttf',
+  './fonts/open-sans-integrada.ttf'
 ];
 
 self.addEventListener('install', event => {
@@ -47,19 +51,17 @@ self.addEventListener('fetch', event => {
   if (url.searchParams.has('v') || url.searchParams.has('u')) return;
 
   if (request.mode === 'navigate') {
+    // Stale-while-revalidate: abre al instante desde caché y actualiza en segundo plano.
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
-      try {
-        const response = await fetch(request);
-        if (response && response.ok) {
-          await cache.put(new URL('./index.html', self.registration.scope), response.clone());
-        }
+      const indexUrl = new URL('./index.html', self.registration.scope);
+      const cached = (await cache.match(indexUrl)) || (await cache.match(new URL('./', self.registration.scope)));
+      const refresh = fetch(request).then(async response => {
+        if (response && response.ok) await cache.put(indexUrl, response.clone());
         return response;
-      } catch (error) {
-        return (await cache.match(request)) ||
-          (await cache.match(new URL('./index.html', self.registration.scope))) ||
-          (await cache.match(new URL('./', self.registration.scope)));
-      }
+      }).catch(() => null);
+      if (cached) { event.waitUntil(refresh); return cached; }
+      return (await refresh) || Response.error();
     })());
     return;
   }
