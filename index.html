@@ -379,8 +379,8 @@ mark.partial.h1{background:var(--h1)}mark.partial.h2{background:var(--h2)}mark.p
 <section id="sh" role="dialog" aria-modal="true" aria-labelledby="st" tabindex="-1"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.13';
-const CACHE_NAME='biblia-rvr1960-2026-10-30-14';
+const VERSION='2026-10-30.14';
+const CACHE_NAME='biblia-rvr1960-2026-10-30-15';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const $=id=>document.getElementById(id);
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
@@ -787,47 +787,72 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now(
 lastChk=Date.now();setTimeout(checkUpdate,1500);
 
 
-/* Lectura en voz alta: divide capítulos largos para evitar límites del navegador. */
-let speech=null,audioMode='idle',audioChunks=[],audioIndex=0,audioSession=0;
+/* Lectura en voz alta con voces cargadas, estado real y fallos visibles. */
+let speech=null,audioMode='idle',audioChunks=[],audioIndex=0,audioSession=0,audioTimer=null,audioVoices=[];
+function loadAudioVoices(){try{audioVoices=window.speechSynthesis?.getVoices()||[]}catch{audioVoices=[]}return audioVoices}
+if('speechSynthesis' in window){loadAudioVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadAudioVoices)}
 function stopAudio(){
-  audioSession++;
-  if('speechSynthesis' in window)window.speechSynthesis.cancel();
-  speech=null;audioChunks=[];audioIndex=0;audioMode='idle';updateAudioButton();
+ audioSession++;clearTimeout(audioTimer);audioTimer=null;
+ if('speechSynthesis' in window){try{window.speechSynthesis.cancel()}catch{}}
+ speech=null;audioChunks=[];audioIndex=0;audioMode='idle';updateAudioButton();
 }
 function updateAudioButton(){
-  const b=$('audio');if(!b)return;
-  b.classList.toggle('playing',audioMode!=='idle');
-  b.textContent=audioMode==='speaking'?'Ⅱ Pausar':audioMode==='paused'?'▶ Continuar':'▶ Escuchar';
-  b.setAttribute('aria-label',audioMode==='speaking'?'Pausar lectura':audioMode==='paused'?'Continuar lectura':'Escuchar capítulo');
+ const b=$('audio');if(!b)return;const starting=audioMode==='starting';
+ b.classList.toggle('playing',audioMode!=='idle');
+ b.textContent=starting?'■ Iniciando…':audioMode==='speaking'?'Ⅱ Pausar':audioMode==='paused'?'▶ Continuar':'▶ Escuchar';
+ b.setAttribute('aria-label',starting?'Detener inicio de lectura':audioMode==='speaking'?'Pausar lectura':audioMode==='paused'?'Continuar lectura':'Escuchar capítulo');
+ b.setAttribute('aria-busy',String(starting));
 }
+function audioFailure(code){
+ const messages={'not-allowed':'El navegador bloqueó la voz. Pulsa Probar voz para iniciarla directamente.', 'language-unavailable':'El teléfono no tiene una voz disponible para español.', 'voice-unavailable':'La voz elegida ya no está disponible. Elige otra.', 'synthesis-unavailable':'El teléfono no tiene un motor de voz disponible.', 'network':'La voz elegida necesita conexión y no pudo cargar.', 'audio-busy':'Otra aplicación está usando la salida de sonido.', 'audio-hardware':'No se pudo usar la salida de sonido.', 'timeout':'La lectura no confirmó que hubiera empezado. Prueba otra voz.'};
+ stopAudio();showAudioHelp(messages[code]||'La lectura se interrumpió antes de completarse. Prueba la voz y vuelve a iniciar el capítulo.');
+}
+function armAudioWatchdog(session,utterance){
+ clearTimeout(audioTimer);audioTimer=setTimeout(()=>{if(session===audioSession&&speech===utterance&&audioMode==='starting')audioFailure('timeout')},8000);
+}
+function chosenAudioVoice(){const voices=loadAudioVoices(),id=ls.get('bib_voice');return voices.find(v=>v.voiceURI===id)||voices.find(v=>/^es(?:-|_)/i.test(v.lang)&&v.localService)||voices.find(v=>/^es(?:-|_|$)/i.test(v.lang))||null}
 function speakAudioChunk(session){
-  if(session!==audioSession)return;
-  if(audioIndex>=audioChunks.length){audioMode='idle';speech=null;updateAudioButton();return}
-  const utterance=new SpeechSynthesisUtterance(audioChunks[audioIndex]);speech=utterance;
-  utterance.lang='es-MX';utterance.rate=.92;
-  const voices=speechSynthesis.getVoices(),spanish=voices.find(v=>/^es(-|$)/i.test(v.lang));
-  if(spanish)utterance.voice=spanish;
-  utterance.onstart=()=>{if(session===audioSession){audioMode='speaking';updateAudioButton()}};
-  utterance.onend=()=>{if(session===audioSession){audioIndex++;speakAudioChunk(session)}};
-  utterance.onerror=()=>{if(session===audioSession){audioMode='idle';speech=null;audioChunks=[];updateAudioButton()}};
-  speechSynthesis.speak(utterance);
+ if(session!==audioSession)return;
+ if(audioIndex>=audioChunks.length){clearTimeout(audioTimer);audioMode='idle';speech=null;updateAudioButton();return}
+ const utterance=new SpeechSynthesisUtterance(audioChunks[audioIndex]);speech=utterance;
+ const voice=chosenAudioVoice();utterance.lang=voice?.lang||'es-ES';if(voice)utterance.voice=voice;
+ utterance.volume=1;utterance.pitch=1;utterance.rate=.92;
+ audioMode='starting';updateAudioButton();armAudioWatchdog(session,utterance);
+ utterance.onstart=()=>{if(session!==audioSession||speech!==utterance)return;clearTimeout(audioTimer);audioMode='speaking';updateAudioButton()};
+ utterance.onend=()=>{if(session!==audioSession||speech!==utterance)return;clearTimeout(audioTimer);audioIndex++;speakAudioChunk(session)};
+ utterance.onerror=e=>{if(session===audioSession&&speech===utterance)audioFailure(e.error)};
+ try{window.speechSynthesis.speak(utterance)}catch{audioFailure('synthesis-unavailable')}
+}
+function splitAudioText(text,limit=240){
+ const parts=[];let rest=text.trim();while(rest.length>limit){let cut=rest.lastIndexOf(' ',limit);if(cut<1)cut=limit;parts.push(rest.slice(0,cut));rest=rest.slice(cut).trim()}if(rest)parts.push(rest);return parts;
 }
 function toggleAudio(){
-  if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){alert('Este navegador no ofrece lectura en voz alta.');return}
-  if(audioMode==='speaking'){speechSynthesis.pause();audioMode='paused';updateAudioButton();return}
-  if(audioMode==='paused'){speechSynthesis.resume();audioMode='speaking';updateAudioButton();return}
-  if(!verses.length){alert('Primero espera a que cargue el capítulo.');return}
-  audioSession++;const session=audioSession;
-  speechSynthesis.cancel();audioChunks=[];audioIndex=0;
-  let chunk='';
-  verses.forEach((v,i)=>{
-    const part='Versículo '+(i+1)+'. '+v+' ';
-    if(chunk.length+part.length>1300&&chunk){audioChunks.push(chunk);chunk=''}
-    chunk+=part;
-  });
-  if(chunk)audioChunks.push(chunk);
-  if(!audioChunks.length)return;
-  audioMode='speaking';updateAudioButton();speakAudioChunk(session);
+ if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){showAudioHelp('Este navegador no ofrece lectura en voz alta. Abre la app en Safari o Chrome y vuelve a probar.');return}
+ if(audioMode==='starting'){stopAudio();return}
+ if(audioMode==='speaking'){try{window.speechSynthesis.pause();audioMode='paused';updateAudioButton()}catch{audioFailure('synthesis-unavailable')}return}
+ if(audioMode==='paused'){
+  audioMode='starting';updateAudioButton();armAudioWatchdog(audioSession,speech);
+  // Some engines resume without another start event.
+  if(speech)speech.onresume=()=>{clearTimeout(audioTimer);audioMode='speaking';updateAudioButton()};
+  try{window.speechSynthesis.resume();if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){clearTimeout(audioTimer);audioMode='speaking';updateAudioButton()}}catch{audioFailure('synthesis-unavailable')}return;
+ }
+ if(!verses.length){alert('Primero espera a que cargue el capítulo.');return}
+ audioSession++;clearTimeout(audioTimer);const session=audioSession;
+ try{if(window.speechSynthesis.speaking||window.speechSynthesis.pending||window.speechSynthesis.paused){window.speechSynthesis.cancel();window.speechSynthesis.resume()}}catch{}
+ audioChunks=verses.flatMap((v,i)=>splitAudioText('Versículo '+(i+1)+'. '+v));audioIndex=0;
+ if(audioChunks.length)speakAudioChunk(session);
+}
+function showAudioHelp(message='Elige una voz y comprueba el sonido antes de escuchar el capítulo.'){
+ const voices=loadAudioVoices().filter(v=>/^es(?:-|_|$)/i.test(v.lang));
+ openSheet('Configurar lectura en voz alta',`<p>${esc(message)}</p><p class="note">Sube el volumen multimedia y comprueba si el sonido sale por audífonos o Bluetooth. Si sigue sin sonar, prueba esta dirección en Safari.</p><label for="audioVoice">Voz en español</label><select id="audioVoice"><option value="">Automática</option>${voices.map(v=>`<option value="${esc(v.voiceURI)}"${v.voiceURI===ls.get('bib_voice')?' selected':''}>${esc(v.name)} · ${esc(v.lang)}${v.localService?' · local':''}</option>`).join('')}</select><p class="note">${voices.length?'Las voces locales permiten leer sin conexión si están disponibles en el dispositivo.':'El navegador aún no ha publicado voces en español. Puedes probar Automática o volver a abrir este panel.'}</p><button class="save" id="testVoice">Probar voz</button><p class="note" role="status" aria-live="polite" id="voiceStatus"></p><button class="act" id="retryChapter">Escuchar el capítulo desde el inicio</button>`);
+ $('audioVoice').onchange=()=>ls.set('bib_voice',$('audioVoice').value);
+ $('testVoice').onclick=()=>{
+  stopAudio();if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){$('voiceStatus').textContent='Este navegador no tiene disponible la función de voz.';return}
+  audioSession++;const session=audioSession;audioChunks=['Esta es una prueba de lectura de la Biblia en español.'];audioIndex=0;
+  $('voiceStatus').textContent='Iniciando la prueba de voz…';speakAudioChunk(session);
+  const utterance=speech;if(utterance){const started=utterance.onstart;utterance.onstart=()=>{started();if($('voiceStatus'))$('voiceStatus').textContent='La voz indicó que comenzó. Si no oyes nada, revisa la salida de sonido o prueba otra voz.'}}
+ };
+ $('retryChapter').onclick=()=>{stopAudio();closeSheet();toggleAudio()};
 }
 $('audio').onclick=toggleAudio;
 
@@ -956,6 +981,7 @@ function settings(msg){
   $('ff').onchange=()=>{ls.set('bib_font',$('ff').value);applyFont()};
   const sz=d=>{ls.set('bib_size',String(Math.max(14,Math.min(34,+(ls.get('bib_size')||19)+d))));applyFont()};
   $('fm').onclick=()=>sz(-2);$('fp').onclick=()=>sz(2);
+  const voiceButton=document.createElement('button');voiceButton.className='act';voiceButton.textContent='Configurar y probar lectura en voz alta';voiceButton.onclick=()=>showAudioHelp();$('sb').appendChild(voiceButton);
   $('backupopen').onclick=openBackup;
   $('offlineBtn').onclick=prepareOffline;
   const install=document.createElement('button');install.className='act';install.textContent='Descargar o instalar la app';install.onclick=offerOfflineDownload;$('sb').appendChild(install);
