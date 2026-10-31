@@ -641,7 +641,7 @@ function openBackup(){
       try{entries.forEach(([k,v])=>localStorage.setItem(k,v))}
       catch(err){prev.forEach(([k,v])=>{try{v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}});throw new Error('No hay espacio suficiente para restaurar. No se modificó nada.')}
       appNotice('Respaldo restaurado. Actualizando…',2500);setTimeout(()=>location.reload(),1200);
-    }catch(err){appNotice(err.message||'No se pudo restaurar el respaldo.',7000)}
+    }catch(err){appNotice(err instanceof SyntaxError?'El archivo no es un respaldo válido (no tiene formato JSON).':(err.message||'No se pudo restaurar el respaldo.'),7000)}
     finally{input.value=''}
   };
 }
