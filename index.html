@@ -360,6 +360,11 @@ mark.partial.h1{background:var(--h1)}mark.partial.h2{background:var(--h2)}mark.p
 #selectionTools>span{font-size:13px;font-weight:600}#selectionTools .colors{gap:5px;justify-content:space-between;margin-top:7px}#selectionTools button{width:38px;height:42px;min-width:0;border-radius:12px}
 .reading-mode #text>.v:first-of-type::first-letter{font-size:inherit}
 
+
+.study-tabs{grid-template-columns:repeat(auto-fit,minmax(86px,1fr))}
+.study-tree{border-left:2px solid var(--line);margin:10px 0 10px 8px;padding-left:15px}.study-tree ul{list-style:none;padding-left:18px;border-left:1px solid var(--line);margin:8px 0}.study-tree li{margin:9px 0}.family-label{display:inline-block;background:var(--acbg);color:var(--ac);padding:6px 10px;border-radius:9px;font-weight:600}.family-note{display:block;font-size:13px;color:var(--mut);margin:3px 0}
+.study-map{width:100%;height:auto;border:1px solid var(--line);border-radius:16px;background:var(--bg)}.study-map text{font-family:system-ui,sans-serif;font-size:13px;fill:var(--fg)}.study-map .water{fill:#b8dbed}.study-map circle{fill:var(--ac);stroke:var(--sh);stroke-width:2}.study-map .route{fill:none;stroke:var(--ac);stroke-width:3;stroke-dasharray:6 4}.study-map a:focus circle,.study-map a:hover circle{stroke:var(--gold);stroke-width:4}
+
 </style>
 </head>
 <body>
@@ -374,8 +379,8 @@ mark.partial.h1{background:var(--h1)}mark.partial.h2{background:var(--h2)}mark.p
 <section id="sh" role="dialog" aria-modal="true" aria-labelledby="st" tabindex="-1"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.12';
-const CACHE_NAME='biblia-rvr1960-2026-10-30-13';
+const VERSION='2026-10-30.13';
+const CACHE_NAME='biblia-rvr1960-2026-10-30-14';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const $=id=>document.getElementById(id);
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
@@ -882,16 +887,24 @@ async function prepareOffline(){
     if(!('caches' in window))throw new Error('Este navegador no permite guardar la Biblia para uso sin conexión.');
     const cache=await caches.open(CACHE_NAME);
     await cache.put(url,response.clone());
-    BIBLE=data;BIBLE_LOADING=Promise.resolve(data);
+    if(!('serviceWorker' in navigator))throw new Error('Este navegador no permite preparar la app completa. Ábrela en Safari o Chrome mediante HTTPS.');
+    const registration=await navigator.serviceWorker.getRegistration()||await navigator.serviceWorker.register('./sw.js');
+    if(!registration)throw new Error('No se pudo preparar la instalación. Vuelve a intentarlo.');
+    for(const name of ['index.html','manifest.webmanifest','icon-192.png','icon-512.png','apple-touch-icon.png']){
+      const asset=new URL(name,document.baseURI),r=await fetch(asset,{cache:'reload'});if(!r.ok)throw new Error('No se pudo guardar '+name+'. Intenta de nuevo.');await cache.put(asset,r);
+    }
+    BIBLE=data;BIBLE_LOADING=Promise.resolve(data);ls.set('bib_offline_ready','1');
     let persistent='';
     try{if(navigator.storage&&navigator.storage.persist){const ok=await navigator.storage.persist();persistent=ok?' El navegador concedió almacenamiento persistente.':' El navegador podría liberar datos locales si necesita espacio.'}}catch(e){}
     let size='';
     try{const est=await navigator.storage.estimate();if(est&&est.usage)size=' Almacenamiento utilizado: '+(est.usage/1048576).toFixed(1)+' MB.'}catch(e){}
     info.textContent='Biblia descargada, verificada y guardada en este dispositivo. Ya puedes probar el modo avión.'+persistent+size;
-    btn.textContent='Biblia lista sin conexión ✓';
+    btn.textContent='Biblia y estudio listos sin conexión ✓';
+    return true;
   }catch(e){
     info.textContent=e.message||'No se pudo preparar la lectura sin conexión.';
     btn.textContent='Intentar nuevamente';
+    return false;
   }finally{btn.disabled=false}
 }
 
@@ -945,6 +958,7 @@ function settings(msg){
   $('fm').onclick=()=>sz(-2);$('fp').onclick=()=>sz(2);
   $('backupopen').onclick=openBackup;
   $('offlineBtn').onclick=prepareOffline;
+  const install=document.createElement('button');install.className='act';install.textContent='Descargar o instalar la app';install.onclick=offerOfflineDownload;$('sb').appendChild(install);
 }
 $('cfg').onclick=()=>settings();
 
@@ -1013,7 +1027,8 @@ function studyRefButtons(refs){
  return (refs||[]).map(ref=>`<button type="button" class="study-ref" data-study-ref="${esc(ref)}">${esc(ref)}</button>`).join('');
 }
 function openStudyHub(tab='temas',filter=''){
- const tabs=[['temas','Temas'],['personajes','Personajes'],['tiempo','Cronología'],['lugares','Lugares']];
+ if(typeof tab!=='string')tab='temas';
+ const tabs=[['temas','Temas'],['personajes','Personajes'],['tiempo','Cronología'],['lugares','Lugares'],['curiosidades','Curiosidades'],['mapas','Mapas'],['familias','Familias']];
  const active=tab;
  let body='';
  if(tab==='temas'){
@@ -1028,7 +1043,8 @@ function openStudyHub(tab='temas',filter=''){
    const arr=STUDY_PLACES.filter(x=>norm(x.name+' '+x.region+' '+x.desc).includes(norm(filter)));
    body=arr.map((x,i)=>`<button class="study-item" data-study-place="${STUDY_PLACES.indexOf(x)}"><span class="study-kicker">${x.region}</span><b>${x.name}</b><small>${x.desc}</small></button>`).join('')||'<p class="note">No hay lugares que coincidan con tu búsqueda.</p>';
  }
- openSheet('Centro de estudio',`<div class="study-intro"><strong>Explora las Escrituras</strong><p>Estudia temas, personas, períodos y lugares a partir de pasajes de la RVR1960. Abre las referencias para leer el texto bíblico.</p></div><div class="study-tabs">${tabs.map(([id,label])=>`<button class="${active===id?'active':''}" data-study-tab="${id}">${label}</button>`).join('')}</div><input class="study-search" id="studyFilter" type="search" placeholder="Filtrar ${tab==='temas'?'temas':tab==='personajes'?'personajes':tab==='lugares'?'lugares':'(la cronología no requiere filtro)'}" value="${esc(filter)}" ${tab==='tiempo'?'disabled':''}>${body}<p class="study-note">Material de orientación para el estudio personal. Comprueba cada explicación leyendo el pasaje completo y su contexto.</p>`);
+ if(['curiosidades','mapas','familias'].includes(tab))body=studyExtraCards(tab,filter);
+ openSheet('Centro de estudio',`<div class="study-intro"><strong>Explora las Escrituras</strong><p>Explora temas, personajes, curiosidades, mapas y familias. Todo el material está guardado en la app. Abre las referencias para leer el texto bíblico.</p></div><div class="study-tabs">${tabs.map(([id,label])=>`<button class="${active===id?'active':''}" data-study-tab="${id}">${label}</button>`).join('')}</div><input class="study-search" id="studyFilter" type="search" placeholder="Filtrar ${tab==='temas'?'temas':tab==='personajes'?'personajes':tab==='lugares'?'lugares':tab==='tiempo'?'(la cronología no requiere filtro)':tab}" value="${esc(filter)}" ${tab==='tiempo'?'disabled':''}>${body}<p class="study-note">Material de orientación para el estudio personal. Comprueba cada explicación leyendo el pasaje completo y su contexto.</p>`);
 }
 function showStudyDetail(type,index){
  let x,heading='';
@@ -1172,9 +1188,46 @@ document.addEventListener('selectionchange',collectTextSelection);
 $('text').addEventListener('pointerup',()=>setTimeout(collectTextSelection,0));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('dismissSelection').click()}});
 
+const STUDY_CURIOSITIES=[{"name": "La Biblia es una biblioteca", "desc": "Reúne narraciones, poesía, proverbios, profecía, cartas y visiones. Leer un salmo como una ley o una parábola como una crónica cambia su sentido.", "refs": ["Salmos 1", "Lucas 1:1-4", "Apocalipsis 1:1-3"]}, {"name": "Pablo también trabajaba con sus manos", "desc": "En Corinto se relacionó con Aquila y Priscila por compartir el oficio de hacer tiendas. El relato combina trabajo y enseñanza.", "refs": ["Hechos 18:1-4"]}, {"name": "Lucas explica cómo preparó su relato", "desc": "El prólogo menciona relatos anteriores, testigos e investigación ordenada. El texto está dedicado a Teófilo.", "refs": ["Lucas 1:1-4", "Hechos 1:1-3"]}, {"name": "Jesús lloró", "desc": "El relato de Lázaro presenta tanto el dolor de sus allegados como las lágrimas de Jesús. La narración no trata el duelo como falta de fe.", "refs": ["Juan 11:28-36"]}, {"name": "El samaritano sorprendía a sus oyentes", "desc": "La conversación pasa de preguntar quién cuenta como prójimo a reconocer a quien practicó misericordia. La identidad del ayudante hace más incisivo el ejemplo.", "refs": ["Lucas 10:25-37"]}, {"name": "Rut aparece en la genealogía de Mateo", "desc": "Rut, una mujer moabita, es presentada como madre de Obed en el libro de Rut y en la genealogía inicial de Mateo.", "refs": ["Rut 1:4", "Rut 4:13-22", "Mateo 1:1-6"]}, {"name": "El texto no dice que fueran tres magos", "desc": "Mateo menciona magos de oriente y tres tipos de presentes, pero no informa su número ni sus nombres. No hay que confundir el relato con tradiciones posteriores.", "refs": ["Mateo 2:1-12"]}, {"name": "El fruto del jardín no recibe nombre", "desc": "Génesis habla del fruto del árbol, sin llamarlo manzana. Esa identificación no procede del pasaje.", "refs": ["Génesis 3:1-7"]}, {"name": "Los salmos incluyen protestas y preguntas", "desc": "La oración bíblica también expresa abandono, miedo y desconcierto. El lamento invita a hablar con honestidad ante Dios.", "refs": ["Salmos 13", "Salmos 22:1-5"]}, {"name": "Jesús contó dos versiones parecidas del gran mandamiento", "desc": "Mateo y Marcos vinculan el amor a Dios y al prójimo con textos de Deuteronomio y Levítico. Cada evangelista los sitúa en su narración.", "refs": ["Mateo 22:34-40", "Marcos 12:28-34", "Deuteronomio 6:4-5", "Levítico 19:18"]}, {"name": "La iglesia discutió cómo recibir a los gentiles", "desc": "Hechos 15 describe un proceso de debate, escucha, lectura de las Escrituras y comunicación a las comunidades.", "refs": ["Hechos 15:1-29"]}, {"name": "El amor de 1 Corintios 13 tiene un contexto comunitario", "desc": "El pasaje está entre los capítulos sobre dones y culto. Su función incluye corregir rivalidad y búsqueda de prestigio en la iglesia.", "refs": ["1 Corintios 12:27-31", "1 Corintios 13", "1 Corintios 14:1-5"]}];
+const STUDY_FAMILIES=[{"name": "Abraham y sus hijos", "desc": "Ramas seleccionadas: Ismael, Isaac y los hijos de Cetura. Las madres se distinguen dentro del árbol.", "refs": ["Génesis 16:15-16", "Génesis 21:1-3", "Génesis 25:1-6"], "nodes": [{"label": "Abraham", "children": [{"label": "Ismael", "note": "Madre: Agar"}, {"label": "Isaac", "note": "Madre: Sara", "children": [{"label": "Esaú", "note": "Madre: Rebeca"}, {"label": "Jacob", "note": "Madre: Rebeca"}]}, {"label": "Zimram, Jocsán, Medán, Madián, Isbac y Súa", "note": "Madre: Cetura"}]}]}, {"name": "La familia de Jacob", "desc": "Los doce hijos varones se agrupan según sus madres. También se incluye a Dina; no se afirma que sea un registro completo de todos los descendientes.", "refs": ["Génesis 29:31-35", "Génesis 30:1-24", "Génesis 35:16-26", "Génesis 34:1"], "nodes": [{"label": "Jacob (Israel)", "children": [{"label": "Lea", "note": "Madre de:", "children": [{"label": "Rubén, Simeón, Leví, Judá, Isacar, Zabulón y Dina"}]}, {"label": "Raquel", "note": "Madre de:", "children": [{"label": "José y Benjamín"}]}, {"label": "Bilha", "note": "Madre de:", "children": [{"label": "Dan y Neftalí"}]}, {"label": "Zilpa", "note": "Madre de:", "children": [{"label": "Gad y Aser"}]}]}]}, {"name": "De Rut a David", "desc": "Línea familiar seleccionada. Obed es hijo de Booz y Rut. La conexión con David aparece al final del libro de Rut.", "refs": ["Rut 4:13-22", "Mateo 1:3-6"], "nodes": [{"label": "Booz y Rut", "children": [{"label": "Obed", "children": [{"label": "Isaí", "children": [{"label": "David"}]}]}]}]}, {"name": "Moisés, Aarón y María", "desc": "Esta ficha distingue la relación de hermanos de la descendencia. María es aquí la hermana de Moisés, no la madre de Jesús.", "refs": ["Éxodo 6:20", "Números 26:59", "Éxodo 6:23"], "nodes": [{"label": "Amram y Jocabed", "children": [{"label": "Aarón", "note": "Hermano de Moisés y María", "children": [{"label": "Nadab, Abiú, Eleazar e Itamar", "note": "Madre: Elisabet"}]}, {"label": "Moisés", "note": "Hermano de Aarón y María"}, {"label": "María", "note": "Hermana de Aarón y Moisés"}]}]}];
+const STUDY_MAPS=[{"name": "Regiones del ministerio de Jesús", "desc": "Esquema de orientación norte-sur: Galilea, Samaria y Judea. Sin escala ni fronteras históricas exactas.", "refs": ["Juan 4:1-4", "Lucas 2:1-7", "Mateo 4:12-17"], "points": [["Nazaret", 155, 90, "Lucas 4:16-21"], ["Capernaum", 270, 45, "Marcos 1:21-28"], ["Samaria", 170, 210, "Juan 4:3-30"], ["Jerusalén", 170, 320, "Lucas 19:28-40"], ["Belén", 155, 375, "Lucas 2:1-7"]], "kind": "land"}, {"name": "Jerusalén, Judea y Samaria", "desc": "Etapas narrativas de la expansión del testimonio en Hechos. El trazado representa la secuencia, no una ruta de viaje exacta.", "refs": ["Hechos 1:8", "Hechos 8:4-8", "Hechos 11:19-26"], "points": [["Jerusalén", 180, 350, "Hechos 2:1-13"], ["Samaria", 180, 235, "Hechos 8:4-8"], ["Antioquía", 245, 70, "Hechos 11:19-26"]], "kind": "route"}, {"name": "Pablo: de Filipos a Corinto", "desc": "Orden de algunas ciudades visitadas en Hechos 16–18. Es un esquema del recorrido narrado; no representa distancias, costas ni el itinerario completo.", "refs": ["Hechos 16:11-15", "Hechos 17:1-15", "Hechos 18:1-11"], "points": [["Filipos", 290, 60, "Hechos 16:11-15"], ["Tesalónica", 205, 145, "Hechos 17:1-9"], ["Berea", 110, 210, "Hechos 17:10-15"], ["Atenas", 270, 305, "Hechos 17:16-34"], ["Corinto", 130, 380, "Hechos 18:1-11"]], "kind": "route"}];
+STUDY_PEOPLE.push(...[{"name": "Sara", "role": "Esposa de Abraham y madre de Isaac.", "lesson": "Su relato se desarrolla entre la promesa, la espera y el nacimiento de Isaac.", "refs": ["Génesis 18:1-15", "Génesis 21:1-7"]}, {"name": "Agar", "role": "Madre de Ismael, presentada como sierva egipcia de Sara.", "lesson": "Su historia muestra vulnerabilidad familiar, huida y cuidado en el desierto.", "refs": ["Génesis 16", "Génesis 21:8-21"]}, {"name": "Rebeca", "role": "Esposa de Isaac y madre de Esaú y Jacob.", "lesson": "Participa en una historia familiar marcada por el viaje, la promesa y la disputa por la bendición.", "refs": ["Génesis 24:15-67", "Génesis 27:1-29"]}, {"name": "Débora", "role": "Profetisa y jueza en Israel.", "lesson": "Actúa junto con Barac en la liberación narrada en Jueces. El capítulo siguiente celebra los acontecimientos mediante poesía.", "refs": ["Jueces 4:1-16", "Jueces 5:1-12"]}, {"name": "Samuel", "role": "Profeta relacionado con la transición hacia la monarquía.", "lesson": "Su historia une llamado, discernimiento y evaluación del liderazgo de Saúl y David.", "refs": ["1 Samuel 3", "1 Samuel 8:1-22"]}, {"name": "Elías", "role": "Profeta que confronta el culto a Baal en el reino del norte.", "lesson": "Su historia incluye confrontación, provisión y una experiencia de agotamiento y renovación.", "refs": ["1 Reyes 18:20-40", "1 Reyes 19:1-18"]}, {"name": "Eliseo", "role": "Profeta que continúa el ministerio relacionado con Elías.", "lesson": "Los relatos destacan tanto conflictos políticos como cuidado de familias y personas vulnerables.", "refs": ["2 Reyes 2:1-15", "2 Reyes 4:1-37"]}, {"name": "Nehemías", "role": "Servidor del rey persa que impulsa la reconstrucción de Jerusalén.", "lesson": "Además de los muros, el relato aborda la deuda, la organización y la responsabilidad comunitaria.", "refs": ["Nehemías 2:1-20", "Nehemías 5:1-19"]}, {"name": "Priscila y Aquila", "role": "Matrimonio colaborador en el anuncio del evangelio.", "lesson": "Trabajan con Pablo y explican con mayor precisión el camino de Dios a Apolos.", "refs": ["Hechos 18:1-4", "Hechos 18:24-28", "Romanos 16:3-5"]}, {"name": "Timoteo", "role": "Colaborador de Pablo en la misión y el cuidado de las iglesias.", "lesson": "Hechos narra su incorporación al viaje; las cartas lo muestran al servicio de comunidades concretas.", "refs": ["Hechos 16:1-5", "Filipenses 2:19-24"]}, {"name": "Lidia", "role": "Vendedora de púrpura que recibe el mensaje en Filipos.", "lesson": "El relato destaca su escucha y la hospitalidad de su casa.", "refs": ["Hechos 16:11-15", "Hechos 16:40"]}]);
+
+function studyExtraCards(tab,filter){
+ const data=tab==='curiosidades'?STUDY_CURIOSITIES:tab==='mapas'?STUDY_MAPS:STUDY_FAMILIES;
+ return data.map((x,i)=>({...x,index:i})).filter(x=>norm(x.name+' '+x.desc).includes(norm(filter))).map(x=>`<button class="study-item" data-study-extra="${tab}" data-extra-index="${x.index}"><span class="study-kicker">${tab==='familias'?'Árbol familiar':tab==='mapas'?'Mapa esquemático':'Para descubrir'}</span><b>${esc(x.name)}</b><small>${esc(x.desc)}</small></button>`).join('')||'<p>No hay resultados para esta búsqueda.</p>';
+}
+function familyNodes(nodes){return '<ul>'+nodes.map(n=>'<li><span class="family-label">'+esc(n.label)+'</span>'+(n.note?'<span class="family-note">'+esc(n.note)+'</span>':'')+(n.children?familyNodes(n.children):'')+'</li>').join('')+'</ul>'}
+function mapSvg(map){
+ const route=map.kind==='route'?'<polyline class="route" points="'+map.points.map(p=>p[1]+','+p[2]).join(' ')+'"/>':'<path class="water" d="M285 72 Q315 88 290 120 Q265 94 285 72 M286 122 L290 295 L282 295 L278 122 Z M272 300 Q315 300 300 365 Q270 375 272 300"/>';
+ return `<svg class="study-map" viewBox="0 0 400 440" role="img" aria-label="${esc(map.name)}: esquema orientativo sin escala"><title>${esc(map.name)}</title><text x="18" y="25">N ↑ · Esquema sin escala</text>${route}${map.points.map((p,i)=>`<a href="#" data-study-ref="${esc(p[3])}" aria-label="${esc(p[0]+' · '+p[3])}"><circle cx="${p[1]}" cy="${p[2]}" r="7"/><text x="${Math.min(p[1]+12,290)}" y="${p[2]+22}">${map.kind==='route'?(i+1)+'. ':''}${esc(p[0])}</text></a>`).join('')}</svg>`;
+}
+function openStudyExtra(tab,index){
+ const data=tab==='curiosidades'?STUDY_CURIOSITIES:tab==='mapas'?STUDY_MAPS:STUDY_FAMILIES,x=data[index];if(!x)return;
+ openSheet(x.name,`<h3>${esc(x.name)}</h3><p>${esc(x.desc)}</p>${tab==='familias'?'<div class="study-tree">'+familyNodes(x.nodes)+'</div><p class="study-note">Árbol parcial de las personas indicadas. Cada nivel señala parentesco; las etiquetas de madres se indican expresamente.</p>':tab==='mapas'?mapSvg(x)+'<p class="study-note">Pulsa un punto para leer su pasaje. La ubicación es orientativa; no es cartografía arqueológica ni sirve para navegación.</p>':''}<h3>Compruébalo en la Biblia</h3>${studyRefButtons(x.refs)}<button class="act" id="extraBack">Volver a ${tab==='familias'?'Familias':tab==='mapas'?'Mapas':'Curiosidades'}</button>`);
+ $('extraBack').onclick=()=>openStudyHub(tab);
+}
+$('sb').addEventListener('click',e=>{const card=e.target.closest('[data-study-extra]');if(card)openStudyExtra(card.dataset.studyExtra,+card.dataset.extraIndex);if(e.target.closest('a[data-study-ref]'))e.preventDefault()});
+let installOffer=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installOffer=e});
+window.addEventListener('appinstalled',()=>{installOffer=null;ls.set('bib_installed','1')});
+function offerOfflineDownload(){
+ ls.set('bib_download_offer','1');
+ const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+ const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1;
+ openSheet('Lee también sin internet',`<h3>¿Quieres descargar la app para leer sin internet?</h3><p>Guarda la Biblia, los contextos, los mapas y las fichas de estudio en este dispositivo. Necesitas conexión durante la descarga.</p><button class="save" id="offlineBtn">Sí, descargar</button><p class="note" id="offlineInfo" role="status" aria-live="polite">La descarga se guarda en este navegador.</p><p class="note" id="installInfo">${standalone?'Ya estás usando la app instalada.':ios?'Para ponerla en Inicio: abre esta dirección en Safari, toca Compartir y elige Añadir a pantalla de inicio.':installOffer?'Tu navegador permite instalar la app.':'Si tu navegador lo permite, abre su menú y elige Instalar app o Añadir a pantalla de inicio.'}</p><button class="act" id="laterDownload">Ahora no</button>`);
+ $('laterDownload').onclick=closeSheet;
+ $('offlineBtn').onclick=async()=>{
+  const event=installOffer;installOffer=null;
+  let installation=null;if(event&&!standalone){try{event.prompt();installation=event.userChoice}catch{}}
+  const ok=await prepareOffline();
+  if(installation){try{const choice=await installation;if($('installInfo'))$('installInfo').textContent=choice.outcome==='accepted'?'Instalación aceptada. '+(ok?'El contenido está guardado sin conexión.':'Reintenta la descarga para guardar el contenido.'):'Puedes instalarla más adelante desde el menú del navegador.'}catch{}}
+ };
+}
+
 // Arranque: inicio, y descarga de la Biblia en segundo plano para lectura offline.
 showHome();
-window.addEventListener('load',()=>warmOfflineBible(),{once:true});
+window.addEventListener('load',()=>{if(!ls.get('bib_download_offer'))offerOfflineDownload();},{once:true});
 </script>
 </body>
 </html>
