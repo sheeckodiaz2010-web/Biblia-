@@ -392,8 +392,8 @@ html{touch-action:pan-x pan-y}input,select,textarea{font-size:16px}
 <section id="sh" role="dialog" aria-modal="true" aria-labelledby="st" tabindex="-1"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
-const VERSION='2026-10-30.20';
-const CACHE_NAME='biblia-rvr1960-2026-10-30-20';
+const VERSION='2026-11-01.21';
+const CACHE_NAME='biblia-rvr1960-2026-11-01-21';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const $=id=>document.getElementById(id);
 var _lf=0;function lsFail(){if(Date.now()-_lf<15000)return;_lf=Date.now();appNotice('⚠ No se pudo guardar en este dispositivo (almacenamiento lleno o bloqueado). Haz un respaldo desde Ajustes.',8000)}
@@ -752,7 +752,7 @@ async function renderHome(){
     </div></section>
     <section class="home-section"><div class="section-title"><h2>Tu recorrido</h2><span>Este dispositivo</span></div><div class="home-stats"><div class="home-stat"><strong>${days}</strong><span>Días con lectura</span></div><div class="home-stat"><strong>${chapters}</strong><span>Capítulos abiertos</span></div></div></section>
     <section class="home-section"><div class="section-title"><h2>Tu plan actual</h2><span>Progreso</span></div><div class="plan-card"><div class="plan-top"><b>${plan?esc(plan.n):'Empieza un plan de lectura'}</b><span>${plan?planPct+'%':'A tu ritmo'}</span></div><div class="plan-track"><i style="width:${planPct}%"></i></div><p>${esc(planLine)}</p><button id="homePlanAction">${plan?'Ver mi plan':'Elegir un plan'}</button></div></section>
-    <div class="home-foot">La Palabra de Dios, contigo donde estés · RVR1960</div>`;
+    <div class="duo"><button class="mini" data-spiritual="prayer"><b>Diario de oración</b><small>Peticiones y gratitud</small><em>Abrir ›</em></button><button class="mini" data-spiritual="devotion"><b>Devocional guiado</b><small>Lee, reflexiona y actúa</small><em>Comenzar ›</em></button></div><div class="home-foot">La Palabra de Dios, contigo donde estés · RVR1960</div>`;
   const [db,dc,dv]=dailyVerseRef();
   try{
     const t=(await chapterVerses(db,dc))[dv-1];
@@ -1317,7 +1317,48 @@ document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.pre
 showHome();
 window.addEventListener('load',()=>{if(!ls.get('bib_download_offer'))offerOfflineDownload();},{once:true});
 </script>
-</body>
+<script>
+
+// Diario y devocionales: datos personales incluidos en el respaldo bib_.
+const DEVOTIONS=[
+ ['Amar con acciones',45,12,9,18,'El amor se expresa en la convivencia: hospitalidad, paciencia y respeto. Este pasaje invita a practicarlo incluso ante las diferencias.','¿A quién puedo tratar hoy con más consideración?','Realiza una acción concreta de ayuda sin esperar reconocimiento.'],
+ ['Llevar las cargas',47,6,1,5,'Pablo relaciona el cuidado mutuo con la humildad y la responsabilidad personal. Acompañar a otra persona también requiere reconocer nuestros límites.','¿Quién necesita que lo escuche sin juzgar?','Ofrece unos minutos de escucha a alguien cercano.'],
+ ['Escuchar primero',58,1,19,25,'Santiago une escuchar, controlar la ira y poner en práctica lo aprendido. La lectura invita a revisar nuestra respuesta cotidiana.','¿En qué conversación necesito escuchar mejor?','Deja terminar a la otra persona antes de responder.'],
+ ['Orar con honestidad',18,13,1,6,'Este salmo pasa de la pregunta dolorosa a una expresión de confianza. Presenta el lamento como parte de la oración.','¿Qué preocupación quiero expresar con sinceridad?','Escribe una oración breve con lo que hoy sientes.'],
+ ['La misericordia cercana',41,10,25,37,'La parábola presenta al prójimo mediante una acción de misericordia. Invita a mirar la necesidad más allá de las barreras sociales.','¿Qué necesidad cercana he pasado por alto?','Busca una manera segura y posible de ayudar hoy.'],
+ ['Gratitud cotidiana',49,4,4,9,'La exhortación reúne oración, gratitud y atención a lo verdadero y justo. No exige negar las dificultades.','¿Qué puedo agradecer aun en un día difícil?','Anota tres motivos concretos de gratitud.'],
+ ['Servir con humildad',42,13,1,17,'El lavamiento de los pies presenta el servicio mediante un gesto concreto de Jesús hacia sus discípulos.','¿Qué tarea sencilla puedo asumir para aliviar a otra persona?','Ayuda en una tarea que normalmente dejas a los demás.']
+];
+function spiritualData(key){const x=J(key);return x&&typeof x==='object'&&!Array.isArray(x)?x:{}}
+function spiritualSave(key,value){return ls.set(key,JSON.stringify(value))}
+function prayerDiary(filter='all'){
+ const data=spiritualData('bib_prayers');
+ const items=Object.entries(data).filter(([,x])=>x&&typeof x==='object'&&(filter==='all'||(filter==='answered')===!!x.answered)).sort((a,b)=>String(b[1].created).localeCompare(String(a[1].created)));
+ openSheet('Diario de oración',`<p class="note">Tus peticiones se guardan en este dispositivo y se incluyen en el respaldo de Ajustes.</p><button class="save" id="prayerNew">Nueva petición</button><label for="prayerFilter">Mostrar</label><select id="prayerFilter"><option value="all">Todas</option><option value="pending">Pendientes</option><option value="answered">Respondidas</option></select><div>${items.length?items.map(([id,p])=>`<article class="plan-card"><b>${esc(p.title)}</b><p class="note">${esc(p.created)} · ${p.answered?'Respondida':'Pendiente'}</p><p style="white-space:pre-wrap">${esc(p.text)}</p>${p.answer?`<p style="white-space:pre-wrap"><b>Gratitud / respuesta:</b> ${esc(p.answer)}</p>`:''}<button data-prayer-edit="${esc(id)}">Editar</button></article>`).join(''):'<p>Aquí aparecerán tus peticiones. Puedes comenzar con lo que hoy llevas en el corazón.</p>'}</div>`);
+ $('prayerFilter').value=filter;$('prayerFilter').onchange=e=>prayerDiary(e.target.value);$('prayerNew').onclick=()=>prayerEdit();
+ $('sb').querySelectorAll('[data-prayer-edit]').forEach(x=>x.onclick=()=>prayerEdit(x.dataset.prayerEdit));
+}
+function prayerEdit(id){
+ const data=spiritualData('bib_prayers'),p=data[id]||{};
+ openSheet(id?'Editar petición':'Nueva petición',`<label for="prayerTitle">Título</label><input id="prayerTitle" maxlength="120" value="${esc(p.title||'')}" placeholder="Mi petición"><label for="prayerText">Petición</label><textarea class="notearea" id="prayerText" maxlength="12000">${esc(p.text||'')}</textarea><label><input type="checkbox" id="prayerAnswered" ${p.answered?'checked':''}> Oración respondida</label><label for="prayerAnswer">Gratitud o respuesta recibida</label><textarea class="notearea" id="prayerAnswer" maxlength="12000">${esc(p.answer||'')}</textarea><button class="save" id="prayerSave">Guardar</button><button class="act" id="prayerBack">Volver</button>${id?'<button class="act" id="prayerDelete">Eliminar petición</button>':''}`);
+ $('prayerBack').onclick=()=>prayerDiary();
+ $('prayerSave').onclick=()=>{const title=$('prayerTitle').value.trim(),text=$('prayerText').value.trim();if(!title||!text){appNotice('Escribe un título y tu petición.');return}const fresh=spiritualData('bib_prayers');fresh[id||('p'+Date.now()+Math.random().toString(36).slice(2))]={title,text,created:p.created||today(),answered:$('prayerAnswered').checked,answer:$('prayerAnswer').value.trim()};if(spiritualSave('bib_prayers',fresh))prayerDiary()};
+ if(id)$('prayerDelete').onclick=async()=>{if(!await appConfirm('¿Eliminar esta petición?','Eliminar'))return;const fresh=spiritualData('bib_prayers');delete fresh[id];if(spiritualSave('bib_prayers',fresh))prayerDiary()};
+}
+async function devotionOpen(day=today()){
+ const parts=day.split('-').map(Number),index=Math.floor(Date.UTC(parts[0],parts[1]-1,parts[2])/86400000)%DEVOTIONS.length;
+ const [title,b,c,first,last,reflection,question,action]=DEVOTIONS[index];
+ const all=spiritualData('bib_devotions'),saved=all[day]||{};
+ openSheet('Devocional · '+day,`<h3>${esc(title)}</h3><p class="note">Ciclo de 7 lecturas · 5 minutos</p><h3>1. Lectura bíblica · RVR1960</h3><div id="devPassage" role="status">Cargando pasaje…</div><h3>2. Reflexión guiada</h3><p class="note">Texto de acompañamiento; no forma parte de la Biblia.</p><p>${esc(reflection)}</p><h3>3. Pregunta personal</h3><label for="devThought">${esc(question)}</label><textarea class="notearea" maxlength="12000" id="devThought">${esc(saved.thought||'')}</textarea><h3>4. Una acción para hoy</h3><p>${esc(action)}</p><label><input id="devComplete" type="checkbox" ${saved.complete?'checked':''}> Marcar como completado</label><button class="save" id="devSave">Guardar reflexión</button><button class="act" id="devHistory">Mis devocionales</button>`);
+ const target=$('devPassage');
+ $('devSave').onclick=()=>{const fresh=spiritualData('bib_devotions');fresh[day]={thought:$('devThought').value.trim(),complete:$('devComplete').checked,title};if(spiritualSave('bib_devotions',fresh))appNotice('Reflexión guardada.')};
+ $('devHistory').onclick=devotionHistory;
+ try{const verses=await chapterVerses(b,c);if(target.isConnected)target.innerHTML=`<p><b>${esc(B[b][0])} ${c}:${first}–${last}</b></p>`+verses.slice(first-1,last).map((v,i)=>`<p><sup>${first+i}</sup> ${esc(v)}</p>`).join('')}catch(e){if(target.isConnected)target.textContent='No se pudo cargar el pasaje. Descarga la Biblia desde Ajustes y vuelve a intentarlo.'}
+}
+function devotionHistory(){const data=spiritualData('bib_devotions');openSheet('Mis devocionales','<p class="note">Guarda la reflexión antes de salir para conservar tus cambios.</p><button class="save" id="devToday">Devocional de hoy</button>'+Object.keys(data).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort().reverse().map(day=>`<button class="act" data-dev-day="${day}">${day} · ${esc(data[day].title||'Devocional')} ${data[day].complete?'✓':''}</button>`).join(''));$('devToday').onclick=()=>devotionOpen();$('sb').querySelectorAll('[data-dev-day]').forEach(x=>x.onclick=()=>devotionOpen(x.dataset.devDay))}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-spiritual]');if(b)b.dataset.spiritual==='prayer'?prayerDiary():devotionOpen()});
+
+</script></body>
 <!-- Licencias de las fuentes integradas
 Lora
 Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic), with Reserved Font Name "Lora".
