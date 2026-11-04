@@ -883,17 +883,31 @@ function showAudioHelp(message=''){
 $('audio').onclick=toggleAudio;
 
 /* Cargar capítulo */
+/* Guarda dónde se quedó la lectura (posición y versículo superior) */
+let posTimer=null;
+function savePosition(){
+ try{
+  if(currentView!=='reader'||!document.querySelector('#text .v'))return;
+  let top=null;for(const el of document.querySelectorAll('#text .v[data-v]')){if(el.getBoundingClientRect().bottom>0){top=+el.dataset.v;break}}
+  ls.set('bib_pos',JSON.stringify({b:S.b,c:S.c,y:Math.round(window.scrollY),v:top}));
+ }catch(e){}
+}
+window.addEventListener('scroll',()=>{clearTimeout(posTimer);posTimer=setTimeout(savePosition,300)},{passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)savePosition()});
+window.addEventListener('pagehide',savePosition);
 async function load(){hideSelectionTools();
   const generation=++loadGeneration,b=S.b,c=S.c;
   stopAudio();
   const [es,en]=B[S.b];
   $('pick').textContent=es+' '+S.c+' ▾';setVer();
   $('text').innerHTML='<p class="msg">Cargando…</p>';
-  ls.set('bib_pos',JSON.stringify({b:S.b,c:S.c}));
+  const prevPos=J('bib_pos');const resume=(prevPos.b===S.b&&prevPos.c===S.c&&!S.v&&typeof prevPos.y==='number')?prevPos:null;
+  ls.set('bib_pos',JSON.stringify(resume?{b:S.b,c:S.c,y:resume.y,v:resume.v}:{b:S.b,c:S.c}));
   try{
     const loaded=await chapterVerses(b,c);if(generation!==loadGeneration)return;verses=loaded;
     buildText();markRead(S.b,S.c);
     if(S.v){const el=document.querySelector(`.v[data-v="${S.v}"]`);if(el)el.scrollIntoView({block:'center'})}
+    else if(resume){requestAnimationFrame(()=>window.scrollTo(0,resume.y))}
     else window.scrollTo(0,0);
 
   }catch(e){
