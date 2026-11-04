@@ -388,7 +388,7 @@ html{touch-action:pan-x pan-y}input,select,textarea{font-size:16px}
 <nav id="tabs" aria-label="Navegación principal"><button data-t="read" id="tab_read"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C6 4.500 9.500 4.500 12 6.500c2.500-2 6-2 9-1V19c-3-1-6.500-1-9 1-2.500-2-6-2-9-1z"/><path d="M12 6.500V20"/></svg><span>Lectura</span></button><button data-t="plan" id="tab_plan"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M8 17h2"/></svg><span>Planes</span></button><button data-t="home" id="tab_home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg><span>Inicio</span></button><button data-t="notes" id="tab_notes"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.500" width="14" height="17" rx="2.500"/><path d="M9 8.500h6M9 12h6M9 15.500h4"/></svg><span>Notas</span></button><button data-t="more" id="tab_more"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.500" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18.500" cy="12" r="1"/></svg><span>Más</span></button></nav>
 <div id="upd" role="status"><span>Hay una versión nueva de la app.</span><button id="updb">Actualizar</button><button id="updx" aria-label="Cerrar aviso">✕</button></div>
 <div id="ov"></div>
-<div id="selectionTools" role="region" aria-label="Marcar texto seleccionado" hidden><span>Versículos seleccionados</span><div class="colors"><button class="c1" data-mark="1" aria-label="Remarcar amarillo"></button><button class="c2" data-mark="2" aria-label="Remarcar verde"></button><button class="c3" data-mark="3" aria-label="Remarcar azul"></button><button class="c4" data-mark="4" aria-label="Remarcar rosa"></button><button class="c5" data-mark="5" aria-label="Subrayar versículo">U</button><button data-mark="0" aria-label="Quitar marca del versículo">⌫</button><button id="shareSel" aria-label="Compartir texto seleccionado"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 12v7h14v-7"/></svg></button><button id="dismissSelection" aria-label="Cerrar herramientas de selección">✕</button></div></div>
+<div id="selectionTools" role="region" aria-label="Marcar texto seleccionado" hidden><div class="selGrip" aria-hidden="true"></div><div class="selTop"><span id="selCount">Versículos seleccionados</span><button id="dismissSelection" class="selClose" aria-label="Cerrar herramientas de selección">✕</button></div><div class="selRow"><div class="selColors"><button class="c1" data-mark="1" aria-label="Resaltar amarillo"></button><button class="c2" data-mark="2" aria-label="Resaltar verde"></button><button class="c3" data-mark="3" aria-label="Resaltar azul"></button><button class="c4" data-mark="4" aria-label="Resaltar rosa"></button><button class="c5" data-mark="5" aria-label="Subrayar">U</button><button data-mark="0" aria-label="Quitar marca">⌫</button></div><button id="selSave" class="selTile" aria-label="Guardar para leer después"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span>Guardar</span></button><button id="selNote" class="selTile" aria-label="Añadir nota"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Nota</span></button><button id="shareSel" class="selTile" aria-label="Copiar o compartir texto seleccionado"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copiar</span></button></div></div>
 <section id="sh" role="dialog" aria-modal="true" aria-labelledby="st" tabindex="-1"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <script>
@@ -1218,10 +1218,11 @@ function overlayHighlight(old,start,end,color){
  const merged=[];for(const r of result){const last=merged[merged.length-1];if(last&&last.end===r.start&&last.c===r.c)last.end=r.end;else merged.push({...r})}return merged;
 }
 let selectionSnapshot=null;
-function hideSelectionTools(){selectionSnapshot=null;$('selectionTools').hidden=true}
+var pickedVerses=new Set(),pickedKey='';
+function hideSelectionTools(){selectionSnapshot=null;pickedVerses=new Set();document.querySelectorAll('#text .v.picked').forEach(e=>e.classList.remove('picked'));$('selectionTools').hidden=true}
 function collectTextSelection(){
  if(currentView!=='reader'||$('sh').classList.contains('open')){hideSelectionTools();return}
- const selection=window.getSelection();if(!selection||selection.isCollapsed||!selection.rangeCount)return;
+ const selection=window.getSelection();if(!selection||selection.isCollapsed||!selection.rangeCount){if(!selectionSnapshot||selection&&selection.isCollapsed)hideSelectionTools();return}
  const range=selection.getRangeAt(0),items=[];
  if(!$('text').contains(range.startContainer)||!$('text').contains(range.endContainer))return;
  for(const span of $('text').querySelectorAll('.verse-text')){
@@ -1233,7 +1234,7 @@ function collectTextSelection(){
   if(end>start)items.push({v:+span.closest('.v').dataset.v,start,end});
  }
  if(!items.length)return;
- selectionSnapshot={b:S.b,c:S.c,items};$('selectionTools').hidden=false;
+ selectionSnapshot={b:S.b,c:S.c,items};const _vs=items.map(i=>i.v),_mn=Math.min(..._vs),_mx=Math.max(..._vs);$('selCount').textContent=B[S.b][0]+' '+S.c+':'+_mn+(_mx>_mn?'-'+_mx:'');$('selectionTools').hidden=false;
 }
 function markSelection(color){
  const snapshot=selectionSnapshot;if(!snapshot||snapshot.b!==S.b||snapshot.c!==S.c)return;
@@ -1246,7 +1247,7 @@ function markSelection(color){
 $('selectionTools').addEventListener('pointerdown',e=>{if(e.target.closest('button'))e.preventDefault()});
 $('selectionTools').addEventListener('click',e=>{const button=e.target.closest('[data-mark]');if(button)markSelection(+button.dataset.mark)});
 $('dismissSelection').onclick=()=>{window.getSelection()?.removeAllRanges();hideSelectionTools()};
-let selTimer=null;document.addEventListener('selectionchange',()=>{clearTimeout(selTimer);selTimer=setTimeout(collectTextSelection,150)});
+
 async function shareSelection(){
  const snap=selectionSnapshot;if(!snap||snap.b!==S.b||snap.c!==S.c)return;
  const lines=snap.items.map(it=>'“'+verses[it.v-1].slice(it.start,it.end).trim()+'” — '+B[snap.b][0]+' '+snap.c+':'+it.v);
@@ -1254,6 +1255,42 @@ async function shareSelection(){
  try{if(navigator.share){await navigator.share({text:txt})}else{await navigator.clipboard.writeText(txt);appNotice('Texto copiado',2500)}hideSelectionTools()}catch(e){}
 }
 $('shareSel').onclick=shareSelection;
+/* Un toque selecciona el versículo completo; se pueden añadir más */
+function renderPicked(){
+ document.querySelectorAll('#text .v.picked').forEach(e=>e.classList.remove('picked'));
+ const nums=[...pickedVerses].sort((a,b)=>a-b);
+ if(!nums.length){selectionSnapshot=null;$('selectionTools').hidden=true;return}
+ nums.forEach(n=>{const el=document.querySelector('#text .v[data-v="'+n+'"]');if(el)el.classList.add('picked')});
+ selectionSnapshot={b:S.b,c:S.c,items:nums.map(n=>({v:n,start:0,end:verses[n-1].length}))};
+ const mn=nums[0],mx=nums[nums.length-1];
+ $('selCount').textContent=B[S.b][0]+' '+S.c+':'+mn+(mx>mn?'-'+mx:'');
+ $('selectionTools').hidden=false;
+}
+$('text').addEventListener('click',e=>{
+ const t=e.target.closest('.verse-text');if(!t||e.target.closest('.n,.x'))return;
+ if(currentView!=='reader'||$('sh').classList.contains('open'))return;
+ const key=S.b+':'+S.c;if(pickedKey!==key){pickedVerses=new Set();pickedKey=key}
+ const n=+t.closest('.v').dataset.v;
+ if(pickedVerses.has(n))pickedVerses.delete(n);else pickedVerses.add(n);
+ renderPicked();
+});
+function selectionRange(snap){const v=snap.items.map(i=>i.v);return{first:Math.min(...v),last:Math.max(...v)}}
+$('selSave').onclick=()=>{
+ const snap=selectionSnapshot;if(!snap||snap.b!==S.b||snap.c!==S.c)return;
+ const all=J('bib_bm');
+ for(const it of snap.items){const k=vk(snap.b,snap.c,it.v);all[k]={t:Date.now(),x:verses[it.v-1].slice(0,90)}}
+ ls.set('bib_bm',JSON.stringify(all));window.getSelection()?.removeAllRanges();hideSelectionTools();buildText();
+ appNotice('Versículos guardados para leer después',2500);
+};
+$('selNote').onclick=()=>{
+ const snap=selectionSnapshot;if(!snap||snap.b!==S.b||snap.c!==S.c)return;
+ const {first,last}=selectionRange(snap);
+ const k=vk(S.b,S.c,first),ref=B[S.b][0]+' '+S.c+':'+first+(last>first?'-'+last:''),old=J('bib_notes')[k]||{};
+ window.getSelection()?.removeAllRanges();
+ openSheet('Nota · '+ref,`<p class="note">Esta nota se guarda en este dispositivo.</p><textarea id="notetxt" class="notearea" placeholder="Escribe tu reflexión, enseñanza u oración…">${esc(old.text||'')}</textarea><div class="toolsrow"><button class="save" id="savenote">Guardar nota</button><button class="act" id="delnote">Eliminar</button></div>`);
+ $('savenote').onclick=()=>{const value=$('notetxt').value.trim(),all=J('bib_notes');if(value)all[k]={text:value,t:Date.now(),ref};else delete all[k];ls.set('bib_notes',JSON.stringify(all));closeSheet();buildText()};
+ $('delnote').onclick=()=>{const all=J('bib_notes');delete all[k];ls.set('bib_notes',JSON.stringify(all));closeSheet();buildText()};
+};
 
 let versePressTimer=null,versePressPointer=null,versePressX=0,versePressY=0;
 function cancelVersePress(){clearTimeout(versePressTimer);versePressTimer=null;versePressPointer=null}
@@ -1377,7 +1414,26 @@ function devotionHistory(){
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-spiritual]');if(b)b.dataset.spiritual==='prayer'?prayerDiary():devotionOpen()});
 
-</script></body>
+</script><style>
+#selectionTools{left:8px;right:8px;max-width:520px;padding:8px 12px 14px;background:#262628;color:#fff;border:0;border-radius:28px;box-shadow:0 8px 30px #0008}
+#selectionTools .selGrip{width:36px;height:5px;border-radius:3px;background:#6b6b70;margin:4px auto 8px}
+#selectionTools .selTop{display:flex;align-items:center;justify-content:space-between;padding:0 4px 8px}
+#selectionTools #selCount{font-size:14px;font-weight:600;color:#fff}
+#selectionTools .selClose{width:28px;height:28px;min-width:0;border-radius:50%;background:#3a3a3d;color:#ddd;font-size:13px;padding:0}
+#selectionTools .selRow{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0}
+#selectionTools .selColors{display:flex;align-items:center;gap:10px;background:#38383b;border-radius:18px;padding:10px 12px;flex:0 0 auto}
+#selectionTools .selColors button{width:36px;height:36px;min-width:0;border-radius:50%;border:0;padding:0;color:#222;font-weight:700;text-decoration:none}
+#selectionTools .selColors .c1{background:#fde047}#selectionTools .selColors .c2{background:#86efac}#selectionTools .selColors .c3{background:#7dd3fc}#selectionTools .selColors .c4{background:#f0abfc}
+#selectionTools .selColors .c5{background:transparent;color:#fff;text-decoration:underline;text-decoration-thickness:2px;font-size:15px}
+#selectionTools .selColors button[data-mark="0"]{background:transparent;color:#fff;font-size:18px;width:28px;height:36px}
+#selectionTools .selTile{flex:0 0 auto;width:auto;height:auto;min-width:72px;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#38383b;color:#fff;border:0;border-radius:18px;padding:10px 14px;font:600 14px/1 system-ui,sans-serif}
+#selectionTools .selTile:active{background:#4a4a4e}
+</style>
+<style>
+#text .verse-text{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;cursor:pointer}
+#text .v.picked .verse-text{background:rgba(96,165,250,.35);border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+</style>
+</body>
 <!-- Licencias de las fuentes integradas
 Lora
 Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic), with Reserved Font Name "Lora".
