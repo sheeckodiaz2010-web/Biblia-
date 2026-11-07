@@ -1,5 +1,5 @@
 /* Biblia RVR1960 · caché offline y actualizaciones seguras */
-const CACHE_NAME = 'biblia-rvr1960-2026-11-04-01';
+const CACHE_NAME = 'biblia-rvr1960-2026-11-06-01';
 const CORE_FILES = [
   './',
   './index.html',
@@ -8,25 +8,29 @@ const CORE_FILES = [
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png',
-  './fonts/lora-integrada.ttf',
-  './fonts/nunito-integrada.ttf',
-  './fonts/roboto-slab-integrada.ttf',
-  './fonts/open-sans-integrada.ttf'
+  './lora-integrada.ttf',
+  './nunito-integrada.ttf',
+  './open-sans-integrada.ttf'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
+    let bibleOk = false;
     await Promise.all(CORE_FILES.map(async path => {
       try {
         const url = new URL(path, self.registration.scope);
         const response = await fetch(url, { cache: 'reload' });
-        if (response.ok) await cache.put(url, response);
+        if (response.ok) {
+          await cache.put(url, response);
+          if (path === './biblia.json') bibleOk = true;
+        }
       } catch (error) {
-        // Un recurso opcional ausente no debe cancelar la instalación completa.
-        // Si biblia.json no se pudo descargar, la app avisará al intentar leer offline.
+        // Un recurso opcional ausente no debe cancelar la instalación completa,
+        // salvo biblia.json: sin ella la app no puede leer sin conexión.
       }
     }));
+    if (!bibleOk) throw new Error('biblia.json no se pudo descargar; la instalación offline queda pendiente.');
     await self.skipWaiting();
   })());
 });
