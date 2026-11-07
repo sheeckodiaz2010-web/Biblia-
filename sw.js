@@ -1,5 +1,5 @@
 /* Biblia RVR1960 · caché offline y actualizaciones seguras */
-const CACHE_NAME = 'biblia-rvr1960-2026-11-06-01';
+const CACHE_NAME = 'biblia-rvr1960-2026-11-07-01';
 const CORE_FILES = [
   './',
   './index.html',

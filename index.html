@@ -19,9 +19,11 @@
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
 <style>
-:root{--bg:#f4f5f3;--fg:#1d2230;--mut:#69708a;--ac:#2b4db8;--acbg:#e3e9fb;--line:#d8dbe3;--sh:#fff;--hl:#fff3b8;--h1:#fff0a8;--h2:#cdeccb;--h3:#cfe3fb;--h4:#f9d3de;
---serif:'Literata',Georgia,serif;--sans:system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box}
-@media(prefers-color-scheme:dark){:root{--bg:#12151f;--fg:#e6e6e0;--mut:#9aa1b8;--ac:#93abff;--acbg:#1f2744;--line:#2a3045;--sh:#1b2030;--hl:#4a4320;--h1:#4a4320;--h2:#24432a;--h3:#20395c;--h4:#5a2a3c}}
+/* Tema único · Papiro: un claro y un oscuro (más el automático del sistema). Valores iguales a los que ya se veían; antes había 4 capas superpuestas y la última ganaba. */
+:root{--serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;--sans:system-ui,-apple-system,'Segoe UI',sans-serif;--on:#fff;--bg:#f0e5cb;--fg:#34260f;--mut:#8b7653;--ac:#8d6221;--acbg:#ecdcb5;--line:#e0cfa6;--sh:#f8f0dc;--card:#f8f0dd;--soft:#efe0bb;--gold:#b5832a;--hl:#fff3b8;--h1:#fff0ad;--h2:#d9efd9;--h3:#dceaff;--h4:#f8dce4;--brand2:#1d367f;--radius:22px;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--on:#1d1408;--bg:#1a140b;--fg:#f1e6cc;--mut:#b9a684;--ac:#e0b867;--acbg:#382b17;--line:#3d3120;--sh:#241c11;--card:#241c11;--soft:#31261a;--gold:#e0b867;--hl:#4a4320;--h1:#51451f;--h2:#25452d;--h3:#243b60;--h4:#512d40;color-scheme:dark}}
+:root[data-theme="light"]{--on:#fff;--bg:#f0e5cb;--fg:#34260f;--mut:#8b7653;--ac:#8d6221;--acbg:#ecdcb5;--line:#e0cfa6;--sh:#f8f0dc;--card:#f8f0dd;--soft:#efe0bb;--gold:#b5832a;--hl:#fff3b8;--h1:#fff0ad;--h2:#d9efd9;--h3:#dceaff;--h4:#f8dce4;color-scheme:light}
+:root[data-theme="dark"]{--on:#1d1408;--bg:#1a140b;--fg:#f1e6cc;--mut:#b9a684;--ac:#e0b867;--acbg:#382b17;--line:#3d3120;--sh:#241c11;--card:#241c11;--soft:#31261a;--gold:#e0b867;--hl:#4a4320;--h1:#51451f;--h2:#25452d;--h3:#243b60;--h4:#512d40;color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 nav.bar,header.top,button{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -74,7 +76,7 @@ button.x{background:var(--acbg);color:var(--ac);border:0;border-radius:6px;font:
 nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
 nav.bar button{flex:1;padding:13px 8px;border-radius:12px;border:1px solid var(--line);background:var(--sh)}
 nav.bar #ctx{flex:1.6;background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
-@media(prefers-color-scheme:dark){nav.bar #ctx,.row .p,.save,.grid button.cur,#upd{color:#0d1224}#upd{background:var(--ac)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav.bar #ctx,:root:not([data-theme="light"]) .row .p,:root:not([data-theme="light"]) .save,:root:not([data-theme="light"]) .grid button.cur,:root:not([data-theme="light"]) #upd{color:#0d1224}:root:not([data-theme="light"]) #upd{background:var(--ac)}}
 #ov{position:fixed;inset:0;background:#0007;z-index:8;display:none}
 #sh{position:fixed;left:0;right:0;bottom:0;z-index:9;max-height:80vh;background:var(--sh);border-radius:20px 20px 0 0;border-top:1px solid var(--line);transform:translateY(105%);transition:transform .25s;display:flex;flex-direction:column}
 #sh.open{transform:none}
@@ -104,7 +106,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 
 /* Pulido visual */
 body{-webkit-font-smoothing:antialiased;padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
-header.top{background:var(--bg);background:color-mix(in srgb,var(--bg) 80%,transparent);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+header.top{background:var(--bg);background:color-mix(in srgb,var(--bg) 80%,transparent);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
 #pick{font-size:20px;letter-spacing:-.01em}
 #ver{letter-spacing:.02em}
 button{transition:transform .12s,background .15s,opacity .15s}
@@ -118,9 +120,9 @@ main{padding-top:6px}
 .v{margin:0 0 .7em}
 .n{font-size:11px;opacity:.85}
 .sec{font:600 13px var(--sans);letter-spacing:.08em;text-transform:uppercase;margin:30px 0 10px}
-nav.bar{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:8px;gap:6px;border-radius:24px;border:1px solid var(--line);background:color-mix(in srgb,var(--sh) 82%,transparent);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);box-shadow:0 8px 30px #0002}
+nav.bar{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:8px;gap:6px;border-radius:24px;border:1px solid var(--line);background:var(--sh);background:color-mix(in srgb,var(--sh) 82%,transparent);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);box-shadow:0 8px 30px #0002}
 nav.bar button{border:0;background:transparent;border-radius:16px;padding:13px 6px;font-weight:600;color:var(--mut)}
-nav.bar #ctx{background:var(--ac);color:#fff;box-shadow:0 3px 10px color-mix(in srgb,var(--ac) 40%,transparent)}
+nav.bar #ctx{background:var(--ac);color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.2);box-shadow:0 3px 10px color-mix(in srgb,var(--ac) 40%,transparent)}
 #ov{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);background:#0006}
 #sh{border-radius:26px 26px 0 0;border:0;box-shadow:0 -10px 40px #0004;max-height:86vh}
 #sh::before{content:'';width:40px;height:5px;border-radius:5px;background:var(--line);margin:8px auto 0;flex:none}
@@ -138,7 +140,7 @@ select,input{border-radius:12px}
 .vc .vb button{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:14px}
 .vc .vb .p{background:var(--ac);color:#fff;border-color:var(--ac)}
 .vc #vx{position:absolute;top:8px;right:8px;background:none;border:0;color:var(--mut);padding:6px 8px;font-size:15px}
-@media(prefers-color-scheme:dark){.vc .vb .p{color:#0d1224}nav.bar #ctx{color:#0d1224}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .vc .vb .p{color:#0d1224}:root:not([data-theme="light"]) nav.bar #ctx{color:#0d1224}}
 #ver{pointer-events:none}
 
 /* Renovación 2026.10.30 */
@@ -161,9 +163,7 @@ select,input{border-radius:12px}
 
 
 /* Biblia RVR1960 · interfaz renovada */
-:root{--brand:#294bb2;--brand2:#1d367f;--gold:#c5a45b;--card:#fff;--soft:#eef1fa;--radius:22px}
-:root[data-theme="light"]{--bg:#f6f5f1;--fg:#202638;--mut:#73798b;--ac:#294bb2;--acbg:#e7ebf8;--line:#e1e2e6;--sh:#fff;--card:#fff;--soft:#eef1fa;--h1:#fff0ad;--h2:#d9efd9;--h3:#dceaff;--h4:#f8dce4}
-:root[data-theme="dark"]{--bg:#101522;--fg:#edf0f8;--mut:#a5aec3;--ac:#a9bcff;--acbg:#202b49;--line:#30394d;--sh:#171e2d;--card:#171e2d;--soft:#202b49;--h1:#51451f;--h2:#25452d;--h3:#243b60;--h4:#512d40}
+/* (Tema: ver el bloque único al inicio del CSS.) */
 .brand{display:flex;align-items:center;gap:7px;background:none;border:0;padding:5px 8px 5px 0;color:var(--ac);font:700 19px var(--sans);letter-spacing:-.04em}
 .brand:first-letter{color:var(--gold)}
 #pick[hidden],#ver[hidden],#readerView[hidden],#homeView[hidden],#readerBar[hidden]{display:none!important}
@@ -245,11 +245,7 @@ select,input{border-radius:12px}
 
 
 /* Rediseño · pergamino y tinta */
-:root{--serif:'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,serif;--on:#fff;
---bg:#f6efe2;--fg:#2b2117;--mut:#7d6d59;--ac:#7b2d2a;--acbg:#f0e0cd;--line:#e4d5bd;--sh:#fffaf1;--card:#fffaf1;--soft:#f1e4d0;--gold:#b6862f;--brand:#7b2d2a}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--on:#1b1208;--bg:#16120e;--fg:#f0e6d4;--mut:#b4a58d;--ac:#e2b567;--acbg:#352a1c;--line:#3b3024;--sh:#211b15;--card:#211b15;--soft:#2d241a;--gold:#e2b567}}
-:root[data-theme=light]{--on:#fff;--bg:#f6efe2;--fg:#2b2117;--mut:#7d6d59;--ac:#7b2d2a;--acbg:#f0e0cd;--line:#e4d5bd;--sh:#fffaf1;--card:#fffaf1;--soft:#f1e4d0;--gold:#b6862f}
-:root[data-theme=dark]{--on:#1b1208;--bg:#16120e;--fg:#f0e6d4;--mut:#b4a58d;--ac:#e2b567;--acbg:#352a1c;--line:#3b3024;--sh:#211b15;--card:#211b15;--soft:#2d241a;--gold:#e2b567}
+/* (Tema: ver el bloque único al inicio del CSS.) */
 body{background:var(--bg);background-image:radial-gradient(120% 60% at 50% -10%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 60%);background-attachment:fixed}
 .ic{width:22px;height:22px;display:block;flex:none}
 header.top button,.brand{display:inline-flex;align-items:center;justify-content:center}
@@ -266,7 +262,7 @@ header.top button,.brand{display:inline-flex;align-items:center;justify-content:
 .daily-card button{border-radius:13px;font-weight:700}.daily-card .primary{background:#f0cf8f!important;color:#2b1608!important;border:0!important}
 .daily-card button:not(.primary){background:#ffffff1f!important;color:#fff7e8!important;border:1px solid #ffffff33!important}
 .section-title h2{font:600 20px var(--serif);color:var(--fg)}.section-title span{color:var(--mut)}
-.continue-card,.home-tool,.home-stat,.plan-card,.study-item,.sresult,.it,.act{background:var(--card);border:1px solid var(--line);box-shadow:0 1px 0 #fff8,0 6px 18px color-mix(in srgb,var(--fg) 6%,transparent)}
+.continue-card,.home-tool,.home-stat,.plan-card,.study-item,.sresult,.it,.act{background:var(--card);border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.08);box-shadow:0 1px 0 #fff8,0 6px 18px color-mix(in srgb,var(--fg) 6%,transparent)}
 .home-tool{border-radius:20px}.home-tool .tool-icon{background:var(--soft);color:var(--ac);border-radius:14px}.home-tool .ic{width:21px;height:21px}
 .home-tool:active,.continue-card:active{transform:scale(.98)}
 .continue-icon{background:var(--soft);color:var(--ac)}.continue-icon .ic{width:26px;height:26px}
@@ -278,20 +274,17 @@ header.top button,.brand{display:inline-flex;align-items:center;justify-content:
 .n{color:var(--gold);font-weight:700}
 .ch small{color:var(--gold)}.ch::after{background:var(--gold);width:44px;height:2px}
 .sec{font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:17px;color:var(--ac);text-align:center;margin:34px 0 12px}
-nav.bar{background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);border:1px solid var(--line);box-shadow:0 12px 32px color-mix(in srgb,var(--fg) 18%,transparent)}
+nav.bar{background:var(--card);background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);border:1px solid var(--line);box-shadow:0 12px 32px rgba(0,0,0,.15);box-shadow:0 12px 32px color-mix(in srgb,var(--fg) 18%,transparent)}
 nav.bar button{color:var(--mut)}#readerBar #audio{background:var(--soft);color:var(--ac)}
 #sh{background:var(--sh)}#st{font-family:var(--serif);font-size:20px}#sb h3{font-family:var(--serif);font-size:17px}
 .ref,#ver{background:var(--acbg);color:var(--ac)}button.x{background:var(--acbg);color:var(--ac)}
 select,input,#sb textarea{background:var(--card);border-color:var(--line)}
-@media(prefers-color-scheme:dark){nav.bar #ctx,.row .p,.save,.grid button.cur,#upd{color:var(--on)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav.bar #ctx,:root:not([data-theme="light"]) .row .p,:root:not([data-theme="light"]) .save,:root:not([data-theme="light"]) .grid button.cur,:root:not([data-theme="light"]) #upd{color:var(--on)}}
 
 /* Papiro suave */
-:root{--serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;--on:#fff;--bg:#f0e5cb;--fg:#34260f;--mut:#8b7653;--ac:#8d6221;--acbg:#ecdcb5;--line:#e0cfa6;--sh:#f8f0dc;--card:#f8f0dd;--soft:#efe0bb;--gold:#b5832a}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--on:#1d1408;--bg:#1a140b;--fg:#f1e6cc;--mut:#b9a684;--ac:#e0b867;--acbg:#382b17;--line:#3d3120;--sh:#241c11;--card:#241c11;--soft:#31261a;--gold:#e0b867}}
-:root[data-theme=light]{--on:#fff;--bg:#f0e5cb;--fg:#34260f;--mut:#8b7653;--ac:#8d6221;--acbg:#ecdcb5;--line:#e0cfa6;--sh:#f8f0dc;--card:#f8f0dd;--soft:#efe0bb;--gold:#b5832a}
-:root[data-theme=dark]{--on:#1d1408;--bg:#1a140b;--fg:#f1e6cc;--mut:#b9a684;--ac:#e0b867;--acbg:#382b17;--line:#3d3120;--sh:#241c11;--card:#241c11;--soft:#31261a;--gold:#e0b867}
-body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .36 0 0 0 0 .15 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(110% 50% at 90% 0,color-mix(in srgb,var(--gold) 16%,transparent),transparent 65%);padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
-header.top{background:color-mix(in srgb,var(--bg) 78%,transparent)}
+/* (Tema: ver el bloque único al inicio del CSS.) */
+body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .36 0 0 0 0 .15 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(110% 50% at 90% 0,color-mix(in srgb,var(--gold) 16%,transparent),transparent 65%)}
+header.top{background:var(--bg);background:color-mix(in srgb,var(--bg) 78%,transparent)}
 .home-mode .brand{font:600 38px/1 var(--serif);color:var(--fg);letter-spacing:-.01em;gap:10px;padding:2px 0}.home-mode .brand .ic{width:34px;height:34px;color:var(--gold);stroke-width:1.5}
 .hw{text-align:center;padding:6px 0 4px}.hw h2{margin:0;font:500 26px var(--serif);color:var(--gold)}.hw p{margin:6px 0 0;font-size:16px;line-height:1.35;color:var(--fg)}
 .orn{display:flex;align-items:center;gap:12px;justify-content:center;margin:12px 0 4px;color:var(--gold)}.orn i{width:56px;height:1px;background:var(--gold);opacity:.7}.orn .ic{width:18px;height:18px}
@@ -303,13 +296,13 @@ header.top{background:color-mix(in srgb,var(--bg) 78%,transparent)}
 .dc-f{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #c9a65a80;margin-top:14px;padding-top:12px}
 .daily-card button{background:none!important;border:0!important;color:#40300f!important;font:500 17px var(--serif)!important;padding:4px 2px!important;display:inline-flex;gap:10px;align-items:center}.daily-card button .ic{width:22px;height:22px}
 .daily-card #homeDailyShare{color:#8d6221!important;font-size:15px!important}
-@media(prefers-color-scheme:dark){.daily-card{background:linear-gradient(150deg,#3a2d17,#2a2011)!important;border-color:#54421f!important;color:#f1e6cc!important}.daily-card blockquote,.daily-card button{color:#f1e6cc!important}.dc-h b,.daily-card .daily-ref,.daily-card #homeDailyShare{color:#e0b867!important}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .daily-card{background:linear-gradient(150deg,#3a2d17,#2a2011)!important;border-color:#54421f!important;color:#f1e6cc!important}:root:not([data-theme="light"]) .daily-card blockquote,:root:not([data-theme="light"]) .daily-card button{color:#f1e6cc!important}:root:not([data-theme="light"]) .dc-h b,:root:not([data-theme="light"]) .daily-card .daily-ref,:root:not([data-theme="light"]) .daily-card #homeDailyShare{color:#e0b867!important}}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
 .mini{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px;border-radius:20px;background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px #8a651e1f;color:var(--fg)}
 .mini .dc-ic{margin-bottom:8px}.mini b{font:500 19px var(--serif)}.mini small{font-size:13px;color:var(--mut);min-height:34px}.mini em{font:500 15px var(--serif);font-style:normal;color:var(--ac);margin-top:8px}
 .explore{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:16px;border-radius:20px;background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px #8a651e1f;color:var(--fg);margin-bottom:6px}
 .explore b{display:block;font:500 20px var(--serif)}.explore small{display:block;color:var(--mut);font-size:13px;margin-top:4px}.explore .big{width:68px;height:68px;color:var(--gold);stroke-width:1;opacity:.8}
-#tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;background:color-mix(in srgb,var(--sh) 92%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px))}
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;background:var(--sh);background:color-mix(in srgb,var(--sh) 92%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px))}
 #tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;padding:4px 0;color:var(--mut);font:500 11px var(--sans)}#tabs .ic{width:25px;height:25px}#tabs button.on{color:var(--ac)}#tabs button.on .ic{fill:color-mix(in srgb,var(--ac) 22%,transparent)}
 nav.bar{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 .home-mode #readerBar{display:none}
@@ -391,9 +384,12 @@ html{touch-action:pan-x pan-y}input,select,textarea{font-size:16px}
 <section id="sh" role="dialog" aria-modal="true" aria-labelledby="st" tabindex="-1"><header><h2 id="st"></h2><button id="sx" aria-label="Cerrar">✕</button></header><div id="sb"></div></section>
 
 <style>
-.study-panel{margin:22px 0 8px;border:1px solid var(--line);border-radius:16px;padding:16px 16px 10px;background:var(--sh)}
+.study-panel{margin:22px 0 8px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:16px;padding:16px 16px 10px;background:var(--card);box-shadow:0 4px 16px rgba(0,0,0,.06)}
 .study-panel h2{font-size:19px;margin:2px 0 4px}
-.study-panel h3{font-size:15px;margin:16px 0 6px}
+.study-panel h3{font-size:15px;margin:16px 0 6px;color:var(--ac)}
+.study-badge{display:inline-block;padding:4px 10px;border-radius:999px;font:700 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;vertical-align:middle}
+.study-badge.own{background:var(--acbg);color:var(--ac);border:1px solid var(--ac)}
+.study-badge.guide{background:var(--soft);color:var(--mut);border:1px solid var(--line)}
 .study-panel p{font-size:15px;line-height:1.6;margin:6px 0}
 .study-panel .study-kicker{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);font-weight:700}
 .study-panel .study-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 6px}
@@ -403,8 +399,8 @@ html{touch-action:pan-x pan-y}input,select,textarea{font-size:16px}
 .book-intro p{margin:6px 0}
 </style>
 <script>
-const VERSION='2026-11-06.01';
-const CACHE_NAME='biblia-rvr1960-2026-11-06-01';
+const VERSION='2026-11-07.01';
+const CACHE_NAME='biblia-rvr1960-2026-11-07-01';
 const B=[["Génesis","Genesis",50],["Éxodo","Exodus",40],["Levítico","Leviticus",27],["Números","Numbers",36],["Deuteronomio","Deuteronomy",34],["Josué","Joshua",24],["Jueces","Judges",21],["Rut","Ruth",4],["1 Samuel","1 Samuel",31],["2 Samuel","2 Samuel",24],["1 Reyes","1 Kings",22],["2 Reyes","2 Kings",25],["1 Crónicas","1 Chronicles",29],["2 Crónicas","2 Chronicles",36],["Esdras","Ezra",10],["Nehemías","Nehemiah",13],["Ester","Esther",10],["Job","Job",42],["Salmos","Psalms",150],["Proverbios","Proverbs",31],["Eclesiastés","Ecclesiastes",12],["Cantares","Song of Solomon",8],["Isaías","Isaiah",66],["Jeremías","Jeremiah",52],["Lamentaciones","Lamentations",5],["Ezequiel","Ezekiel",48],["Daniel","Daniel",12],["Oseas","Hosea",14],["Joel","Joel",3],["Amós","Amos",9],["Abdías","Obadiah",1],["Jonás","Jonah",4],["Miqueas","Micah",7],["Nahúm","Nahum",3],["Habacuc","Habakkuk",3],["Sofonías","Zephaniah",3],["Hageo","Haggai",2],["Zacarías","Zechariah",14],["Malaquías","Malachi",4],["Mateo","Matthew",28],["Marcos","Mark",16],["Lucas","Luke",24],["Juan","John",21],["Hechos","Acts",28],["Romanos","Romans",16],["1 Corintios","1 Corinthians",16],["2 Corintios","2 Corinthians",13],["Gálatas","Galatians",6],["Efesios","Ephesians",6],["Filipenses","Philippians",4],["Colosenses","Colossians",4],["1 Tesalonicenses","1 Thessalonians",5],["2 Tesalonicenses","2 Thessalonians",3],["1 Timoteo","1 Timothy",6],["2 Timoteo","2 Timothy",4],["Tito","Titus",3],["Filemón","Philemon",1],["Hebreos","Hebrews",13],["Santiago","James",5],["1 Pedro","1 Peter",5],["2 Pedro","2 Peter",3],["1 Juan","1 John",5],["2 Juan","2 John",1],["3 Juan","3 John",1],["Judas","Jude",1],["Apocalipsis","Revelation",22]];
 const $=id=>document.getElementById(id);
 var _lf=0;function lsFail(){if(Date.now()-_lf<15000)return;_lf=Date.now();appNotice('⚠ No se pudo guardar en este dispositivo (almacenamiento lleno o bloqueado). Haz un respaldo desde Ajustes.',8000)}
@@ -1008,12 +1004,15 @@ async function warmOfflineBible(){
 
 /* Ajustes */
 const FONTS={"Lora": "'Lora integrada',Georgia,serif", "Nunito": "'Nunito integrada',system-ui,sans-serif", "Open Sans": "'Open Sans integrada',system-ui,sans-serif", "Literata": "'Literata',Georgia,serif", "Georgia": "Georgia,serif", "Palatino": "Palatino,'Palatino Linotype','Book Antiqua',serif", "Times New Roman": "'Times New Roman',Times,serif", "Arial": "Arial,Helvetica,sans-serif", "Trebuchet MS": "'Trebuchet MS',Arial,sans-serif", "Verdana": "Verdana,Geneva,sans-serif", "Sin serifa": "system-ui,-apple-system,'Segoe UI',sans-serif"};
+function syncThemeColor(){try{const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#f0e5cb'}catch(e){}}
 function applyTheme(){
   const t=ls.get('bib_theme')||'system';
   if(t==='system')document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme',t);
+  syncThemeColor();
 }
 applyTheme();
+try{if(window.matchMedia)window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if((ls.get('bib_theme')||'system')==='system')syncThemeColor()})}catch(e){}
 function applyFont(){
   const r=document.documentElement.style;
   r.setProperty('--rf',FONTS[ls.get('bib_font')]||FONTS.Literata);
@@ -1255,7 +1254,7 @@ function studyPanelHTML(b,c){
  const aplicacion=deep?deep.a:studyApplication(b);
  const oracion=deep?deep.o:'Ora con tus propias palabras lo que este capítulo te haya mostrado.';
  const badge=deep?'Nota de estudio propia':(note?'Nota de estudio':'Guía de estudio');
- return '<section class="study-panel"><span class="study-kicker">📖 Estudio · '+esc(book)+' '+c+' · '+badge+'</span><h2>Estudio de '+esc(book)+' '+c+'</h2><p class="study-note">Notas de estudio: ayuda para entender el pasaje, no sustituyen el texto bíblico. Si una nota y el texto parecen chocar, confía en el texto.</p><h3>Resumen</h3><p>'+esc(resumen)+'</p><h3>Idea central</h3><p>'+esc(idea)+'</p><h3>Contexto</h3><p>'+esc(info.context)+'</p><h3>Versículos clave</h3>'+clavesHtml+'<h3>Pregunta para reflexionar</h3><p>'+esc(pregunta)+'</p><h3>Aplicación y oración</h3><p>'+esc(aplicacion)+'</p><p>'+esc(oracion)+'</p><div class="study-actions"><button data-book-study="'+b+'">Introducción a '+esc(book)+'</button><button data-open-context="1">Contexto completo</button></div></section>';
+ return '<section class="study-panel"><span class="study-kicker">📖 Estudio · '+esc(book)+' '+c+'</span> <span class="study-badge '+((deep||note)?'own':'guide')+'">'+badge+'</span><h2>Estudio de '+esc(book)+' '+c+'</h2><p class="study-note">Notas de estudio: ayuda para entender el pasaje, no sustituyen el texto bíblico. Si una nota y el texto parecen chocar, confía en el texto.</p><h3>Resumen</h3><p>'+esc(resumen)+'</p><h3>Idea central</h3><p>'+esc(idea)+'</p><h3>Contexto</h3><p>'+esc(info.context)+'</p><h3>Versículos clave</h3>'+clavesHtml+'<h3>Pregunta para reflexionar</h3><p>'+esc(pregunta)+'</p><h3>Aplicación y oración</h3><p>'+esc(aplicacion)+'</p><p>'+esc(oracion)+'</p><div class="study-actions"><button data-book-study="'+b+'">Introducción a '+esc(book)+'</button><button data-open-context="1">Contexto completo</button></div></section>';
 }
 function renderStudyPanel(){const el=$('studyPanel');if(!el)return;try{el.innerHTML=studyPanelHTML(S.b,S.c)}catch(e){el.innerHTML='<p class="note">No se pudo cargar el estudio de este capítulo.</p>'}}
 function bookIntroHTML(b){const st=BOOK_STUDY[b];return '<div class="book-intro"><b>'+esc(B[b][0])+'</b> · '+esc(st.tema)+'<p class="note">Versículo clave: '+refBtn(st.clave)+'</p><button class="act" data-book-study="'+b+'">Ver introducción de estudio</button></div>'}
@@ -1440,9 +1439,7 @@ function offerOfflineDownload(){
  };
 }
 
-document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
-document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
-document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
+/* Pellizco para ampliar permitido (accesibilidad): los botones A−/A+ siguen disponibles. Antes estas 3 líneas lo bloqueaban. */
 // Arranque: inicio, y descarga de la Biblia en segundo plano para lectura offline.
 showHome();
 window.addEventListener('load',()=>{if(navigator.onLine)warmOfflineBible().catch(()=>{});if(!ls.get('bib_download_offer')&&ls.get('bib_download_snooze')!==todayISO())offerOfflineDownload();},{once:true});
